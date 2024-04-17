@@ -54,6 +54,7 @@ jobs:
       - name: EC2 Docker Run
         uses: appleboy/ssh-action@master
         env:
+          NAME: ${{ secrets.DOCKER_USERNAME }}
           APP: ${{ secrets.DEV_BACKEND_APP_NAME }}
           COMPOSE: docker-compose.yml
         with:
