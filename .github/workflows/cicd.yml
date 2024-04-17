@@ -61,7 +61,7 @@ jobs:
           username: ubuntu
           host: ${{ secrets.UBUNTU_DEV_HOST }}
           key: ${{ secrets.UBUNTU_DEV_KEY }}
-          envs: APP, COMPOSE
+          envs: APP, COMPOSE, NAME
           script_stop: true
           script: |
             sudo docker-compose -f $COMPOSE down --rmi all
