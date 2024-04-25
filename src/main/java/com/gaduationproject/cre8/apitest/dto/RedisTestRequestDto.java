@@ -9,12 +9,10 @@ import lombok.NoArgsConstructor;
 
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-@Schema(description = "Test 를 저장하기 위한 DTO")
-public class TestRequestDto {
+public class RedisTestRequestDto {
 
-    @NotBlank(message = "저장할 아무 이름을 선택하세요")
-    @Schema(description = "아무 이름", example = "진우")
-    @Size(min = 5, message = "최소 5이상이어야 합니다.")
-    private String name;
-
+    @NotBlank(message = "저장할 아무 이름2을 선택하세요")
+    @Schema(description = "아무 이름2", example = "진우2")
+    @Size(min = 3, message = "최소 3이상이어야 합니다.")
+    private String redisName;
 }
