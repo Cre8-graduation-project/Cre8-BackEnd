@@ -36,8 +36,11 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.ResultActions;
+import org.springframework.test.web.servlet.ResultMatcher;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
+import org.springframework.web.bind.annotation.ResponseBody;
+
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.when;
@@ -94,6 +97,29 @@ class MemberControllerTest {
         );
 
         resultActions.andExpect(status().isCreated());
+
+    }
+
+    @Test
+    @DisplayName("비정상적인 멤버 데이터 저장 상황-이메일")
+    public void 멤버데이터_비정상_저장_이메일() throws Exception {
+        //given
+        final String url = "/api/v1/members";
+
+
+        //when
+        final ResultActions resultActions = mockMvc.perform(
+                MockMvcRequestBuilders.post(url)
+                        .content(gson.toJson(memberSignUpRequestDto("dionisos198","password",
+                                Sex.M,LocalDate.of(2023,1,1),"dionisos198naver.com","이진우")))
+                        .contentType(MediaType.APPLICATION_JSON)
+        );
+
+
+        resultActions.andExpect(status().isBadRequest())
+                .andExpect(content().contentType(MediaType.APPLICATION_JSON))
+                .andExpect(jsonPath("$.message").value("Invalid email format"));
+
 
     }
 
