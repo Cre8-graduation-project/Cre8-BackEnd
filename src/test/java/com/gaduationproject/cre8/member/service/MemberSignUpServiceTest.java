@@ -45,7 +45,7 @@ class MemberSignUpServiceTest {
                 .birthDay(LocalDate.of(2023,1,1))
                 .build();
 
-        ReflectionTestUtils.setField(member,"id",1);
+        ReflectionTestUtils.setField(member,"id",1L);
 
         return member;
     }
@@ -101,7 +101,7 @@ class MemberSignUpServiceTest {
         //then
 
         Exception e = org.junit.jupiter.api.Assertions.assertThrows(DuplicateException.class,()->{
-            memberSignUpService.saveMember(memberSignUpRequestDto)
+            memberSignUpService.saveMember(memberSignUpRequestDto);
         });
 
         assertEquals("이메일이 중복되었습니다", e.getMessage());
