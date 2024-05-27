@@ -27,6 +27,8 @@ class MemberRepositoryTest {
     @Test
     @DisplayName("회원이 회원가입 시도- 정상")
     public void saveMember(){
+
+        //given
         Member member = Member.builder()
                 .nickName("dionisos198")
                 .password("password")
@@ -36,8 +38,10 @@ class MemberRepositoryTest {
                 .name("jinu Yi")
                 .build();
 
+        //when
         Member findMember = memberRepository.save(member);
 
+        //then
         assertThat(findMember).isNotNull();
         assertThat(findMember.getName()).isEqualTo("jinu Yi");
     }
@@ -45,6 +49,7 @@ class MemberRepositoryTest {
     @Test
     @DisplayName("회원이 회원가입 시도시 아이디 (이메일 ) 제약 조건에 위배")
     public void 닉네임_unique_제약조건위배(){
+        //given
         Member member = Member.builder()
                 .nickName("dionisos198")
                 .password("password")
@@ -65,6 +70,7 @@ class MemberRepositoryTest {
                                                                 .name("jinu Yi")
                                                                         .build();
 
+        //when , then
         org.junit.jupiter.api.Assertions.assertThrows(DataIntegrityViolationException.class,()->{
             Member findMember2 = memberRepository.save(member1);
         });
