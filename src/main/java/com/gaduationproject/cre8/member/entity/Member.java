@@ -11,6 +11,7 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.OneToOne;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import lombok.AccessLevel;
 import lombok.Builder;
@@ -38,7 +39,7 @@ public class Member {
     private String nickName;
 
     @Column(nullable = false)
-    private LocalDateTime birthDay;
+    private LocalDate birthDay;
 
     @Enumerated(EnumType.STRING)
     private Sex sex;
@@ -50,7 +51,7 @@ public class Member {
 
     @Builder
     public Member(Long id, String name, String email, String password, String nickName,
-            LocalDateTime birthDay, Sex sex) {
+            LocalDate birthDay, Sex sex) {
         this.id = id;
         this.name = name;
         this.email = email;
