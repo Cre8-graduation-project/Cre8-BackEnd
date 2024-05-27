@@ -3,6 +3,7 @@ package com.gaduationproject.cre8.member.service;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.*;
 
+import com.gaduationproject.cre8.common.response.error.exception.DuplicateException;
 import com.gaduationproject.cre8.member.dto.MemberSignUpRequestDto;
 import com.gaduationproject.cre8.member.entity.Member;
 import com.gaduationproject.cre8.member.repository.MemberRepository;
@@ -99,7 +100,7 @@ class MemberSignUpServiceTest {
 
         //then
 
-        Exception e = org.junit.jupiter.api.Assertions.assertThrows(EmailDuplicateException.class,()->{
+        Exception e = org.junit.jupiter.api.Assertions.assertThrows(DuplicateException.class,()->{
             memberSignUpService.saveMember(memberSignUpRequestDto)
         });
 
@@ -126,8 +127,8 @@ class MemberSignUpServiceTest {
                 .build();
 
         //then
-        Exception e = org.junit.jupiter.api.Assertions.assertThrows(NickNameDuplicateException.class,()->{
-            memberSignUpService.saveMember(memberSignUpRequestDto)
+        Exception e = org.junit.jupiter.api.Assertions.assertThrows(DuplicateException.class,()->{
+            memberSignUpService.saveMember(memberSignUpRequestDto);
         });
 
         assertEquals("닉네임이 중복되었습니다", e.getMessage());
