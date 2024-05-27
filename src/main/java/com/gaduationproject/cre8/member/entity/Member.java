@@ -13,6 +13,7 @@ import jakarta.persistence.JoinColumn;
 import jakarta.persistence.OneToOne;
 import java.time.LocalDateTime;
 import lombok.AccessLevel;
+import lombok.Builder;
 import lombok.NoArgsConstructor;
 
 @Entity
@@ -47,7 +48,15 @@ public class Member {
     private Profile profile;
 
 
-
-
-
+    @Builder
+    public Member(Long id, String name, String email, String password, String nickName,
+            LocalDateTime birthDay, Sex sex) {
+        this.id = id;
+        this.name = name;
+        this.email = email;
+        this.password = password;
+        this.nickName = nickName;
+        this.birthDay = birthDay;
+        this.sex = sex;
+    }
 }
