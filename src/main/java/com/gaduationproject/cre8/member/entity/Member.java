@@ -52,9 +52,8 @@ public class Member {
 
 
     @Builder
-    public Member(Long id, String name, String email, String password, String nickName,
+    public Member(String name, String email, String password, String nickName,
             LocalDate birthDay, Sex sex) {
-        this.id = id;
         this.name = name;
         this.email = email;
         this.password = password;
