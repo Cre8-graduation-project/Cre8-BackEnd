@@ -3,6 +3,7 @@ package com.gaduationproject.cre8.member.service;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.*;
 
+import com.gaduationproject.cre8.member.dto.MemberSignUpRequestDto;
 import com.gaduationproject.cre8.member.entity.Member;
 import com.gaduationproject.cre8.member.repository.MemberRepository;
 import com.gaduationproject.cre8.member.type.Sex;
@@ -84,7 +85,7 @@ class MemberSignUpServiceTest {
         Member member = getMember();
 
         //when
-        when(memberRepository.findByEmail(eq(member.getEmail()))).thenReturn(Optional.of(member));
+        when(memberRepository.existsByEmail(eq(member.getEmail()))).thenReturn(Boolean.TRUE);
         MemberSignUpRequestDto memberSignUpRequestDto = MemberSignUpRequestDto
                 .builder()
                 .name("이진우1")
@@ -113,7 +114,7 @@ class MemberSignUpServiceTest {
         Member member = getMember();
 
         //when
-        when(memberRepository.findByNickName(eq(member.getNickName()))).thenReturn(Optional.of(member));
+        when(memberRepository.existsByNickName(eq(member.getNickName()))).thenReturn(Boolean.TRUE);
         MemberSignUpRequestDto memberSignUpRequestDto = MemberSignUpRequestDto
                 .builder()
                 .name("이진우1")
