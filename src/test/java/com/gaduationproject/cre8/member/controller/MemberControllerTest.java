@@ -11,6 +11,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import com.fasterxml.jackson.core.JsonParseException;
 import com.gaduationproject.cre8.common.LocalDateDeserializer;
 import com.gaduationproject.cre8.common.LocalDateSerializer;
+import com.gaduationproject.cre8.common.response.error.RestExceptionHandler;
 import com.gaduationproject.cre8.member.dto.MemberSignUpRequestDto;
 import com.gaduationproject.cre8.member.service.MemberSignUpService;
 import com.gaduationproject.cre8.member.type.Sex;
@@ -56,6 +57,8 @@ class MemberControllerTest {
     private MockMvc mockMvc;
     private Gson gson;
 
+    private static final String MEMBER_SIGNUP_URL = "/api/v1/members";
+
     @BeforeEach
     public void init() {
         GsonBuilder gsonBuilder = new GsonBuilder();
@@ -66,6 +69,7 @@ class MemberControllerTest {
         gson = gsonBuilder.setPrettyPrinting().create();
 
         mockMvc = MockMvcBuilders.standaloneSetup(memberController)
+                .setControllerAdvice(new RestExceptionHandler())
                 .build();
     }
 
@@ -85,12 +89,12 @@ class MemberControllerTest {
     @DisplayName("정상적인 멤버 데이터 저장 상황")
     public void 멤버데이터_정상_저장() throws Exception {
         //given
-        final String url = "/api/v1/members";
+
         when(memberSignUpService.saveMember(any(MemberSignUpRequestDto.class))).thenReturn(1L);
 
         //when
         final ResultActions resultActions = mockMvc.perform(
-                MockMvcRequestBuilders.post(url)
+                MockMvcRequestBuilders.post(MEMBER_SIGNUP_URL)
                         .content(gson.toJson(memberSignUpRequestDto("dionisos198","password",
                                 Sex.M,LocalDate.of(2023,1,1),"dionisos198@naver.com","이진우")))
                         .contentType(MediaType.APPLICATION_JSON)
@@ -104,12 +108,12 @@ class MemberControllerTest {
     @DisplayName("비정상적인 멤버 데이터 저장 상황-이메일")
     public void 멤버데이터_비정상_저장_이메일() throws Exception {
         //given
-        final String url = "/api/v1/members";
+
 
 
         //when
         final ResultActions resultActions = mockMvc.perform(
-                MockMvcRequestBuilders.post(url)
+                MockMvcRequestBuilders.post(MEMBER_SIGNUP_URL)
                         .content(gson.toJson(memberSignUpRequestDto("dionisos198","password",
                                 Sex.M,LocalDate.of(2023,1,1),"dionisos198naver.com","이진우")))
                         .contentType(MediaType.APPLICATION_JSON)
@@ -118,7 +122,30 @@ class MemberControllerTest {
 
         resultActions.andExpect(status().isBadRequest())
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON))
-                .andExpect(jsonPath("$.message").value("Invalid email format"));
+                .andExpect(jsonPath("$.message").value("[email](은)는 이메일 형식이 올바르지 않습니다 입력된 값: [dionisos198naver.com]"));
+
+
+    }
+
+    @Test
+    @DisplayName("비정상적인 멤버 데이터 저장 상황-남과 여 둘중에 하나가 아닐 때 ")
+    public void 멤버데이터_비정상_저장_ENUM_남자_여자() throws Exception {
+        //given
+
+
+
+        //when
+        final ResultActions resultActions = mockMvc.perform(
+                MockMvcRequestBuilders.post(MEMBER_SIGNUP_URL)
+                        .content(gson.toJson(memberSignUpRequestDto("dionisos198","password",
+                                null,LocalDate.of(2023,1,1),"dionisos198@naver.com","이진우")))
+                        .contentType(MediaType.APPLICATION_JSON)
+        );
+
+
+        resultActions.andExpect(status().isBadRequest())
+                .andExpect(content().contentType(MediaType.APPLICATION_JSON))
+                .andExpect(jsonPath("$.message").value("[sex](은)는 M 또는 W 둘 중 하나만 입력이 가능합니다 입력된 값: [null]"));
 
 
     }
