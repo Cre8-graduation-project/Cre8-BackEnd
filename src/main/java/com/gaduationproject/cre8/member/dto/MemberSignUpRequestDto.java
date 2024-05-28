@@ -1,5 +1,6 @@
 package com.gaduationproject.cre8.member.dto;
 
+import com.gaduationproject.cre8.common.response.error.checkEnumManOrWoman.CheckManOrWoman;
 import com.gaduationproject.cre8.member.entity.Member;
 import com.gaduationproject.cre8.member.type.Sex;
 import jakarta.validation.constraints.Email;
@@ -32,7 +33,7 @@ public class MemberSignUpRequestDto {
     @Size(min=5,max = 20 , message = "최소 5글자에서 최대 20글자를 입력해주세요")
     private String password;
 
-    @NotNull(message = "남/여 를 입력해주세요")
+    @CheckManOrWoman
     private Sex sex;
 
     @NotBlank(message = "사용할 닉네임을 입력해주세요")
