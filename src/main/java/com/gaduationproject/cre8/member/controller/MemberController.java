@@ -19,7 +19,7 @@ public class MemberController {
     private final MemberSignUpService memberSignUpService;
 
     @PostMapping
-    public ResponseEntity<Void> saveMember(@Valid @RequestBody MemberSignUpRequestDto memberSignUpRequestDto){
+    public ResponseEntity<Void> saveMember(@Valid @RequestBody final MemberSignUpRequestDto memberSignUpRequestDto){
         memberSignUpService.saveMember(memberSignUpRequestDto);
 
         return ResponseEntity.status(HttpStatus.CREATED).build();

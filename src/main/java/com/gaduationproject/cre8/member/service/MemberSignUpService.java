@@ -19,16 +19,21 @@ public class MemberSignUpService {
     @Transactional
     public Long saveMember(final MemberSignUpRequestDto memberSignUpRequestDto){
 
-        if(memberRepository.existsByEmail(memberSignUpRequestDto.getEmail())){
-            throw new DuplicateException(ErrorCode.DUPLICATE_EMAIL);
+        if(memberRepository.existsByLoginId(memberSignUpRequestDto.getLoginId())){
+            throw new DuplicateException(ErrorCode.DUPLICATE_LOGIN_ID);
         }
 
         if(memberRepository.existsByNickName(memberSignUpRequestDto.getNickName())){
             throw new DuplicateException(ErrorCode.DUPLICATE_NICKNAME);
         }
 
+        DuplicateEmail(memberSignUpRequestDto.getEmail());
+
+
+
         Member member = Member.builder()
                 .email(memberSignUpRequestDto.getEmail())
+                .loginId(memberSignUpRequestDto.getLoginId())
                 .name(memberSignUpRequestDto.getName())
                 .sex(memberSignUpRequestDto.getSex())
                 .password(memberSignUpRequestDto.getPassword())
@@ -40,6 +45,12 @@ public class MemberSignUpService {
         return memberRepository.save(member).getId();
 
 
+    }
+
+    private void DuplicateEmail(final String email){
+        if(memberRepository.existsByEmail(email)){
+            throw new DuplicateException(ErrorCode.DUPLICATE_EMAIL);
+        }
     }
 
 }

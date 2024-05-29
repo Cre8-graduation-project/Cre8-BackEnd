@@ -74,13 +74,14 @@ class MemberControllerTest {
     }
 
     private MemberSignUpRequestDto memberSignUpRequestDto(final String nickName, final String password, final Sex sex, final LocalDate birthDay,
-             final String email, final String name){
+             final String loginId, final String name,final String email){
         return MemberSignUpRequestDto.builder()
                 .nickName(nickName)
                 .password(password)
+                .email(email)
                 .sex(sex)
                 .birthDay(birthDay)
-                .email(email)
+                .loginId(loginId)
                 .name(name)
                 .build();
     }
@@ -96,7 +97,7 @@ class MemberControllerTest {
         final ResultActions resultActions = mockMvc.perform(
                 MockMvcRequestBuilders.post(MEMBER_SIGNUP_URL)
                         .content(gson.toJson(memberSignUpRequestDto("dionisos198","password",
-                                Sex.M,LocalDate.of(2023,1,1),"dionisos198@naver.com","이진우")))
+                                Sex.M,LocalDate.of(2023,1,1),"dionisos198","이진우","dionisos198@naver.com")))
                         .contentType(MediaType.APPLICATION_JSON)
         );
 
@@ -104,9 +105,10 @@ class MemberControllerTest {
 
     }
 
+
     @Test
-    @DisplayName("비정상적인 멤버 데이터 저장 상황-이메일")
-    public void 멤버데이터_비정상_저장_이메일() throws Exception {
+    @DisplayName("비정상적인 멤버 데이터 저장 상황-로그인 아이디")
+    public void 멤버데이터_비정상_저장_로그인_아이디() throws Exception {
         //given
 
 
@@ -115,17 +117,20 @@ class MemberControllerTest {
         final ResultActions resultActions = mockMvc.perform(
                 MockMvcRequestBuilders.post(MEMBER_SIGNUP_URL)
                         .content(gson.toJson(memberSignUpRequestDto("dionisos198","password",
-                                Sex.M,LocalDate.of(2023,1,1),"dionisos198naver.com","이진우")))
+                                Sex.M,LocalDate.of(2023,1,1),"dionisos198","이진우","dionisos198naver.com")))
                         .contentType(MediaType.APPLICATION_JSON)
         );
 
 
         resultActions.andExpect(status().isBadRequest())
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON))
-                .andExpect(jsonPath("$.message").value("[email](은)는 이메일 형식이 올바르지 않습니다 입력된 값: [dionisos198naver.com]"));
+                .andExpect(jsonPath("$.message").value("[email](은)는 이메일 형식에 맞지 않습니다 입력된 값: [dionisos198naver.com]"));
 
 
     }
+
+
+
 
     @Test
     @DisplayName("비정상적인 멤버 데이터 저장 상황-남과 여 둘중에 하나가 아닐 때 ")
@@ -138,14 +143,14 @@ class MemberControllerTest {
         final ResultActions resultActions = mockMvc.perform(
                 MockMvcRequestBuilders.post(MEMBER_SIGNUP_URL)
                         .content(gson.toJson(memberSignUpRequestDto("dionisos198","password",
-                                null,LocalDate.of(2023,1,1),"dionisos198@naver.com","이진우")))
+                                null,LocalDate.of(2023,1,1),"dionisos198","이진우","dionisos198@naver.com")))
                         .contentType(MediaType.APPLICATION_JSON)
         );
 
 
         resultActions.andExpect(status().isBadRequest())
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON))
-                .andExpect(jsonPath("$.message").value("[sex](은)는 M 또는 W 둘 중 하나만 입력이 가능합니다 입력된 값: [null]"));
+                .andExpect(jsonPath("$.message").value("[sex](은)는 남자와 여자 둘중에 하나를 선택해주세요 입력된 값: [null]"));
 
 
     }

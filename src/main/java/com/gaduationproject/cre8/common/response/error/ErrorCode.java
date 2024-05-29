@@ -35,7 +35,8 @@ public enum ErrorCode {
      */
 
     DUPLICATE_EMAIL("이메일이 중복되었습니다"),
-    DUPLICATE_NICKNAME("닉네임이 중복되었습니다");
+    DUPLICATE_NICKNAME("닉네임이 중복되었습니다"),
+    DUPLICATE_LOGIN_ID("이미 아이디가 존재합니다");
 
 
 
