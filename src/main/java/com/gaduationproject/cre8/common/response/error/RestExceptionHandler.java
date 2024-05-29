@@ -11,10 +11,12 @@ import com.gaduationproject.cre8.common.response.error.exception.UnauthorizedExc
 import jakarta.servlet.http.HttpServletRequest;
 import java.io.PrintWriter;
 import java.io.StringWriter;
+import java.time.format.DateTimeParseException;
 import lombok.extern.slf4j.Slf4j;
 import org.slf4j.MDC;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.http.converter.HttpMessageNotReadableException;
 import org.springframework.validation.BindException;
 import org.springframework.validation.FieldError;
 import org.springframework.web.bind.MethodArgumentNotValidException;
@@ -25,6 +27,8 @@ import org.springframework.web.bind.annotation.RestControllerAdvice;
 @Slf4j
 @RestControllerAdvice
 public class RestExceptionHandler {
+
+    private static final String DATE_TIME_FORMAT = "날짜 형식이 올바른지 확인해주세요";
 
     // Custom Bad Request Error
     @ExceptionHandler(BadRequestException.class)
@@ -137,6 +141,13 @@ public class RestExceptionHandler {
         logInfo(request, exception.getMessage());
         return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
                 .body(BaseResponse.createError(exception.getMessage()));
+    }
+
+    @ExceptionHandler(DateTimeParseException.class)
+    public ResponseEntity<BaseResponse<?>> handleTypeMismatchDateTimeFormatExceptions(DateTimeParseException ex){
+
+
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(BaseResponse.createError(DATE_TIME_FORMAT));
     }
 
     private void logInfo(HttpServletRequest request, String message) {
