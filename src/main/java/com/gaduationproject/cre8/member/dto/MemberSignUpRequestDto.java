@@ -47,11 +47,13 @@ public class MemberSignUpRequestDto {
     private LocalDate birthDay;
 
     @Email(message = "이메일 형식에 맞지 않습니다")
+    @NotEmpty(message = "이메일을 입력해 주세요")
     private String email;
 
     @Builder
     public MemberSignUpRequestDto(String name,String loginId, String password, Sex sex,String nickName,
              LocalDate birthDay, String email){
+
         this.name = name;
         this.loginId = loginId;
         this.password = password;
@@ -59,7 +61,6 @@ public class MemberSignUpRequestDto {
         this.nickName = nickName;
         this.birthDay = birthDay;
         this.email = email;
-
     }
 
 }
