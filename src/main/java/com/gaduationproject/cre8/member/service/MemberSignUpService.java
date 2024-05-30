@@ -2,7 +2,6 @@ package com.gaduationproject.cre8.member.service;
 
 import com.gaduationproject.cre8.common.response.error.ErrorCode;
 import com.gaduationproject.cre8.common.response.error.exception.DuplicateException;
-import com.gaduationproject.cre8.member.dto.LoginIdCheckRequestDto;
 import com.gaduationproject.cre8.member.dto.LoginIdCheckResponseDto;
 import com.gaduationproject.cre8.member.dto.MemberSignUpRequestDto;
 import com.gaduationproject.cre8.member.entity.Member;
@@ -59,9 +58,9 @@ public class MemberSignUpService {
         }
     }
 
-    public LoginIdCheckResponseDto checkExistsLoginId(final LoginIdCheckRequestDto loginIdCheckRequestDto) {
+    public LoginIdCheckResponseDto checkExistsLoginId(final String loginId) {
 
-        checkDuplicateLoginId(loginIdCheckRequestDto.getLoginId());
+        checkDuplicateLoginId(loginId);
 
         return LoginIdCheckResponseDto.builder().loginIdChecked(true).build();
     }
