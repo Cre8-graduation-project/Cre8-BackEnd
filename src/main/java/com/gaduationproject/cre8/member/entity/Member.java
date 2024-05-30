@@ -34,6 +34,9 @@ public class Member {
     @Column(length = 50,unique = true,updatable = false,nullable = false)
     private String email;
 
+    @Column(length = 20,unique = true,nullable = false)
+    private String loginId;
+
     @Column(nullable = false)
     private String password;
 
@@ -52,7 +55,7 @@ public class Member {
 
 
     @Builder
-    public Member(String name, String email, String password, String nickName,
+    public Member(String name, String loginId, String email, String password, String nickName,
             LocalDate birthDay, Sex sex) {
         this.name = name;
         this.email = email;
@@ -60,5 +63,6 @@ public class Member {
         this.nickName = nickName;
         this.birthDay = birthDay;
         this.sex = sex;
+        this.loginId = loginId;
     }
 }

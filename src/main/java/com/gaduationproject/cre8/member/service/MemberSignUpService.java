@@ -2,6 +2,7 @@ package com.gaduationproject.cre8.member.service;
 
 import com.gaduationproject.cre8.common.response.error.ErrorCode;
 import com.gaduationproject.cre8.common.response.error.exception.DuplicateException;
+import com.gaduationproject.cre8.member.dto.LoginIdCheckResponseDto;
 import com.gaduationproject.cre8.member.dto.MemberSignUpRequestDto;
 import com.gaduationproject.cre8.member.entity.Member;
 import com.gaduationproject.cre8.member.repository.MemberRepository;
@@ -19,16 +20,19 @@ public class MemberSignUpService {
     @Transactional
     public Long saveMember(final MemberSignUpRequestDto memberSignUpRequestDto){
 
-        if(memberRepository.existsByEmail(memberSignUpRequestDto.getEmail())){
-            throw new DuplicateException(ErrorCode.DUPLICATE_EMAIL);
-        }
+        checkDuplicateLoginId(memberSignUpRequestDto.getLoginId());
 
         if(memberRepository.existsByNickName(memberSignUpRequestDto.getNickName())){
             throw new DuplicateException(ErrorCode.DUPLICATE_NICKNAME);
         }
 
+        checkDuplicateEmail(memberSignUpRequestDto.getEmail());
+
+
+
         Member member = Member.builder()
                 .email(memberSignUpRequestDto.getEmail())
+                .loginId(memberSignUpRequestDto.getLoginId())
                 .name(memberSignUpRequestDto.getName())
                 .sex(memberSignUpRequestDto.getSex())
                 .password(memberSignUpRequestDto.getPassword())
@@ -42,4 +46,22 @@ public class MemberSignUpService {
 
     }
 
+    private void checkDuplicateEmail(final String email){
+        if(memberRepository.existsByEmail(email)){
+            throw new DuplicateException(ErrorCode.DUPLICATE_EMAIL);
+        }
+    }
+
+    private void checkDuplicateLoginId(final String loginId){
+        if(memberRepository.existsByLoginId(loginId)){
+            throw new DuplicateException(ErrorCode.DUPLICATE_LOGIN_ID);
+        }
+    }
+
+    public LoginIdCheckResponseDto checkExistsLoginId(final String loginId) {
+
+        checkDuplicateLoginId(loginId);
+
+        return LoginIdCheckResponseDto.builder().loginIdChecked(true).build();
+    }
 }

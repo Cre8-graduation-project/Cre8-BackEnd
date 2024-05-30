@@ -135,6 +135,34 @@ class MemberSignUpServiceTest {
 
     }
 
+    @Test
+    @DisplayName("회원 저장 로직- 아이디가 중복되었을 때 ")
+    public void 회원_저장_아이디_중복_예외(){
+        //given
+        Member member = getMember();
+
+        //when
+        when(memberRepository.existsByLoginId(eq(member.getLoginId()))).thenReturn(Boolean.TRUE);
+        MemberSignUpRequestDto memberSignUpRequestDto = MemberSignUpRequestDto
+                .builder()
+                .name("이진우1")
+                .email("dionisos1981@naver.com")
+                .password("password1")
+                .sex(Sex.M)
+                .nickName("dionisos198")
+                .birthDay(LocalDate.of(2023,1,2))
+                .build();
+
+        //then
+        Exception e = org.junit.jupiter.api.Assertions.assertThrows(DuplicateException.class,()->{
+            memberSignUpService.saveMember(memberSignUpRequestDto);
+        });
+
+        assertEquals("이미 아이디가 존재합니다", e.getMessage());
+
+    }
+
+
 
 
 

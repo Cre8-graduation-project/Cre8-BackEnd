@@ -30,6 +30,7 @@ class MemberRepositoryTest {
 
         //given
         Member member = Member.builder()
+                .loginId("dionisos198")
                 .nickName("dionisos198")
                 .password("password")
                 .sex(Sex.M)
@@ -52,6 +53,7 @@ class MemberRepositoryTest {
         //given
         Member member = Member.builder()
                 .nickName("dionisos198")
+                .loginId("dionisos198")
                 .password("password")
                 .sex(Sex.M)
                 .birthDay(LocalDate.of(2023,3,1))
