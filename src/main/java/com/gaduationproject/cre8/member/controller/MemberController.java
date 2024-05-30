@@ -37,13 +37,13 @@ public class MemberController {
         return ResponseEntity.status(HttpStatus.CREATED).build();
     }
 
-    @GetMapping(value = "/login-id/check")
+    @GetMapping(value = "/check")
     @Operation(summary = "중복 되는 로그인 아이디가 있는지 체크 api",description = "중복되는 로그인 아이디가 있는지 확인합니다")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200",description = "중복되는 로그인 아이디가 없는 경우"),
             @ApiResponse(responseCode = "400",description = "중복되는 로그인 아이디가 있는 경우")
     })
-    public ResponseEntity<BaseResponse<LoginIdCheckResponseDto>> checkExistsLoginId(@RequestParam("loginId") final
+    public ResponseEntity<BaseResponse<LoginIdCheckResponseDto>> checkExistsLoginId(@RequestParam("login-id") final
             String loginId){
 
         return ResponseEntity.ok(BaseResponse.createSuccess(memberSignUpService.checkExistsLoginId(loginId)));
