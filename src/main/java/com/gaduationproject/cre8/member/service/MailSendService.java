@@ -4,14 +4,14 @@ import com.gaduationproject.cre8.common.response.error.ErrorCode;
 import com.gaduationproject.cre8.common.response.error.exception.BadRequestException;
 import com.gaduationproject.cre8.common.response.error.exception.DuplicateException;
 import com.gaduationproject.cre8.common.response.error.exception.InternalServerErrorException;
-import com.gaduationproject.cre8.member.dto.EmailCheckRequestDto;
-import com.gaduationproject.cre8.member.dto.EmailCheckResponseDto;
+import com.gaduationproject.cre8.member.dto.EmailCheckAuthNumRequestDto;
+import com.gaduationproject.cre8.member.dto.EmailCheckAuthNumResponseDto;
 import com.gaduationproject.cre8.member.dto.EmailRequestDto;
 import com.gaduationproject.cre8.member.repository.MemberRepository;
 import java.time.Duration;
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.core.RedisTemplate;
+import org.springframework.mail.MailException;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.mail.javamail.MimeMessageHelper;
 import org.springframework.stereotype.Service;
@@ -48,9 +48,15 @@ public class MailSendService {
 
         String authNumber = makeRandomNumber();
 
-        MimeMessage message = javaMailSender.createMimeMessage();
-        setMiMeMessageHelperForMailFormat(message, emailRequestDto.getEmail(), authNumber);
-        javaMailSender.send(message);
+        try{
+            MimeMessage message = javaMailSender.createMimeMessage();
+            setMiMeMessageHelperForMailFormat(message, emailRequestDto.getEmail(), authNumber);
+            javaMailSender.send(message);
+        }
+        catch (Exception e){
+            throw new InternalServerErrorException(ErrorCode.MAIL_SERVER_ERROR);
+        }
+
 
         redisTemplate.opsForValue().set(emailRequestDto.getEmail(),authNumber,Duration.ofSeconds(CAN_INPUT_TIME_AFTER_SEND_EMAIL));
 
@@ -68,32 +74,29 @@ public class MailSendService {
         return randomNumber;
     }
 
-    public void setMiMeMessageHelperForMailFormat(final MimeMessage message,final String email,final String authNumber){
+    public void setMiMeMessageHelperForMailFormat(final MimeMessage message,final String email,final String authNumber)
+            throws MessagingException {
 
-        try{
-            MimeMessageHelper helper = new MimeMessageHelper(message,true,encodingType);
-            helper.setFrom(mailSendFrom);
-            helper.setTo(email);
-            helper.setSubject(mailTitle);
-            helper.setText(mailContentsAuthNumberBefore+authNumber+mailContentsAuthNumberAfter,true);
-        }
-        catch (MessagingException e){
-             throw new InternalServerErrorException(ErrorCode.MAIL_SERVER_ERROR);
-        }
-
-
+        MimeMessageHelper helper = new MimeMessageHelper(message,true,encodingType);
+        helper.setFrom(mailSendFrom);
+        helper.setTo(email);
+        helper.setSubject(mailTitle);
+        helper.setText(mailContentsAuthNumberBefore+authNumber+mailContentsAuthNumberAfter,true);
+        
     }
 
-    public EmailCheckResponseDto checkAuthNum(final EmailCheckRequestDto emailCheckRequestDto){
+    public EmailCheckAuthNumResponseDto checkAuthNum(final EmailCheckAuthNumRequestDto emailCheckAuthNumRequestDto){
 
 
-        if(!redisTemplate.opsForValue().get(emailCheckRequestDto.getEmail()).equals(emailCheckRequestDto.getAuthNum())){
+        if(redisTemplate.opsForValue().get(emailCheckAuthNumRequestDto.getEmail())==null||
+                !redisTemplate.opsForValue().get(emailCheckAuthNumRequestDto.getEmail()).equals(
+                emailCheckAuthNumRequestDto.getAuthNum())){
             throw new BadRequestException(ErrorCode.NOT_VALIDATE_EMAIL_AUTH_NUMBER);
         }
 
-        redisTemplate.delete(emailCheckRequestDto.getEmail());
+        redisTemplate.delete(emailCheckAuthNumRequestDto.getEmail());
 
-        return EmailCheckResponseDto.builder().emailChecked(true).build();
+        return EmailCheckAuthNumResponseDto.builder().emailChecked(true).build();
     }
 
 }
