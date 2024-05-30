@@ -12,6 +12,7 @@ import jakarta.servlet.http.HttpServletRequest;
 import java.io.PrintWriter;
 import java.io.StringWriter;
 import java.time.format.DateTimeParseException;
+import javax.mail.MessagingException;
 import lombok.extern.slf4j.Slf4j;
 import org.slf4j.MDC;
 import org.springframework.http.HttpStatus;
@@ -149,6 +150,7 @@ public class RestExceptionHandler {
 
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(BaseResponse.createError(DATE_TIME_FORMAT));
     }
+
 
     private void logInfo(HttpServletRequest request, String message) {
         log.info("{} {} : {} (traceId: {})",
