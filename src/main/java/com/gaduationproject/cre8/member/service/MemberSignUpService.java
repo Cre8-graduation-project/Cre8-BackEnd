@@ -2,6 +2,8 @@ package com.gaduationproject.cre8.member.service;
 
 import com.gaduationproject.cre8.common.response.error.ErrorCode;
 import com.gaduationproject.cre8.common.response.error.exception.DuplicateException;
+import com.gaduationproject.cre8.member.dto.LoginIdCheckRequestDto;
+import com.gaduationproject.cre8.member.dto.LoginIdCheckResponseDto;
 import com.gaduationproject.cre8.member.dto.MemberSignUpRequestDto;
 import com.gaduationproject.cre8.member.entity.Member;
 import com.gaduationproject.cre8.member.repository.MemberRepository;
@@ -19,15 +21,13 @@ public class MemberSignUpService {
     @Transactional
     public Long saveMember(final MemberSignUpRequestDto memberSignUpRequestDto){
 
-        if(memberRepository.existsByLoginId(memberSignUpRequestDto.getLoginId())){
-            throw new DuplicateException(ErrorCode.DUPLICATE_LOGIN_ID);
-        }
+        checkDuplicateLoginId(memberSignUpRequestDto.getLoginId());
 
         if(memberRepository.existsByNickName(memberSignUpRequestDto.getNickName())){
             throw new DuplicateException(ErrorCode.DUPLICATE_NICKNAME);
         }
 
-        DuplicateEmail(memberSignUpRequestDto.getEmail());
+        checkDuplicateEmail(memberSignUpRequestDto.getEmail());
 
 
 
@@ -47,10 +47,22 @@ public class MemberSignUpService {
 
     }
 
-    private void DuplicateEmail(final String email){
+    private void checkDuplicateEmail(final String email){
         if(memberRepository.existsByEmail(email)){
             throw new DuplicateException(ErrorCode.DUPLICATE_EMAIL);
         }
     }
 
+    private void checkDuplicateLoginId(final String loginId){
+        if(memberRepository.existsByLoginId(loginId)){
+            throw new DuplicateException(ErrorCode.DUPLICATE_LOGIN_ID);
+        }
+    }
+
+    public LoginIdCheckResponseDto checkExistsLoginId(final LoginIdCheckRequestDto loginIdCheckRequestDto) {
+
+        checkDuplicateLoginId(loginIdCheckRequestDto.getLoginId());
+
+        return LoginIdCheckResponseDto.builder().loginIdChecked(true).build();
+    }
 }

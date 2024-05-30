@@ -1,11 +1,15 @@
 package com.gaduationproject.cre8.member.controller;
 
+import com.gaduationproject.cre8.common.response.BaseResponse;
+import com.gaduationproject.cre8.member.dto.LoginIdCheckRequestDto;
+import com.gaduationproject.cre8.member.dto.LoginIdCheckResponseDto;
 import com.gaduationproject.cre8.member.dto.MemberSignUpRequestDto;
 import com.gaduationproject.cre8.member.service.MemberSignUpService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -23,6 +27,13 @@ public class MemberController {
         memberSignUpService.saveMember(memberSignUpRequestDto);
 
         return ResponseEntity.status(HttpStatus.CREATED).build();
+    }
+
+    @GetMapping("/login-id/check")
+    public ResponseEntity<BaseResponse<LoginIdCheckResponseDto>> checkExistsLoginId(@Valid @RequestBody final
+            LoginIdCheckRequestDto loginIdCheckRequestDto){
+
+        return ResponseEntity.ok(BaseResponse.createSuccess(memberSignUpService.checkExistsLoginId(loginIdCheckRequestDto)));
     }
 
 }
