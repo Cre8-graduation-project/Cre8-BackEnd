@@ -4,12 +4,12 @@ import lombok.Builder;
 import lombok.Getter;
 
 @Getter
-public class EmailCheckResponseDto {
+public class EmailCheckAuthNumResponseDto {
 
     private boolean emailChecked;
 
     @Builder
-    public EmailCheckResponseDto(boolean emailChecked){
+    public EmailCheckAuthNumResponseDto(boolean emailChecked){
         this.emailChecked = emailChecked;
     }
 }
