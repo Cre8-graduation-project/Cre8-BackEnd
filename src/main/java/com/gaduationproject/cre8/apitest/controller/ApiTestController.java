@@ -6,7 +6,9 @@ import com.gaduationproject.cre8.apitest.dto.RedisTestRequestDto;
 import com.gaduationproject.cre8.apitest.dto.TestRequestDto;
 import com.gaduationproject.cre8.apitest.repository.RedisTestRepository;
 import com.gaduationproject.cre8.apitest.repository.TestRepository;
+import com.gaduationproject.cre8.auth.interfaces.CurrentMember;
 import com.gaduationproject.cre8.common.response.BaseResponse;
+import com.gaduationproject.cre8.member.entity.Member;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
@@ -55,6 +57,12 @@ public class ApiTestController {
     public ResponseEntity<BaseResponse<List<RedisTest>>> redisShowTest() {
         return ResponseEntity.ok(
                 BaseResponse.createSuccess((List<RedisTest>) redisTestRepository.findAll()));
+    }
+
+    @GetMapping("/test/login")
+    @Operation(summary = "로그인 테스트 확인", description = "로그인 되어 있는지 판단합니다")
+    public ResponseEntity<String> checkLogin(@CurrentMember Member member) {
+        return ResponseEntity.ok("로그인 성공을 축하드립니다 당신의 이름은 "+member.getName());
     }
 
 
