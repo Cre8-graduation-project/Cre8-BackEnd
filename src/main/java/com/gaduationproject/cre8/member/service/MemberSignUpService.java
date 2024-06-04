@@ -7,6 +7,7 @@ import com.gaduationproject.cre8.member.dto.MemberSignUpRequestDto;
 import com.gaduationproject.cre8.member.entity.Member;
 import com.gaduationproject.cre8.member.repository.MemberRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -15,6 +16,8 @@ import org.springframework.transaction.annotation.Transactional;
 @Transactional(readOnly = true)
 public class MemberSignUpService {
     private final MemberRepository memberRepository;
+    private final BCryptPasswordEncoder passwordEncoder;
+
 
 
     @Transactional
@@ -35,7 +38,7 @@ public class MemberSignUpService {
                 .loginId(memberSignUpRequestDto.getLoginId())
                 .name(memberSignUpRequestDto.getName())
                 .sex(memberSignUpRequestDto.getSex())
-                .password(memberSignUpRequestDto.getPassword())
+                .password(passwordEncoder.encode(memberSignUpRequestDto.getPassword()))
                 .nickName(memberSignUpRequestDto.getNickName())
                 .birthDay(memberSignUpRequestDto.getBirthDay())
                 .build();
