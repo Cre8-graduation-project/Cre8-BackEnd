@@ -19,6 +19,7 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.test.util.ReflectionTestUtils;
 
 import static org.mockito.ArgumentMatchers.any;
@@ -34,6 +35,8 @@ class MemberSignUpServiceTest {
     @Mock
     MemberRepository memberRepository;
 
+    @Mock
+    BCryptPasswordEncoder bCryptPasswordEncoder;
 
     private Member getMember(){
         Member member = Member.builder()
@@ -60,6 +63,7 @@ class MemberSignUpServiceTest {
 
         //when
         when(memberRepository.save(any(Member.class))).thenReturn(member);
+        when(bCryptPasswordEncoder.encode(any(String.class))).thenReturn("sdfksdflskjdflsdj");
         MemberSignUpRequestDto memberSignUpRequestDto = MemberSignUpRequestDto
                 .builder()
                         .name("이진우")
