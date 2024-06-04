@@ -53,6 +53,10 @@ public class Member {
     @JoinColumn(name = "profile_id")
     private Profile profile;
 
+    @Column(nullable = false)
+    @Enumerated(EnumType.STRING)
+    private Authority authority;
+
 
     @Builder
     public Member(String name, String loginId, String email, String password, String nickName,
@@ -64,5 +68,7 @@ public class Member {
         this.birthDay = birthDay;
         this.sex = sex;
         this.loginId = loginId;
+        authority = Authority.NORMAL;
     }
+
 }
