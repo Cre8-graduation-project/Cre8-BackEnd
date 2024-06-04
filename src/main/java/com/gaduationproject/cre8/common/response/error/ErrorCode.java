@@ -13,6 +13,10 @@ public enum ErrorCode {
      */
     BAD_REQUEST("잘못된 요청입니다."),
     NOT_VALIDATE_EMAIL_AUTH_NUMBER("유효한 인증번호가 아닙니다"),
+    LOGIN_ID_NOT_MATCH("아이디를 다시 확인해주세요"),
+    PASSWORD_NOT_MATCH("비밀번호를 다시 확인해주세요"),
+    ACCESS_TOKEN_NOT_MATCH("Access Token 을 다시 확인해주세요"),
+    REFRESH_TOKEN_NOT_MATCH("Refresh Token을  을 다시 확인해주세요"),
 
 
     /**
@@ -29,6 +33,7 @@ public enum ErrorCode {
      */
     MESSAGE_NOT_FOUND("자원을 찾지 못함"),
     EMAIL_AUTH_EXPIRED("이메일 인증을 다시 시도해주세요"),
+
 
     /**
      * 405 Method Not Allowed
