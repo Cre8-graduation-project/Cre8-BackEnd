@@ -1,6 +1,7 @@
 package com.gaduationproject.cre8.member.entity;
 
 import com.gaduationproject.cre8.member.type.Sex;
+import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
@@ -49,8 +50,8 @@ public class Member {
     @Enumerated(EnumType.STRING)
     private Sex sex;
 
-    @OneToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "profile_id")
+    @OneToOne(fetch = FetchType.LAZY,cascade = CascadeType.PERSIST)
+    @JoinColumn(name = "profile_id",nullable = false)
     private Profile profile;
 
     @Column(nullable = false)
@@ -60,7 +61,7 @@ public class Member {
 
     @Builder
     public Member(String name, String loginId, String email, String password, String nickName,
-            LocalDate birthDay, Sex sex) {
+            LocalDate birthDay, Sex sex , Profile profile) {
         this.name = name;
         this.email = email;
         this.password = password;
@@ -68,7 +69,8 @@ public class Member {
         this.birthDay = birthDay;
         this.sex = sex;
         this.loginId = loginId;
-        authority = Authority.NORMAL;
+        this.authority = Authority.NORMAL;
+        this.profile = profile;
     }
 
 }
