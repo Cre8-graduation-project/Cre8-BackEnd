@@ -6,6 +6,7 @@ import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import lombok.AccessLevel;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
@@ -25,6 +26,16 @@ public class Profile {
     private String youtubeLink;
 
     private String personalLink;
+
+    private String twitterLink;
+
+    @Builder
+    public Profile(String personalStatement,String youtubeLink,String personalLink,String twitterLink){
+        this.personalStatement = personalStatement;
+        this.youtubeLink = youtubeLink;
+        this.personalLink = personalLink;
+        this.twitterLink = twitterLink;
+    }
 
 
 
