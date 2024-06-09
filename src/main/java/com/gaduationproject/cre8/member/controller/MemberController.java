@@ -7,6 +7,7 @@ import com.gaduationproject.cre8.member.service.MemberSignUpService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -21,6 +22,7 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/api/v1/members")
+@Tag(name = "사용자 관련 용도 컨트롤러", description = "사용자의 구체적인 회원가입 과정에서 사용되는 활동을 모아두는 컨트롤러입니다.")
 public class MemberController {
 
     private final MemberSignUpService memberSignUpService;

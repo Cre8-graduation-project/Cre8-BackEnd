@@ -4,6 +4,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.*;
 
 import com.gaduationproject.cre8.member.entity.Member;
+import com.gaduationproject.cre8.member.entity.Profile;
 import com.gaduationproject.cre8.member.type.Sex;
 import jakarta.validation.ConstraintViolationException;
 import java.time.LocalDate;
@@ -37,6 +38,12 @@ class MemberRepositoryTest {
                 .birthDay(LocalDate.of(2023,3,1))
                 .email("dionisos198@naver.com")
                 .name("jinu Yi")
+                .profile(Profile.builder()
+                        .twitterLink(null)
+                        .personalLink(null)
+                        .youtubeLink(null)
+                        .personalStatement(null)
+                        .build())
                 .build();
 
         //when
@@ -59,6 +66,12 @@ class MemberRepositoryTest {
                 .birthDay(LocalDate.of(2023,3,1))
                 .email("dionisos198@naver.com")
                 .name("jinu Yi")
+                .profile(Profile.builder()
+                        .twitterLink(null)
+                        .personalLink(null)
+                        .youtubeLink(null)
+                        .personalStatement(null)
+                        .build())
                 .build();
 
         Member findMember = memberRepository.save(member);
