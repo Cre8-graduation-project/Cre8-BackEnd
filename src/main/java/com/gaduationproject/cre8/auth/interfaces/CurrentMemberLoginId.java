@@ -8,7 +8,7 @@ import org.springframework.security.core.annotation.AuthenticationPrincipal;
 
 @Target({ElementType.PARAMETER, ElementType.TYPE})
 @Retention(RetentionPolicy.RUNTIME)
-@AuthenticationPrincipal(expression = "#this == 'anonymousUser' ? null : #this.getMember()")
+@AuthenticationPrincipal(expression = "#this == 'anonymousUser' ? null : #this.getUsername()")
 public @interface CurrentMemberLoginId {
 
 }
