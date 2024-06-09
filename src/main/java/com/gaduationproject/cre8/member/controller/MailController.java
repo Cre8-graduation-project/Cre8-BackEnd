@@ -8,6 +8,7 @@ import com.gaduationproject.cre8.member.service.MailSendService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -20,6 +21,7 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/api/v1/mail")
+@Tag(name = "메일 관련 용도 컨트롤러", description = "메일과 관련된 활동을 모아두는 컨트롤러입니다.")
 public class MailController {
 
     private final MailSendService mailService;

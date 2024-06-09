@@ -11,6 +11,10 @@ import com.gaduationproject.cre8.member.dto.ProfileResponseDto;
 import com.gaduationproject.cre8.member.entity.Member;
 import com.gaduationproject.cre8.member.repository.MemberRepository;
 import com.gaduationproject.cre8.member.service.ProfileService;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.responses.ApiResponses;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import java.util.Optional;
 import lombok.RequiredArgsConstructor;
@@ -29,6 +33,7 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/api/v1/profiles")
+@Tag(name = "프로필 관련 용도 컨트롤러", description = "프로필과 관련된 활동을 모아두는 컨트롤러입니다.")
 public class ProfileController {
 
     private final ProfileService profileService;
@@ -36,12 +41,20 @@ public class ProfileController {
 
 
     @GetMapping
+    @Operation(summary = "자신의 Profile을 조회",description = "자신의 profile을 조회해볼 수 있습니다")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200",description = "성공적 반환")
+    })
     public ResponseEntity<BaseResponse<ProfileResponseDto>> showProfile(@CurrentMemberLoginId String loginId){
 
         return ResponseEntity.ok(BaseResponse.createSuccess(profileService.showMyProfile(loginId)));
     }
 
     @PutMapping
+    @Operation(summary = "자신의 Profile을 수정 및 입력",description = "자신의 profile을 수정 및 입력 해볼 수 있습니다")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200",description = "성공적 수정")
+    })
     public ResponseEntity<Void> changeMyProfile(@CurrentMemberLoginId String loginId,@RequestBody
             ProfileEditRequestDto profileEditRequestDto){
 
