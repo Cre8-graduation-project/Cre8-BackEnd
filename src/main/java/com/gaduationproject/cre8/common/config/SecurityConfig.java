@@ -49,6 +49,7 @@ public class SecurityConfig {
                         requests.
                                 requestMatchers(HttpMethod.GET,"/post/*").permitAll()
                                 .requestMatchers("/test/login").hasAuthority(Authority.NORMAL.toString())
+                                .requestMatchers("/api/v1/profiles").hasAuthority(Authority.NORMAL.toString())
                                // .requestMatchers("/post/*").hasAuthority("GENERAL")
                                 .anyRequest().permitAll())
 
