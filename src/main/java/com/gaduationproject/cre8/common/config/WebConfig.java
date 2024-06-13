@@ -15,7 +15,7 @@ public class WebConfig implements WebMvcConfigurer {
                 ,"http://testcre8.co.kr","https://testcre8.co.kr","https://localhost:3000") // cors를 허용할 도메인. 제한을 모두 해제하려면 "**"
                 .allowedMethods("GET", "POST", "PUT", "PATCH",
                         "DELETE", "OPTIONS") // cors를 허용할 method + DELETE 추가
-                .allowedHeaders("Content-Type", "Authorization")
+                .allowedHeaders("Content-Type", "Authorization","accessToken")
                 .exposedHeaders("Authorization","Set-Cookie")
                 .allowCredentials(true);
 
