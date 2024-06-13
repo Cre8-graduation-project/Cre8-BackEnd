@@ -54,7 +54,7 @@ public class AuthService {
         saveLoginProcessAtRedis(authentication.getName(),tokenDto);
 
         return new TokenResponseDto(tokenDto.getType(),tokenDto.getAccessToken(),
-                tokenDto.getRefreshToken(),tokenDto.getAccessTokenValidationTime());
+                makeResponseCookie(tokenDto.getRefreshToken(),tokenDto.getRefreshTokenValidationTime()),tokenDto.getAccessTokenValidationTime());
 
     }
 
@@ -72,7 +72,7 @@ public class AuthService {
         saveLoginProcessAtRedis(authentication.getName(),tokenDto);
 
         return new TokenReIssueResponseDto(tokenDto.getType(),tokenDto.getAccessToken(),
-                makeResponseCookie(tokenDto.getRefreshToken()),tokenDto.getAccessTokenValidationTime());
+                makeResponseCookie(tokenDto.getRefreshToken(),tokenDto.getRefreshTokenValidationTime()),tokenDto.getAccessTokenValidationTime());
     }
 
     @Transactional
@@ -95,12 +95,12 @@ public class AuthService {
 
     }
 
-    private ResponseCookie makeResponseCookie(String refreshToken){
+    private ResponseCookie makeResponseCookie(String refreshToken,Long refreshTokenValidationTime){
         return  ResponseCookie.from("refreshToken",refreshToken)
                 .httpOnly(true)
-                .secure(false)
+                .secure(true)
                 .path("/")
-                .maxAge(60)
+                .maxAge(refreshTokenValidationTime)
                 .build();
     }
 
