@@ -10,11 +10,11 @@ public class TokenResponseWithUserIdDto {
     private String accessToken;
     private ResponseCookie responseCookie;
     private Long accessTokenExpirationTime;
-    private Long userId;
+    private String userId;
 
     @Builder
     public TokenResponseWithUserIdDto(String grantType,String accessToken,ResponseCookie responseCookie, Long accessTokenExpirationTime,
-            Long userId){
+            String userId){
         this.grantType = grantType;
         this.accessToken = accessToken;
         this.responseCookie = responseCookie;
