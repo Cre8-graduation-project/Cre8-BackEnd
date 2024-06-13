@@ -29,6 +29,7 @@ import org.springframework.web.bind.annotation.RestController;
 public class AuthController {
 
     private final AuthService authService;
+    private static final String accessTokenHeader = "Authorization";
 
 
     @PostMapping("/login")
@@ -37,13 +38,14 @@ public class AuthController {
             @ApiResponse(responseCode = "201",description = "로그인 성공"),
             @ApiResponse(responseCode = "400",description = "아이디 or 비밀번호 틀렸을 때")
     })
-    public ResponseEntity<BaseResponse<TokenResponseDto>> login(@RequestBody @Valid final SignInRequestDto memberSignInRequestDto){
+    public ResponseEntity<Void> login(@RequestBody @Valid final SignInRequestDto memberSignInRequestDto){
 
         TokenResponseDto tokenResponseDto = authService.login(memberSignInRequestDto);
 
         return ResponseEntity.status(HttpStatus.CREATED)
-           //     .header(HttpHeaders.SET_COOKIE, tokenResponseDto.getResponseCookie().toString())
-                .body(BaseResponse.createSuccess(tokenResponseDto));
+                .header(accessTokenHeader,tokenResponseDto.getAccessToken())
+                .header(HttpHeaders.SET_COOKIE, tokenResponseDto.getResponseCookie().toString())
+                .build();
     }
 
 
