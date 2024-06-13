@@ -57,9 +57,8 @@ public class ProfileService {
     private void changeUserInfo(ProfileWithUserInfoEditRequestDto profileWithUserInfoEditRequestDto,
             Member member) {
 
-        System.out.println("안녕"+ profileWithUserInfoEditRequestDto.getMultipartFile());
-
-        if(!checkDefaultProfileUrl(member.getAccessUrl())){
+        if(!checkDefaultProfileUrl(member.getAccessUrl()) && !checkInputMultiPartFileNull(
+                profileWithUserInfoEditRequestDto.getMultipartFile())){
             s3ImageService.deleteImage(member.getAccessUrl());
         }
 
@@ -78,12 +77,20 @@ public class ProfileService {
     }
 
     private String getAccessUrl(MultipartFile multipartFile,Member member){
-        if(multipartFile==null || multipartFile.isEmpty()){
+        if(checkInputMultiPartFileNull(multipartFile)){
             return member.getAccessUrl();
         }
 
         return s3ImageService.saveImage(multipartFile,MEMBER_PROFILE_IMAGE,
                 multipartFile.getOriginalFilename());
+    }
+
+    private boolean checkInputMultiPartFileNull(MultipartFile multipartFile){
+        if(multipartFile==null || multipartFile.isEmpty()){
+            return true;
+        }
+
+        return false;
     }
 
     private Member getLoginMember(final String loginId){
