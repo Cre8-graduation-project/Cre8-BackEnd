@@ -35,7 +35,7 @@ public class ProfileController {
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200",description = "성공적 반환")
     })
-    public ResponseEntity<BaseResponse<ProfileWithUserInfoResponseDto>> showProfile(@PathVariable("memberId") final Long memberId){
+    public ResponseEntity<BaseResponse<ProfileWithUserInfoResponseDto>> showProfile(@PathVariable("memberId") final String memberId){
 
         return ResponseEntity.ok(BaseResponse.createSuccess(profileService.showMyProfile(memberId)));
     }

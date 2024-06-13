@@ -26,9 +26,9 @@ public class ProfileService {
 
 
 
-    public ProfileWithUserInfoResponseDto showMyProfile(final Long memberId){
+    public ProfileWithUserInfoResponseDto showMyProfile(final String memberId){
 
-        Member member = getMemberById(memberId);
+        Member member = getLoginMember(memberId);
 
         Profile profile = member.getProfile();
 
@@ -91,10 +91,6 @@ public class ProfileService {
                 ErrorCode.LOGIN_ID_NOT_MATCH));
     }
 
-    private Member getMemberById(final Long memberId){
-        return memberRepository.findById(memberId).orElseThrow(()->new NotFoundException(
-                ErrorCode.CANT_FIND_MEMBER));
-    }
 
 
 
