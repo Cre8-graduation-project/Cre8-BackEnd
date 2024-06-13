@@ -47,6 +47,9 @@ public class Member {
     @Column(nullable = false)
     private LocalDate birthDay;
 
+    @Column(nullable = false)
+    private String accessUrl;
+
     @Enumerated(EnumType.STRING)
     private Sex sex;
 
@@ -71,6 +74,17 @@ public class Member {
         this.loginId = loginId;
         this.authority = Authority.NORMAL;
         this.profile = profile;
+        this.accessUrl = "";
+    }
+
+    public void changeAccessUrlAndNickName(String accessUrl,String nickName){
+        if(accessUrl!=null){
+            this.accessUrl = accessUrl;
+        }
+
+        if(nickName!=null){
+            this.nickName = nickName;
+        }
     }
 
 }

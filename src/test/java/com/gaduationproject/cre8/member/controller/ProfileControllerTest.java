@@ -1,52 +1,34 @@
 package com.gaduationproject.cre8.member.controller;
 
 import static org.hamcrest.Matchers.nullValue;
-import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.doNothing;
-import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-import com.gaduationproject.cre8.auth.interfaces.CurrentMember;
-import com.gaduationproject.cre8.auth.service.CustomUserDetails;
 import com.gaduationproject.cre8.common.LocalDateDeserializer;
 import com.gaduationproject.cre8.common.LocalDateSerializer;
 import com.gaduationproject.cre8.common.WithMockCustomUser;
 import com.gaduationproject.cre8.common.response.error.RestExceptionHandler;
-import com.gaduationproject.cre8.member.dto.MemberSignUpRequestDto;
-import com.gaduationproject.cre8.member.dto.ProfileEditRequestDto;
-import com.gaduationproject.cre8.member.dto.ProfileResponseDto;
-import com.gaduationproject.cre8.member.entity.Member;
+import com.gaduationproject.cre8.member.dto.ProfileWithUserInfoEditRequestDto;
+import com.gaduationproject.cre8.member.dto.ProfileWithUserInfoResponseDto;
 import com.gaduationproject.cre8.member.entity.Profile;
 import com.gaduationproject.cre8.member.repository.MemberRepository;
-import com.gaduationproject.cre8.member.service.MemberSignUpService;
 import com.gaduationproject.cre8.member.service.ProfileService;
-import com.gaduationproject.cre8.member.type.Sex;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import java.time.LocalDate;
-import java.util.Optional;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
-import org.mockito.junit.jupiter.MockitoExtension;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
-import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
-import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.test.context.support.WithMockUser;
-import org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors;
 import org.springframework.security.web.method.annotation.AuthenticationPrincipalArgumentResolver;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.ResultActions;
@@ -89,9 +71,9 @@ class ProfileControllerTest {
 
     }
 
-    private ProfileEditRequestDto profileEditRequestDto(final String youtubeLink,final String twitterLink,final String personalLink
+    private ProfileWithUserInfoEditRequestDto profileEditRequestDto(final String youtubeLink,final String twitterLink,final String personalLink
     ,final String personalStatement){
-        return ProfileEditRequestDto.builder()
+        return ProfileWithUserInfoEditRequestDto.builder()
                 .personalLink(personalLink)
                 .twitterLink(twitterLink)
                 .youtubeLink(youtubeLink)
@@ -100,16 +82,16 @@ class ProfileControllerTest {
 
     }
 
-    private ProfileResponseDto defaultProfile(){
-        return ProfileResponseDto.builder()
+    private ProfileWithUserInfoResponseDto defaultProfile(){
+        return ProfileWithUserInfoResponseDto.builder()
                 .profile(Profile.builder().youtubeLink(null).twitterLink(null).personalLink(null).personalStatement(null).build())
                 .build();
 
     }
 
-    private ProfileResponseDto changedProfile(final String youtubeLink,final String twitterLink,final String personalLink
+    private ProfileWithUserInfoResponseDto changedProfile(final String youtubeLink,final String twitterLink,final String personalLink
             ,final String personalStatement){
-        return ProfileResponseDto.builder()
+        return ProfileWithUserInfoResponseDto.builder()
                 .profile(Profile.builder().youtubeLink(youtubeLink).twitterLink(twitterLink).personalLink(personalLink).personalStatement(personalStatement).build())
                 .build();
 
@@ -122,7 +104,7 @@ class ProfileControllerTest {
     public void 멤버_프로필_초기_정상_조회() throws Exception {
         //given
 
-        ProfileResponseDto defaultProfileResposne = defaultProfile();
+        ProfileWithUserInfoResponseDto defaultProfileResposne = defaultProfile();
         given(profileService.showMyProfile(eq("dionisos198"))).willReturn(defaultProfileResposne);
 
         //when
@@ -146,7 +128,7 @@ class ProfileControllerTest {
     public void 멤버_프로필_수정후_정상_조회() throws Exception {
         //given
 
-        ProfileResponseDto changedProfileResposne = changedProfile("www.youbue.com",null,null,"사랑");
+        ProfileWithUserInfoResponseDto changedProfileResposne = changedProfile("www.youbue.com",null,null,"사랑");
         given(profileService.showMyProfile(eq("dionisos198"))).willReturn(changedProfileResposne);
 
         //when
@@ -171,7 +153,8 @@ class ProfileControllerTest {
     public void 멤버_프로필_수정() throws Exception {
         //given
 
-        doNothing().when(profileService).changeMemberProfile(eq("dionisos198"), any(ProfileEditRequestDto.class));
+        doNothing().when(profileService).changeMemberProfile(eq("dionisos198"), any(
+                ProfileWithUserInfoEditRequestDto.class));
 
 
         //when

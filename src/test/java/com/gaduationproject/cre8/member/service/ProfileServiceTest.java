@@ -1,21 +1,17 @@
 package com.gaduationproject.cre8.member.service;
 
-import static org.assertj.core.api.Assertions.*;
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;
 
-import com.gaduationproject.cre8.member.dto.MemberSignUpRequestDto;
-import com.gaduationproject.cre8.member.dto.ProfileEditRequestDto;
-import com.gaduationproject.cre8.member.dto.ProfileResponseDto;
+import com.gaduationproject.cre8.member.dto.ProfileWithUserInfoEditRequestDto;
+import com.gaduationproject.cre8.member.dto.ProfileWithUserInfoResponseDto;
 import com.gaduationproject.cre8.member.entity.Member;
 import com.gaduationproject.cre8.member.entity.Profile;
 import com.gaduationproject.cre8.member.repository.MemberRepository;
 import com.gaduationproject.cre8.member.type.Sex;
 import java.time.LocalDate;
 import java.util.Optional;
-import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -87,7 +83,7 @@ class ProfileServiceTest {
 
 
         //when
-        ProfileResponseDto profileResponseDto = profileService.showMyProfile(member.getLoginId());
+        ProfileWithUserInfoResponseDto profileResponseDto = profileService.showMyProfile(member.getLoginId());
 
         //then
         assertThat(profileResponseDto.getYoutubeLink()).isEqualTo(null);
@@ -103,7 +99,7 @@ class ProfileServiceTest {
 
         //given
         Member member = getDefaultMember();
-        ProfileEditRequestDto profileEditRequestDto = ProfileEditRequestDto.builder()
+        ProfileWithUserInfoEditRequestDto profileWithUserInfoEditRequestDto = ProfileWithUserInfoEditRequestDto.builder()
                                                                             .youtubeLink("www.youtube.com")
                                                                             .twitterLink("www.twitter.com")
                                                                             .personalLink("www.personalLink.com")
@@ -113,7 +109,7 @@ class ProfileServiceTest {
 
 
         //when
-        profileService.changeMemberProfile(member.getLoginId(), profileEditRequestDto);
+        profileService.changeMemberProfile(member.getLoginId(), profileWithUserInfoEditRequestDto);
 
         //then
         assertThat(member.getProfile().getYoutubeLink()).isEqualTo("www.youtube.com");
@@ -132,7 +128,7 @@ class ProfileServiceTest {
         when(memberRepository.findMemberByLoginId(any(String.class))).thenReturn(Optional.of(member));
 
         //when
-        ProfileResponseDto profileResponseDto = profileService.showMyProfile(member.getLoginId());
+        ProfileWithUserInfoResponseDto profileResponseDto = profileService.showMyProfile(member.getLoginId());
 
         //then
         assertThat(profileResponseDto.getYoutubeLink()).isEqualTo(null);

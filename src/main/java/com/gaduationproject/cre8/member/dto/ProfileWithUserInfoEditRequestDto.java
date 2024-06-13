@@ -5,10 +5,18 @@ import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import org.springdoc.core.annotations.ParameterObject;
+import org.springframework.web.multipart.MultipartFile;
 
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-public class ProfileEditRequestDto {
+public class ProfileWithUserInfoEditRequestDto {
+
+    @Schema(description = "사용자 닉네임")
+    private String userNickName;
+
+    @Schema(description = "이미지 데이터")
+    private MultipartFile multipartFile;
 
     @Schema(description = "사용자의 유튜브 링크",example = "www.youtube.com")
     private String youtubeLink;
@@ -22,8 +30,13 @@ public class ProfileEditRequestDto {
     @Schema(description = "사용자의 소개 html 문서 등등 ",example = "<h3> 저는 이런 사람입니다</h3> <li>짱짱한 사람</li>")
     private String personalStatement;
 
+
+
+
     @Builder
-    public ProfileEditRequestDto(String youtubeLink,
+    public ProfileWithUserInfoEditRequestDto(String userNickName,
+                                MultipartFile multipartFile,
+                                String youtubeLink,
                                 String twitterLink,
                                 String personalLink,
                                  String personalStatement){
@@ -31,6 +44,8 @@ public class ProfileEditRequestDto {
         this.twitterLink = twitterLink;
         this.personalLink = personalLink;
         this.personalStatement = personalStatement;
+        this.multipartFile = multipartFile;
+        this.userNickName = userNickName;
     }
 
 }
