@@ -2,9 +2,10 @@ package com.gaduationproject.cre8.auth.controller;
 
 
 import com.gaduationproject.cre8.auth.dto.AccessTokenResponseDto;
+import com.gaduationproject.cre8.auth.dto.MemberIdResponseDto;
 import com.gaduationproject.cre8.auth.dto.SignInRequestDto;
 import com.gaduationproject.cre8.auth.dto.TokenReIssueResponseDto;
-import com.gaduationproject.cre8.auth.dto.TokenResponseDto;
+import com.gaduationproject.cre8.auth.dto.TokenResponseWithUserIdDto;
 import com.gaduationproject.cre8.auth.service.AuthService;
 import com.gaduationproject.cre8.common.response.BaseResponse;
 import io.swagger.v3.oas.annotations.Operation;
@@ -38,14 +39,15 @@ public class AuthController {
             @ApiResponse(responseCode = "201",description = "로그인 성공"),
             @ApiResponse(responseCode = "400",description = "아이디 or 비밀번호 틀렸을 때")
     })
-    public ResponseEntity<Void> login(@RequestBody @Valid final SignInRequestDto memberSignInRequestDto){
+    public ResponseEntity<BaseResponse<MemberIdResponseDto>> login(@RequestBody @Valid final SignInRequestDto memberSignInRequestDto){
 
-        TokenResponseDto tokenResponseDto = authService.login(memberSignInRequestDto);
+        TokenResponseWithUserIdDto tokenResponseWithUserIdDto = authService.login(memberSignInRequestDto);
 
         return ResponseEntity.status(HttpStatus.CREATED)
-                .header(accessTokenHeader,tokenResponseDto.getAccessToken())
-                .header(HttpHeaders.SET_COOKIE, tokenResponseDto.getResponseCookie().toString())
-                .build();
+                .header(accessTokenHeader,tokenResponseWithUserIdDto.getAccessToken())
+                .header(HttpHeaders.SET_COOKIE, tokenResponseWithUserIdDto.getResponseCookie().toString())
+                .body(BaseResponse.createSuccess(MemberIdResponseDto.builder()
+                        .userId(tokenResponseWithUserIdDto.getUserId()).build()));
     }
 
 
