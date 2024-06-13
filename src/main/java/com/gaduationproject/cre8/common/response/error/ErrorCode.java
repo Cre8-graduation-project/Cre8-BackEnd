@@ -33,6 +33,7 @@ public enum ErrorCode {
      */
     MESSAGE_NOT_FOUND("자원을 찾지 못함"),
     EMAIL_AUTH_EXPIRED("이메일 인증을 다시 시도해주세요"),
+    CANT_FIND_MEMBER("사용자가 존재하지 않습니다"),
 
 
     /**

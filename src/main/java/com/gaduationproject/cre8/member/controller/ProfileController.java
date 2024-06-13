@@ -15,13 +15,14 @@ import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/api/v1/profiles")
+@RequestMapping("/api/v1")
 @Tag(name = "프로필 관련 용도 컨트롤러", description = "프로필과 관련된 활동을 모아두는 컨트롤러입니다.")
 public class ProfileController {
 
@@ -29,17 +30,17 @@ public class ProfileController {
 
 
 
-    @GetMapping
-    @Operation(summary = "자신의 Profile을 조회",description = "자신의 profile을 조회해볼 수 있습니다")
+    @GetMapping(value = "/{memberId}/profile")
+    @Operation(summary = "Profile을 조회",description = "profile을 조회해볼 수 있습니다")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200",description = "성공적 반환")
     })
-    public ResponseEntity<BaseResponse<ProfileWithUserInfoResponseDto>> showProfile(@CurrentMemberLoginId String loginId){
+    public ResponseEntity<BaseResponse<ProfileWithUserInfoResponseDto>> showProfile(@PathVariable("memberId") final Long memberId){
 
-        return ResponseEntity.ok(BaseResponse.createSuccess(profileService.showMyProfile(loginId)));
+        return ResponseEntity.ok(BaseResponse.createSuccess(profileService.showMyProfile(memberId)));
     }
 
-    @PutMapping(consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    @PutMapping(value = "/profiles",consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     @Operation(summary = "자신의 Profile을 수정 및 입력",description = "자신의 profile을 수정 및 입력 해볼 수 있습니다")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200",description = "성공적 수정")
