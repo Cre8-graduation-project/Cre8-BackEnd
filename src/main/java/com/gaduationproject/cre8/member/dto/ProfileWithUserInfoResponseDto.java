@@ -1,12 +1,13 @@
 package com.gaduationproject.cre8.member.dto;
 
 import com.gaduationproject.cre8.member.entity.Profile;
-import com.gaduationproject.cre8.member.repository.ProfileRepository;
 import lombok.Builder;
 import lombok.Getter;
 
 @Getter
-public class ProfileResponseDto {
+public class ProfileWithUserInfoResponseDto {
+    private String userNickName;
+    private String accessUrl;
     private String youtubeLink;
     private String twitterLink;
     private String personalLink;
@@ -14,7 +15,9 @@ public class ProfileResponseDto {
 
 
     @Builder
-    public ProfileResponseDto(Profile profile){
+    public ProfileWithUserInfoResponseDto(Profile profile,String userNickName,String accessUrl){
+        this.userNickName = userNickName;
+        this.accessUrl = accessUrl;
         this.youtubeLink = profile.getYoutubeLink();
         this.twitterLink = profile.getTwitterLink();
         this.personalLink = profile.getPersonalLink();
