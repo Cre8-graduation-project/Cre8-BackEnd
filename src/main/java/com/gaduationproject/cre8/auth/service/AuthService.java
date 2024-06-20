@@ -55,7 +55,7 @@ public class AuthService {
 
         return new TokenResponseWithUserIdDto(tokenDto.getType(),tokenDto.getAccessToken(),
                 makeResponseCookie(tokenDto.getRefreshToken(),tokenDto.getRefreshTokenValidationTime()),
-                tokenDto.getAccessTokenValidationTime(),findMember.getLoginId());
+                tokenDto.getAccessTokenValidationTime(),findMember.getLoginId(),findMember.getId());
 
     }
 

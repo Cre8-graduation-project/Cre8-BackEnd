@@ -31,13 +31,13 @@ public class ProfileController {
 
 
     @GetMapping(value = "/{memberId}/profile")
-    @Operation(summary = "Profile을 조회",description = "profile을 조회해볼 수 있습니다")
+    @Operation(summary = "Profile 을 조회",description = "profile을 조회해볼 수 있습니다")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200",description = "성공적 반환")
     })
-    public ResponseEntity<BaseResponse<ProfileWithUserInfoResponseDto>> showProfile(@PathVariable("memberId") final String memberId){
+    public ResponseEntity<BaseResponse<ProfileWithUserInfoResponseDto>> showProfile(@PathVariable("memberId") final Long memberId){
 
-        return ResponseEntity.ok(BaseResponse.createSuccess(profileService.showMyProfile(memberId)));
+        return ResponseEntity.ok(BaseResponse.createSuccess(profileService.showProfile(memberId)));
     }
 
     @PutMapping(value = "/profiles",consumes = MediaType.MULTIPART_FORM_DATA_VALUE)

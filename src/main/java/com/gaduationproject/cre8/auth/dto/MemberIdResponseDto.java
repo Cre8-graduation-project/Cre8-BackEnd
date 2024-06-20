@@ -6,11 +6,15 @@ import lombok.Getter;
 @Getter
 public class MemberIdResponseDto {
 
-    private String userId;
+    private String loginId;
+
+    private Long memberId;
 
     @Builder
-    public MemberIdResponseDto(String userId){
-        this.userId = userId;
+    public MemberIdResponseDto(String loginId,Long memberId){
+
+        this.loginId = loginId;
+        this.memberId = memberId;
     }
 
 }
