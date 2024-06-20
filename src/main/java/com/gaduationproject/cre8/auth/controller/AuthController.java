@@ -47,7 +47,9 @@ public class AuthController {
                 .header(accessTokenHeader,tokenResponseWithUserIdDto.getAccessToken())
                 .header(HttpHeaders.SET_COOKIE, tokenResponseWithUserIdDto.getResponseCookie().toString())
                 .body(BaseResponse.createSuccess(MemberIdResponseDto.builder()
-                        .userId(tokenResponseWithUserIdDto.getUserId()).build()));
+                        .loginId(tokenResponseWithUserIdDto.getLoginId())
+                        .memberId(tokenResponseWithUserIdDto.getMemberId())
+                        .build()));
     }
 
 

@@ -7,7 +7,6 @@ import static org.mockito.Mockito.when;
 import com.gaduationproject.cre8.member.dto.ProfileWithUserInfoEditRequestDto;
 import com.gaduationproject.cre8.member.dto.ProfileWithUserInfoResponseDto;
 import com.gaduationproject.cre8.member.entity.Member;
-import com.gaduationproject.cre8.member.entity.Profile;
 import com.gaduationproject.cre8.member.repository.MemberRepository;
 import com.gaduationproject.cre8.member.type.Sex;
 import java.time.LocalDate;

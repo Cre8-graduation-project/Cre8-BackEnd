@@ -1,10 +1,13 @@
 package com.gaduationproject.cre8.member.dto;
 
-import com.gaduationproject.cre8.member.entity.Profile;
+import com.gaduationproject.cre8.member.entity.Member;
+import lombok.AccessLevel;
+import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 
 @Getter
+@AllArgsConstructor(access = AccessLevel.PRIVATE)
 public class ProfileWithUserInfoResponseDto {
     private String userNickName;
     private String accessUrl;
@@ -14,14 +17,9 @@ public class ProfileWithUserInfoResponseDto {
     private String personalStatement;
 
 
-    @Builder
-    public ProfileWithUserInfoResponseDto(Profile profile,String userNickName,String accessUrl){
-        this.userNickName = userNickName;
-        this.accessUrl = accessUrl;
-        this.youtubeLink = profile.getYoutubeLink();
-        this.twitterLink = profile.getTwitterLink();
-        this.personalLink = profile.getPersonalLink();
-        this.personalStatement = profile.getPersonalStatement();
+    public static ProfileWithUserInfoResponseDto of(Member member){
+        return new ProfileWithUserInfoResponseDto(member.getNickName(),member.getAccessUrl(),member.getYoutubeLink(),
+                member.getTwitterLink(),member.getPersonalLink(),member.getPersonalStatement());
     }
 
 

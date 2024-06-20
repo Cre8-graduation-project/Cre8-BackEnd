@@ -5,7 +5,6 @@ import com.gaduationproject.cre8.common.response.error.exception.DuplicateExcept
 import com.gaduationproject.cre8.member.dto.LoginIdCheckResponseDto;
 import com.gaduationproject.cre8.member.dto.MemberSignUpRequestDto;
 import com.gaduationproject.cre8.member.entity.Member;
-import com.gaduationproject.cre8.member.entity.Profile;
 import com.gaduationproject.cre8.member.repository.MemberRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
@@ -42,7 +41,6 @@ public class MemberSignUpService {
                 .password(passwordEncoder.encode(memberSignUpRequestDto.getPassword()))
                 .nickName(memberSignUpRequestDto.getNickName())
                 .birthDay(memberSignUpRequestDto.getBirthDay())
-                .profile(makeDefaultProfile())
                 .build();
 
 
@@ -70,12 +68,5 @@ public class MemberSignUpService {
         return LoginIdCheckResponseDto.builder().loginIdChecked(true).build();
     }
 
-    private Profile makeDefaultProfile(){
-        return Profile.builder()
-                .personalLink(null)
-                .twitterLink(null)
-                .youtubeLink(null)
-                .personalStatement(null)
-                .build();
-    }
+
 }
