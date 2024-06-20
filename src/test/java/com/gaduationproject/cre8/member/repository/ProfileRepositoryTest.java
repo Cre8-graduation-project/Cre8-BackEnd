@@ -4,7 +4,6 @@ package com.gaduationproject.cre8.member.repository;
 import static org.assertj.core.api.Assertions.assertThat;
 
 import com.gaduationproject.cre8.member.entity.Member;
-import com.gaduationproject.cre8.member.entity.Profile;
 import com.gaduationproject.cre8.member.type.Sex;
 import java.time.LocalDate;
 import org.junit.jupiter.api.DisplayName;

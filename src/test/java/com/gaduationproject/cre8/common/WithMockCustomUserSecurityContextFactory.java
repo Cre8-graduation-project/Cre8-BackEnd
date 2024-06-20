@@ -3,7 +3,6 @@ package com.gaduationproject.cre8.common;
 import com.gaduationproject.cre8.auth.service.CustomUserDetails;
 import com.gaduationproject.cre8.member.entity.Authority;
 import com.gaduationproject.cre8.member.entity.Member;
-import com.gaduationproject.cre8.member.entity.Profile;
 import com.gaduationproject.cre8.member.type.Sex;
 import java.time.LocalDate;
 import java.util.Collections;

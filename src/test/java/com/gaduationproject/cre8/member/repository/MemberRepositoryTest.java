@@ -1,15 +1,10 @@
 package com.gaduationproject.cre8.member.repository;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.jupiter.api.Assertions.*;
 
 import com.gaduationproject.cre8.member.entity.Member;
-import com.gaduationproject.cre8.member.entity.Profile;
 import com.gaduationproject.cre8.member.type.Sex;
-import jakarta.validation.ConstraintViolationException;
 import java.time.LocalDate;
-import java.time.LocalDateTime;
-import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;

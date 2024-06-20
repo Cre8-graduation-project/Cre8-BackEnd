@@ -53,18 +53,24 @@ public class Member {
     @Enumerated(EnumType.STRING)
     private Sex sex;
 
-    @OneToOne(fetch = FetchType.LAZY,cascade = CascadeType.PERSIST)
-    @JoinColumn(name = "profile_id",nullable = false)
-    private Profile profile;
 
     @Column(nullable = false)
     @Enumerated(EnumType.STRING)
     private Authority authority;
 
+    @Column(columnDefinition = "TEXT")
+    private String personalStatement;
+
+    private String youtubeLink;
+
+    private String personalLink;
+
+    private String twitterLink;
+
 
     @Builder
     public Member(String name, String loginId, String email, String password, String nickName,
-            LocalDate birthDay, Sex sex , Profile profile) {
+            LocalDate birthDay, Sex sex) {
         this.name = name;
         this.email = email;
         this.password = password;
@@ -73,14 +79,26 @@ public class Member {
         this.sex = sex;
         this.loginId = loginId;
         this.authority = Authority.NORMAL;
-        this.profile = profile;
+        this.youtubeLink=null;
+        this.personalStatement = null;
+        this.personalLink =null;
+        this.twitterLink = null;
         this.accessUrl = "";
     }
 
-    public void changeAccessUrlAndNickName(String accessUrl,String nickName){
+    public void changeAccessUrl(String accessUrl){
         if(accessUrl!=null){
             this.accessUrl = accessUrl;
         }
+    }
+
+    public void changeProfile(final String youtubeLink,final String personalLink,final String twitterLink,
+            final String personalStatement,final String nickName){
+
+        this.personalStatement = personalStatement;
+        this.youtubeLink = youtubeLink;
+        this.personalLink = personalLink;
+        this.twitterLink = twitterLink;
 
         if(nickName!=null){
             this.nickName = nickName;

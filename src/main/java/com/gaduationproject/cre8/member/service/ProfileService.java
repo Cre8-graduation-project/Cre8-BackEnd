@@ -7,7 +7,6 @@ import com.gaduationproject.cre8.member.dto.ProfileWithUserInfoEditRequestDto;
 
 import com.gaduationproject.cre8.member.dto.ProfileWithUserInfoResponseDto;
 import com.gaduationproject.cre8.member.entity.Member;
-import com.gaduationproject.cre8.member.entity.Profile;
 import com.gaduationproject.cre8.member.repository.MemberRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -25,36 +24,33 @@ public class ProfileService {
     private final static String DEFAULT_PROFILE_URL="";
 
 
+    //memberId 로 그 멤버의 profile 조회
 
-    public ProfileWithUserInfoResponseDto showMyProfile(final String memberId){
+    public ProfileWithUserInfoResponseDto showProfile(final Long memberId){
 
-        Member member = getLoginMember(memberId);
+        Member member = findMemberById(memberId);
 
-        Profile profile = member.getProfile();
-
-        return ProfileWithUserInfoResponseDto.builder().profile(profile)
-                .userNickName(member.getNickName())
-                        .accessUrl(member.getAccessUrl())
-                                .build();
-
+        return ProfileWithUserInfoResponseDto.of(member);
     }
 
+
+    // 내 프로필 수정
     @Transactional
     public void changeMemberProfile(final String loginId , final ProfileWithUserInfoEditRequestDto profileWithUserInfoEditRequestDto){
 
         Member member = getLoginMember(loginId);
 
-        Profile profile = member.getProfile();
 
-        profile.changeProfile(profileWithUserInfoEditRequestDto.getYoutubeLink(),
-                profileWithUserInfoEditRequestDto.getPersonalLink(), profileWithUserInfoEditRequestDto.getTwitterLink(), profileWithUserInfoEditRequestDto.getPersonalStatement());
+        member.changeProfile(profileWithUserInfoEditRequestDto.getYoutubeLink(),
+                profileWithUserInfoEditRequestDto.getPersonalLink(), profileWithUserInfoEditRequestDto.getTwitterLink(),
+                profileWithUserInfoEditRequestDto.getPersonalStatement(),
+                profileWithUserInfoEditRequestDto.getUserNickName());
 
-        changeUserInfo(profileWithUserInfoEditRequestDto, member);
-
+        changeMemberImage(profileWithUserInfoEditRequestDto, member);
 
     }
 
-    private void changeUserInfo(ProfileWithUserInfoEditRequestDto profileWithUserInfoEditRequestDto,
+    private void changeMemberImage(ProfileWithUserInfoEditRequestDto profileWithUserInfoEditRequestDto,
             Member member) {
 
         if(!checkDefaultProfileUrl(member.getAccessUrl()) && !checkInputMultiPartFileNull(
@@ -64,8 +60,7 @@ public class ProfileService {
 
         String accessUrl = getAccessUrl(profileWithUserInfoEditRequestDto.getMultipartFile(),member);
 
-        member.changeAccessUrlAndNickName(accessUrl,
-                profileWithUserInfoEditRequestDto.getUserNickName());
+        member.changeAccessUrl(accessUrl);
     }
 
     private boolean checkDefaultProfileUrl(String accessUrl){
@@ -76,6 +71,7 @@ public class ProfileService {
         return false;
     }
 
+    // dto 의 사진이 null 일 경우 기존의 url 반환 , 그렇지 않으면 새로 생성 후 저장
     private String getAccessUrl(MultipartFile multipartFile,Member member){
         if(checkInputMultiPartFileNull(multipartFile)){
             return member.getAccessUrl();
@@ -84,6 +80,7 @@ public class ProfileService {
         return s3ImageService.saveImage(multipartFile,MEMBER_PROFILE_IMAGE,
                 multipartFile.getOriginalFilename());
     }
+
 
     private boolean checkInputMultiPartFileNull(MultipartFile multipartFile){
         if(multipartFile==null || multipartFile.isEmpty()){
@@ -96,6 +93,11 @@ public class ProfileService {
     private Member getLoginMember(final String loginId){
         return memberRepository.findMemberByLoginId(loginId).orElseThrow(()->new NotFoundException(
                 ErrorCode.LOGIN_ID_NOT_MATCH));
+    }
+    private Member findMemberById(Long memberId){
+        return memberRepository.findById(memberId).orElseThrow(()->new NotFoundException(
+                ErrorCode.CANT_FIND_MEMBER
+        ));
     }
 
 

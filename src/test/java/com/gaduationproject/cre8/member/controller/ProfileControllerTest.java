@@ -16,7 +16,6 @@ import com.gaduationproject.cre8.common.WithMockCustomUser;
 import com.gaduationproject.cre8.common.response.error.RestExceptionHandler;
 import com.gaduationproject.cre8.member.dto.ProfileWithUserInfoEditRequestDto;
 import com.gaduationproject.cre8.member.dto.ProfileWithUserInfoResponseDto;
-import com.gaduationproject.cre8.member.entity.Profile;
 import com.gaduationproject.cre8.member.repository.MemberRepository;
 import com.gaduationproject.cre8.member.service.ProfileService;
 import com.google.gson.Gson;
