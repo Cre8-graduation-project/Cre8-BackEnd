@@ -17,6 +17,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.CookieValue;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestHeader;
@@ -73,7 +74,9 @@ public class AuthController {
             @ApiResponse(responseCode = "400",description = "refreshToken 이 만료되거나 틀렸을 때")
     })
     public ResponseEntity<BaseResponse<AccessTokenResponseDto>> reIssue(@RequestHeader("accessToken") final String accessToken,
-            @RequestHeader("refreshToken") final String refreshToken){
+            @CookieValue("refreshToken") final String refreshToken){
+
+        System.out.println("하잉"+refreshToken);
 
         TokenReIssueResponseDto tokenReIssueResponseDto = authService.reIssue(accessToken,refreshToken);
 
