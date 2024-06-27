@@ -101,7 +101,6 @@ public class AuthService {
                 .httpOnly(false)//   true 시 자바스크립트에서 쿠키 접근 불가 따라서 XSS 공격 방지
                 .secure(true)//true 시 HTTPS 연결을 통해서만 전달 .
                 .path("/")
-                .domain(".localhost")
                 .maxAge(refreshTokenValidationTime)
                 .sameSite("None")
                 .build();
