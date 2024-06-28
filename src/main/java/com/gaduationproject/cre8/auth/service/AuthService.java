@@ -103,7 +103,6 @@ public class AuthService {
                 .path("/")
                 .maxAge(refreshTokenValidationTime)
                 .sameSite("None")
-                .domain(".testcre8.co.kr")
                 .build();
     }
 
