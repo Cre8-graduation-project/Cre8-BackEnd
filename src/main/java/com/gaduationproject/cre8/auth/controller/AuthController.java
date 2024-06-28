@@ -74,7 +74,7 @@ public class AuthController {
             @ApiResponse(responseCode = "400",description = "refreshToken 이 만료되거나 틀렸을 때")
     })
     public ResponseEntity<BaseResponse<AccessTokenResponseDto>> reIssue(@RequestHeader("accessToken") final String accessToken,
-            @CookieValue("refreshToken") final String refreshToken){
+            @RequestHeader("refreshToken") final String refreshToken){
 
 
         TokenReIssueResponseDto tokenReIssueResponseDto = authService.reIssue(accessToken,refreshToken);
