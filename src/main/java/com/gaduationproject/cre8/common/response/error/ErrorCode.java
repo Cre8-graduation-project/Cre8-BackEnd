@@ -34,6 +34,9 @@ public enum ErrorCode {
     MESSAGE_NOT_FOUND("자원을 찾지 못함"),
     EMAIL_AUTH_EXPIRED("이메일 인증을 다시 시도해주세요"),
     CANT_FIND_MEMBER("사용자가 존재하지 않습니다"),
+    CANT_FIND_WORK_FILED_TAG("작업 분야 태그가 존재하지 않습니다"),
+    CANT_FIND_WORK_FIELD_SUB_CATEGORY("작업 분야 하위 카테고리가 존재하지 않습니다"),
+    CANT_FIND_WORK_FIELD_CHILD_TAG("하위 태그가 존재하지 않습니다"),
 
 
     /**
@@ -47,6 +50,9 @@ public enum ErrorCode {
     DUPLICATE_EMAIL("이메일이 중복되었습니다"),
     DUPLICATE_NICKNAME("닉네임이 중복되었습니다"),
     DUPLICATE_LOGIN_ID("이미 아이디가 존재합니다"),
+    DUPLICATE_WORK_FIELD_NAME("작업 분야 이름이 이미 존재합니다"),
+    DUPLICATE_SUB_CATEGORY_NAME("이미 동일 분야에 같은 이름의 하위 카테고리가 존재합니다"),
+    DUPLICATE_WORK_FIELD_CHILD_NAME("이미 동일 분야에 같은 작업 분야 이름이 이미 존재합니다"),
 
 
 
