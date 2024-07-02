@@ -17,6 +17,8 @@ public enum ErrorCode {
     PASSWORD_NOT_MATCH("비밀번호를 다시 확인해주세요"),
     ACCESS_TOKEN_NOT_MATCH("Access Token 을 다시 확인해주세요"),
     REFRESH_TOKEN_NOT_MATCH("Refresh Token을  을 다시 확인해주세요"),
+    NOT_CORRECT_PARENT_TAG("하위 태그의 부모 코드가 일치하지 않습니다"),
+    CANT_ACCESS_PORTFOLIO("자신의 포트폴리오만 수정,삭제할 수 있습니다"),
 
 
     /**
@@ -37,6 +39,7 @@ public enum ErrorCode {
     CANT_FIND_WORK_FILED_TAG("작업 분야 태그가 존재하지 않습니다"),
     CANT_FIND_WORK_FIELD_SUB_CATEGORY("작업 분야 하위 카테고리가 존재하지 않습니다"),
     CANT_FIND_WORK_FIELD_CHILD_TAG("하위 태그가 존재하지 않습니다"),
+    CANT_FIND_PORTFOLIO("포트폴리오를 찾을 수 없습니다"),
 
 
     /**
