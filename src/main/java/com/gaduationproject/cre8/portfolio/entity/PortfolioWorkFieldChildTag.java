@@ -1,5 +1,6 @@
 package com.gaduationproject.cre8.portfolio.entity;
 
+import com.gaduationproject.cre8.workfieldtag.entity.WorkFieldChildTag;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
@@ -16,25 +17,26 @@ import lombok.NoArgsConstructor;
 @Entity
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Getter
-public class PortfolioImage {
+public class PortfolioWorkFieldChildTag {
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "portfolio_image_id")
+    @Column(name = "portfolio_work_field_child_tag_id")
     private Long id;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "portfolio_id",nullable = false)
-    private Portfolio portfolio;
-    @Column(nullable = false)
-    private String accessUrl;
 
-    @Column(nullable = false)
-    private String originalName;
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "portfolio_id")
+    private Portfolio portfolio;
+
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "work_field_child_tag_id")
+    private WorkFieldChildTag workFieldChildTag;
 
     @Builder
-    public PortfolioImage(Portfolio portfolio, String accessUrl,String originalName) {
+    public PortfolioWorkFieldChildTag(Portfolio portfolio, WorkFieldChildTag workFieldChildTag) {
         this.portfolio = portfolio;
-        this.accessUrl = accessUrl;
-        this.originalName = originalName;
+        this.workFieldChildTag = workFieldChildTag;
     }
 }
