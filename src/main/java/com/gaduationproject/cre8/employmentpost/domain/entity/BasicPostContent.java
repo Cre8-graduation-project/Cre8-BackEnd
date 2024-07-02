@@ -1,10 +1,11 @@
-package com.gaduationproject.cre8.employmentpost.entity;
+package com.gaduationproject.cre8.employmentpost.domain.entity;
 
-import com.gaduationproject.cre8.employmentpost.type.PaymentMethod;
+import com.gaduationproject.cre8.employmentpost.domain.type.PaymentMethod;
 import com.gaduationproject.cre8.member.entity.Member;
 import com.gaduationproject.cre8.workfieldtag.entity.WorkFieldTag;
 import jakarta.persistence.Column;
 import jakarta.persistence.DiscriminatorColumn;
+import jakarta.persistence.Embeddable;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
@@ -17,18 +18,14 @@ import jakarta.persistence.InheritanceType;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import lombok.AccessLevel;
+import lombok.Getter;
 import lombok.NoArgsConstructor;
 
-@Entity
+@Embeddable
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-@Inheritance(strategy=InheritanceType.JOINED)
-@DiscriminatorColumn
-public class EmploymentPost {
+@Getter
+public class BasicPostContent {
 
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "employment_post_id")
-    private Long id;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "member_id")
