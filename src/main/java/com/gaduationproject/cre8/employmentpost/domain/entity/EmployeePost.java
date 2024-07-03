@@ -6,6 +6,9 @@ import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.OneToMany;
+import java.util.ArrayList;
+import java.util.List;
 import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
 
@@ -19,7 +22,12 @@ public class EmployeePost {
     private Long id;
     @Embedded
     private BasicPostContent basicPostContent;
-    private int careerYear;
+    private Integer careerYear;
+
+    @OneToMany(mappedBy = "employerPost")
+    List<EmployerPostWorkFieldChildTag> employerPostWorkFieldChildTagList = new ArrayList<>();
+
+
 
 
 

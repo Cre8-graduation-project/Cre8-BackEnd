@@ -1,6 +1,8 @@
 package com.gaduationproject.cre8.workfieldtag.controller;
 
 import com.gaduationproject.cre8.workfieldtag.dto.request.WorkFieldChildTagSaveRequestDto;
+import com.gaduationproject.cre8.workfieldtag.dto.request.WorkFieldChildTagsSaveRequestDto;
+import com.gaduationproject.cre8.workfieldtag.dto.request.WorkFieldSubCategoriesSaveRequestDto;
 import com.gaduationproject.cre8.workfieldtag.dto.request.WorkFieldSubCategorySaveRequestDto;
 import com.gaduationproject.cre8.workfieldtag.dto.request.WorkFieldTagSaveRequestDto;
 import com.gaduationproject.cre8.workfieldtag.service.WorkFieldChildTagCDService;
@@ -76,6 +78,22 @@ public class WorkFieldTagCDController {
 
     }
 
+    @PostMapping("/categorys")
+    @Operation(summary = "작업 태그의 카테고리 생성",description = "작업 태그의 카테고리를 저장합니다. ")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "404",description = "ID 기반으로 작업태그를 찾지 못한 경우"),
+            @ApiResponse(responseCode = "409",description = "같은 작업 태그 내에 같은 카테고리 이름이 존재할 경우"),
+            @ApiResponse(responseCode = "200",description = "성공적 카테고리 생성")
+    })
+    public ResponseEntity<Void> saveWorkFieldSubCategories(@Valid @RequestBody
+    WorkFieldSubCategoriesSaveRequestDto workFieldSubCategoriesSaveRequestDto){
+
+        workFieldSubCategoryCDService.saveWorkFieldSubCategories(workFieldSubCategoriesSaveRequestDto);
+
+        return ResponseEntity.status(HttpStatus.CREATED).build();
+
+    }
+
     @DeleteMapping("/category/{workFieldSubCategoryId}")
     @Operation(summary = "작업 태그의 카테고리 삭제",description = "작업 태그의 카테고리를 삭제합니다. ")
     @ApiResponses(value = {
@@ -99,9 +117,25 @@ public class WorkFieldTagCDController {
             @ApiResponse(responseCode = "200",description = "성공적 카테고리내에 태그 생성")
     })
     public ResponseEntity<Void> saveWorkFieldChildTag(@Valid @RequestBody
-    WorkFieldChildTagSaveRequestDto workFieldSubCategorySaveRequestDto){
+    WorkFieldChildTagSaveRequestDto workFieldChildTagSaveRequestDto){
 
-        workFieldChildTagCDService.saveWorkFieldChildTag(workFieldSubCategorySaveRequestDto);
+        workFieldChildTagCDService.saveWorkFieldChildTag(workFieldChildTagSaveRequestDto);
+
+        return ResponseEntity.status(HttpStatus.CREATED).build();
+
+    }
+
+    @PostMapping("/childs")
+    @Operation(summary = "카테고리의 하위 태그 생성",description = "카테고리의 하위 태그를 저장합니다.")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "404",description = "ID 기반으로 카테고리를 찾지 못한 경우"),
+            @ApiResponse(responseCode = "409",description = "같은 카테고리 내에 같은 이름의 태그가 존재할 경우"),
+            @ApiResponse(responseCode = "200",description = "성공적 카테고리내에 태그 생성")
+    })
+    public ResponseEntity<Void> saveWorkFieldChildTags(@Valid @RequestBody
+    WorkFieldChildTagsSaveRequestDto workFieldChildTagsSaveRequestDto){
+
+        workFieldChildTagCDService.saveWorkFieldChildTags(workFieldChildTagsSaveRequestDto);
 
         return ResponseEntity.status(HttpStatus.CREATED).build();
 
