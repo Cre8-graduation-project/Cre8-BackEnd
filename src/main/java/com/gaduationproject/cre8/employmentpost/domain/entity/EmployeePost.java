@@ -24,8 +24,7 @@ public class EmployeePost {
     private BasicPostContent basicPostContent;
     private Integer careerYear;
 
-    @OneToMany(mappedBy = "employerPost")
-    List<EmployerPostWorkFieldChildTag> employerPostWorkFieldChildTagList = new ArrayList<>();
+
 
 
 
