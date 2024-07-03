@@ -38,7 +38,6 @@ public class AuthService {
     @Transactional
     public TokenResponseWithUserIdDto login(final SignInRequestDto signInRequestDto){
 
-        System.out.println(signInRequestDto.getUserID());
 
         Member findMember=memberRepository.findMemberByLoginId(signInRequestDto.getUserID()).orElseThrow(()->new BadRequestException(
                 ErrorCode.LOGIN_ID_NOT_MATCH));
