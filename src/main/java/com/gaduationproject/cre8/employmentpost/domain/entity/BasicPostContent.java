@@ -2,7 +2,9 @@ package com.gaduationproject.cre8.employmentpost.domain.entity;
 
 import com.gaduationproject.cre8.employmentpost.domain.type.PaymentMethod;
 import com.gaduationproject.cre8.member.entity.Member;
+import com.gaduationproject.cre8.workfieldtag.entity.WorkFieldChildTag;
 import com.gaduationproject.cre8.workfieldtag.entity.WorkFieldTag;
+import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.DiscriminatorColumn;
 import jakarta.persistence.Embeddable;
@@ -17,7 +19,11 @@ import jakarta.persistence.Inheritance;
 import jakarta.persistence.InheritanceType;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
+import jakarta.persistence.OneToMany;
+import java.util.ArrayList;
+import java.util.List;
 import lombok.AccessLevel;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
@@ -38,7 +44,21 @@ public class BasicPostContent {
     @Enumerated(EnumType.STRING)
     private PaymentMethod paymentMethod;
 
-    private int payment;
+    private Integer payment;
 
 
+    @Builder
+    public BasicPostContent(Member member, WorkFieldTag workFieldTag, PaymentMethod paymentMethod,
+            Integer payment) {
+        this.member = member;
+        this.workFieldTag = workFieldTag;
+        this.paymentMethod = paymentMethod;
+        this.payment = payment;
+    }
+
+    public void changeExceptMember(WorkFieldTag workFieldTag,PaymentMethod paymentMethod,int payment){
+        this.workFieldTag = workFieldTag;
+        this.paymentMethod = paymentMethod;
+        this.payment = payment;
+    }
 }
