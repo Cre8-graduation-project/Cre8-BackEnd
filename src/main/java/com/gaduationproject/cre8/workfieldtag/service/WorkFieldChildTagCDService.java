@@ -4,6 +4,7 @@ import com.gaduationproject.cre8.common.response.error.ErrorCode;
 import com.gaduationproject.cre8.common.response.error.exception.DuplicateException;
 import com.gaduationproject.cre8.common.response.error.exception.NotFoundException;
 import com.gaduationproject.cre8.workfieldtag.dto.request.WorkFieldChildTagSaveRequestDto;
+import com.gaduationproject.cre8.workfieldtag.dto.request.WorkFieldChildTagsSaveRequestDto;
 import com.gaduationproject.cre8.workfieldtag.dto.response.WorkFieldChildTagResponseDto;
 import com.gaduationproject.cre8.workfieldtag.dto.response.WorkFieldChildTagWithSubCategoryNameResponseDto;
 import com.gaduationproject.cre8.workfieldtag.entity.WorkFieldChildTag;
@@ -33,6 +34,25 @@ public class WorkFieldChildTagCDService {
                 workFieldChildTagSaveRequestDto.getName(), workFieldSubCategory);
 
         workFieldSubCategory.addWorkFieldChildTag(workFieldChildTagSaveRequestDto.getName());
+
+
+    }
+
+    @Transactional
+    public void saveWorkFieldChildTags(
+            WorkFieldChildTagsSaveRequestDto workFieldChildTagsSaveRequestDto){
+
+        WorkFieldSubCategory workFieldSubCategory = findWorkFieldSubCategoryById(workFieldChildTagsSaveRequestDto.getWorkFieldSubCategoryId());
+
+        workFieldChildTagsSaveRequestDto.getName().forEach(name->{
+
+            checkDuplicateWorkFieldChildTagNameAndWorkFieldSubCategory(
+                    name, workFieldSubCategory);
+
+            workFieldSubCategory.addWorkFieldChildTag(name);
+
+        });
+
 
 
     }
