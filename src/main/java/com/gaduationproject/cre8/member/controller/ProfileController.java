@@ -18,6 +18,7 @@ import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
@@ -51,6 +52,17 @@ public class ProfileController {
         profileService.changeMemberProfile(loginId, profileWithUserInfoEditRequestDto);
         return ResponseEntity.ok().build();
     }
+
+    @GetMapping(value = "/members/pk")
+    @Operation(summary = "유저 아이디를 통해 pk 를 가져옴",description = "유저의 아이디를 통해 pk 를 가져오는 util 적 api 입니다")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200",description = "성공적으로 pk 를 가져옴")
+    })
+    public ResponseEntity<BaseResponse<Long>> getPKFromLoginId(@RequestParam("loginId")final String loginId){
+
+        return ResponseEntity.ok(BaseResponse.createSuccess(profileService.findPkFromNickName(loginId)));
+    }
+
 
 
 
