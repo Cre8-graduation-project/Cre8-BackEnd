@@ -80,7 +80,7 @@ public class EmployerPostCRUDService {
     }
 
     //Employer Post 단건 조회
-    public EmployerPostResponseDto showEmployerPost(Long employerPostId){
+    public EmployerPostResponseDto showEmployerPost(final Long employerPostId){
 
         EmployerPost employerPost = employerPostRepository
                 .findByIdWithFetchWorkFieldTagAndEmployerPostChildTagListAndWorkFieldChildTag(employerPostId).orElseThrow(
