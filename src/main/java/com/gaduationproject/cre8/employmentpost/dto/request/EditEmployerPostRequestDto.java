@@ -22,7 +22,7 @@ public class EditEmployerPostRequestDto {
 
     private String paymentMethod;
 
-    private Integer payment;
+    private Integer paymentAmount;
 
     private String companyName;
 
@@ -37,14 +37,15 @@ public class EditEmployerPostRequestDto {
 
     @Builder
     public EditEmployerPostRequestDto(Long employerPostId, Long workFieldId,String title, List<Long> workFieldChildTagId,
-            String paymentMethod, Integer payment,String companyName, Integer numberOfEmployee,
+            String paymentMethod, Integer paymentAmount,String companyName, Integer numberOfEmployee,
             String enrollDurationType,LocalDate deadLine, Integer minCareerYear) {
         this.employerPostId = employerPostId;
         this.workFieldId = workFieldId;
         this.title = title;
         this.workFieldChildTagId = workFieldChildTagId;
         this.paymentMethod = paymentMethod;
-        this.payment = payment;
+        this.paymentAmount = paymentAmount;
+        this.companyName = companyName;
         this.numberOfEmployee = numberOfEmployee;
         this.enrollDurationType = enrollDurationType;
         this.deadLine = deadLine;

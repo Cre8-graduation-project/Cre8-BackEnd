@@ -1,5 +1,6 @@
 package com.gaduationproject.cre8.employmentpost.domain.entity;
 
+import com.gaduationproject.cre8.employmentpost.domain.type.Payment;
 import com.gaduationproject.cre8.employmentpost.domain.type.PaymentMethod;
 import com.gaduationproject.cre8.member.entity.Member;
 import com.gaduationproject.cre8.workfieldtag.entity.WorkFieldChildTag;
@@ -8,6 +9,7 @@ import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.DiscriminatorColumn;
 import jakarta.persistence.Embeddable;
+import jakarta.persistence.Embedded;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
@@ -43,28 +45,30 @@ public class BasicPostContent {
     @JoinColumn(name = "work_field_tag_id")
     private WorkFieldTag workFieldTag;
 
-    @Enumerated(EnumType.STRING)
-    private PaymentMethod paymentMethod;
-
-    private Integer payment;
+    @Embedded
+    private Payment payment;
 
 
 
 
     @Builder
     public BasicPostContent(Member member,String title, WorkFieldTag workFieldTag, PaymentMethod paymentMethod,
-            Integer payment) {
+            Integer paymentAmount) {
         this.member = member;
         this.title = title;
         this.workFieldTag = workFieldTag;
-        this.paymentMethod = paymentMethod;
-        this.payment = payment;
+
+        payment = Payment.builder()
+                .paymentAmount(paymentAmount)
+                .paymentMethod(paymentMethod)
+                .build();
+
+
     }
 
-    public void changeExceptMember(String title, WorkFieldTag workFieldTag,PaymentMethod paymentMethod,int payment){
+    public void changeExceptMember(String title, WorkFieldTag workFieldTag,PaymentMethod paymentMethod,Integer paymentAmount){
         this.title = title;
         this.workFieldTag = workFieldTag;
-        this.paymentMethod = paymentMethod;
-        this.payment = payment;
+        payment.changePaymentMethodAndPaymentAmount(paymentMethod,paymentAmount);
     }
 }

@@ -52,7 +52,7 @@ public class EmployerPost  {
 
 
     @Builder
-    public EmployerPost(Member member,String title, WorkFieldTag workFieldTag, PaymentMethod paymentMethod, Integer payment,String companyName, Integer numberOfEmployee,
+    public EmployerPost(Member member,String title, WorkFieldTag workFieldTag, PaymentMethod paymentMethod, Integer paymentAmount,String companyName, Integer numberOfEmployee,
              EnrollDurationType enrollDurationType, LocalDate deadLine,Integer minCareerYear) {
 
         this.basicPostContent = BasicPostContent.builder()
@@ -60,7 +60,7 @@ public class EmployerPost  {
                 .title(title)
                 .workFieldTag(workFieldTag)
                 .paymentMethod(paymentMethod)
-                .payment(payment)
+                .paymentAmount(paymentAmount)
                 .build();
         this.companyName = companyName;
         this.numberOfEmployee = numberOfEmployee;
@@ -69,10 +69,10 @@ public class EmployerPost  {
         this.deadLine = deadLine;
     }
 
-    public void changeAllExceptMemberAndId(String title, WorkFieldTag workFieldTag,PaymentMethod paymentMethod,Integer payment,String companyName, Integer numberOfEmployee,
+    public void changeAllExceptMemberAndId(String title, WorkFieldTag workFieldTag,PaymentMethod paymentMethod,Integer paymentAmount,String companyName, Integer numberOfEmployee,
             EnrollDurationType enrollDurationType,LocalDate deadLine,Integer minCareerYear){
 
-        basicPostContent.changeExceptMember(title, workFieldTag,paymentMethod,payment);
+        basicPostContent.changeExceptMember(title, workFieldTag,paymentMethod,paymentAmount);
         this.companyName = companyName;
         this.numberOfEmployee = numberOfEmployee;
         this.enrollDurationType = enrollDurationType;

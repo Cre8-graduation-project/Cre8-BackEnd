@@ -23,7 +23,7 @@ public class EmployerPostResponseDto {
 
     private String paymentMethod;
 
-    private int pay;
+    private int paymentAmount;
 
     private int numberOfEmployee;
 
@@ -35,8 +35,8 @@ public class EmployerPostResponseDto {
 
     public static EmployerPostResponseDto from(List<String> tagName, EmployerPost employerPost){
 
-        return new EmployerPostResponseDto(employerPost.getBasicPostContent().getTitle(),employerPost.getCompanyName(),tagName,employerPost.getBasicPostContent().getPaymentMethod().name(),
-                employerPost.getBasicPostContent().getPayment(),employerPost.getNumberOfEmployee(),employerPost.getEnrollDurationType().getName(),
+        return new EmployerPostResponseDto(employerPost.getBasicPostContent().getTitle(),employerPost.getCompanyName(),tagName,employerPost.getBasicPostContent().getPayment().getPaymentMethod().getName(),
+                employerPost.getBasicPostContent().getPayment().getPaymentAmount(),employerPost.getNumberOfEmployee(),employerPost.getEnrollDurationType().getName(),
                 employerPost.getDeadLine(),employerPost.getMinCareerYear());
 
     }

@@ -79,8 +79,8 @@ public class EmployerPostCustomRepositoryImpl implements EmployerPostCustomRepos
         return employerPostIdList.isEmpty()?null:employerPost.id.in(employerPostIdList);
     }
 
-    private BooleanExpression moreThanPay(Integer pay){
-        return pay==null?null:employerPost.basicPostContent.payment.goe(pay);
+    private BooleanExpression moreThanPay(Integer paymentAmount){
+        return paymentAmount==null?null:employerPost.basicPostContent.payment.paymentAmount.goe(paymentAmount);
     }
 
     private BooleanExpression moreThanMinCareer(Integer minCareer){

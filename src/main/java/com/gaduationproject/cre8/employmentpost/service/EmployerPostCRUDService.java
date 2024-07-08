@@ -54,7 +54,7 @@ public class EmployerPostCRUDService {
                 .title(saveEmployerPostRequestDto.getTitle())
                 .workFieldTag(workFieldTag)
                 .paymentMethod(PaymentMethod.toPaymentMethodEnum(saveEmployerPostRequestDto.getPaymentMethod()))
-                .payment(saveEmployerPostRequestDto.getPayment())
+                .paymentAmount(saveEmployerPostRequestDto.getPaymentAmount())
                 .companyName(saveEmployerPostRequestDto.getCompanyName())
                 .numberOfEmployee(saveEmployerPostRequestDto.getNumberOfEmployee())
                 .enrollDurationType(EnrollDurationType.toEnrollDurationTypeEnum(
@@ -123,7 +123,7 @@ public class EmployerPostCRUDService {
 
 
         employerPost.changeAllExceptMemberAndId(editEmployerPostRequestDto.getTitle(), workFieldTag,PaymentMethod.toPaymentMethodEnum(editEmployerPostRequestDto.getPaymentMethod()),
-                editEmployerPostRequestDto.getPayment(),editEmployerPostRequestDto.getCompanyName(),
+                editEmployerPostRequestDto.getPaymentAmount(),editEmployerPostRequestDto.getCompanyName(),
                 editEmployerPostRequestDto.getNumberOfEmployee(),
                 EnrollDurationType.toEnrollDurationTypeEnum(editEmployerPostRequestDto.getEnrollDurationType()),
                         editEmployerPostRequestDto.getDeadLine(),
