@@ -16,6 +16,8 @@ public class EditEmployerPostRequestDto {
 
     private Long workFieldId;
 
+    private String title;
+
     private List<Long> workFieldChildTagId = new ArrayList<>();
 
     private String paymentMethod;
@@ -32,11 +34,12 @@ public class EditEmployerPostRequestDto {
 
 
     @Builder
-    public EditEmployerPostRequestDto(Long employerPostId, Long workFieldId, List<Long> workFieldChildTagId,
+    public EditEmployerPostRequestDto(Long employerPostId, Long workFieldId,String title, List<Long> workFieldChildTagId,
             String paymentMethod, Integer payment, Integer numberOfEmployee,
             String enrollDurationType,LocalDate deadLine, Integer minCareerYear) {
         this.employerPostId = employerPostId;
         this.workFieldId = workFieldId;
+        this.title = title;
         this.workFieldChildTagId = workFieldChildTagId;
         this.paymentMethod = paymentMethod;
         this.payment = payment;

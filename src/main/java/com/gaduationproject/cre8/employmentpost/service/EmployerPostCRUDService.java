@@ -51,6 +51,7 @@ public class EmployerPostCRUDService {
 
         EmployerPost employerPost = EmployerPost.builder()
                 .member(member)
+                .title(saveEmployerPostRequestDto.getTitle())
                 .workFieldTag(workFieldTag)
                 .paymentMethod(PaymentMethod.toPaymentMethodEnum(saveEmployerPostRequestDto.getPaymentMethod()))
                 .payment(saveEmployerPostRequestDto.getPayment())
@@ -120,7 +121,7 @@ public class EmployerPostCRUDService {
         });
 
 
-        employerPost.changeAllExceptMemberAndId(workFieldTag,PaymentMethod.toPaymentMethodEnum(editEmployerPostRequestDto.getPaymentMethod()),
+        employerPost.changeAllExceptMemberAndId(editEmployerPostRequestDto.getTitle(), workFieldTag,PaymentMethod.toPaymentMethodEnum(editEmployerPostRequestDto.getPaymentMethod()),
                 editEmployerPostRequestDto.getPayment(),
                 editEmployerPostRequestDto.getNumberOfEmployee(),
                 EnrollDurationType.toEnrollDurationTypeEnum(editEmployerPostRequestDto.getEnrollDurationType()),

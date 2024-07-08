@@ -48,11 +48,12 @@ public class EmployerPost  {
     List<EmployerPostWorkFieldChildTag> employerPostWorkFieldChildTagList = new ArrayList<>();
 
     @Builder
-    public EmployerPost(Member member, WorkFieldTag workFieldTag, PaymentMethod paymentMethod, Integer payment, Integer numberOfEmployee,
+    public EmployerPost(Member member,String title, WorkFieldTag workFieldTag, PaymentMethod paymentMethod, Integer payment, Integer numberOfEmployee,
              EnrollDurationType enrollDurationType, LocalDate deadLine,Integer minCareerYear) {
 
         this.basicPostContent = BasicPostContent.builder()
                 .member(member)
+                .title(title)
                 .workFieldTag(workFieldTag)
                 .paymentMethod(paymentMethod)
                 .payment(payment)
@@ -63,10 +64,10 @@ public class EmployerPost  {
         this.deadLine = deadLine;
     }
 
-    public void changeAllExceptMemberAndId(WorkFieldTag workFieldTag,PaymentMethod paymentMethod,Integer payment, Integer numberOfEmployee,
+    public void changeAllExceptMemberAndId(String title, WorkFieldTag workFieldTag,PaymentMethod paymentMethod,Integer payment, Integer numberOfEmployee,
             EnrollDurationType enrollDurationType,LocalDate deadLine,Integer minCareerYear){
 
-        basicPostContent.changeExceptMember(workFieldTag,paymentMethod,payment);
+        basicPostContent.changeExceptMember(title, workFieldTag,paymentMethod,payment);
         this.numberOfEmployee = numberOfEmployee;
         this.enrollDurationType = enrollDurationType;
         this.minCareerYear = minCareerYear;
