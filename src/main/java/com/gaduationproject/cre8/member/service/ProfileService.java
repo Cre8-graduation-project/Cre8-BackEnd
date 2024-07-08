@@ -1,6 +1,7 @@
 package com.gaduationproject.cre8.member.service;
 
 import com.gaduationproject.cre8.common.response.error.ErrorCode;
+import com.gaduationproject.cre8.common.response.error.exception.BadRequestException;
 import com.gaduationproject.cre8.common.response.error.exception.NotFoundException;
 import com.gaduationproject.cre8.common.s3.S3ImageService;
 import com.gaduationproject.cre8.member.dto.ProfileWithUserInfoEditRequestDto;
@@ -40,6 +41,9 @@ public class ProfileService {
 
         Member member = getLoginMember(loginId);
 
+        if(memberRepository.existsByNickName(profileWithUserInfoEditRequestDto.getUserNickName())){
+            throw new BadRequestException(ErrorCode.DUPLICATE_NICKNAME);
+        }
 
         member.changeProfile(profileWithUserInfoEditRequestDto.getYoutubeLink(),
                 profileWithUserInfoEditRequestDto.getPersonalLink(), profileWithUserInfoEditRequestDto.getTwitterLink(),
