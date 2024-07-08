@@ -30,13 +30,13 @@ public class SaveEmployerPostRequestDto {
 
     private LocalDate deadLine;
 
-    private Integer minCareerYear;
+    private Integer hopeCareerYear;
 
 
     @Builder
     public SaveEmployerPostRequestDto(Long workFieldId,String title, List<Long> workFieldChildTagId,
             String paymentMethod,String companyName, Integer paymentAmount, Integer numberOfEmployee,
-            String enrollDurationType,LocalDate deadLine, Integer minCareerYear) {
+            String enrollDurationType,LocalDate deadLine, Integer hopeCareerYear) {
         this.workFieldId = workFieldId;
         this.title = title;
         this.workFieldChildTagId = workFieldChildTagId;
@@ -46,7 +46,7 @@ public class SaveEmployerPostRequestDto {
         this.numberOfEmployee = numberOfEmployee;
         this.enrollDurationType = enrollDurationType;
         this.deadLine = deadLine;
-        this.minCareerYear = minCareerYear;
+        this.hopeCareerYear = hopeCareerYear;
     }
 
 

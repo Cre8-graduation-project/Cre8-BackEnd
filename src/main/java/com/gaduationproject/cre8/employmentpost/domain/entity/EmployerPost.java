@@ -42,7 +42,7 @@ public class EmployerPost  {
     @Enumerated(EnumType.STRING)
     private EnrollDurationType enrollDurationType;
 
-    private Integer minCareerYear;
+    private Integer hopeCareerYear;
 
     private LocalDate deadLine;
 
@@ -53,7 +53,7 @@ public class EmployerPost  {
 
     @Builder
     public EmployerPost(Member member,String title, WorkFieldTag workFieldTag, PaymentMethod paymentMethod, Integer paymentAmount,String companyName, Integer numberOfEmployee,
-             EnrollDurationType enrollDurationType, LocalDate deadLine,Integer minCareerYear) {
+             EnrollDurationType enrollDurationType, LocalDate deadLine,Integer hopeCareerYear) {
 
         this.basicPostContent = BasicPostContent.builder()
                 .member(member)
@@ -65,18 +65,18 @@ public class EmployerPost  {
         this.companyName = companyName;
         this.numberOfEmployee = numberOfEmployee;
         this.enrollDurationType = enrollDurationType;
-        this.minCareerYear = minCareerYear;
+        this.hopeCareerYear = hopeCareerYear;
         this.deadLine = deadLine;
     }
 
     public void changeAllExceptMemberAndId(String title, WorkFieldTag workFieldTag,PaymentMethod paymentMethod,Integer paymentAmount,String companyName, Integer numberOfEmployee,
-            EnrollDurationType enrollDurationType,LocalDate deadLine,Integer minCareerYear){
+            EnrollDurationType enrollDurationType,LocalDate deadLine,Integer hopeCareerYear){
 
         basicPostContent.changeExceptMember(title, workFieldTag,paymentMethod,paymentAmount);
         this.companyName = companyName;
         this.numberOfEmployee = numberOfEmployee;
         this.enrollDurationType = enrollDurationType;
-        this.minCareerYear = minCareerYear;
+        this.hopeCareerYear = hopeCareerYear;
         this.deadLine = deadLine;
 
     }

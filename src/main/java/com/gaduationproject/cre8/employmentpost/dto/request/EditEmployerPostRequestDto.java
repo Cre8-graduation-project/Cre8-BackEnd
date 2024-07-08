@@ -32,13 +32,13 @@ public class EditEmployerPostRequestDto {
 
     private LocalDate deadLine;
 
-    private Integer minCareerYear;
+    private Integer hopeCareerYear;
 
 
     @Builder
     public EditEmployerPostRequestDto(Long employerPostId, Long workFieldId,String title, List<Long> workFieldChildTagId,
             String paymentMethod, Integer paymentAmount,String companyName, Integer numberOfEmployee,
-            String enrollDurationType,LocalDate deadLine, Integer minCareerYear) {
+            String enrollDurationType,LocalDate deadLine, Integer hopeCareerYear) {
         this.employerPostId = employerPostId;
         this.workFieldId = workFieldId;
         this.title = title;
@@ -49,7 +49,7 @@ public class EditEmployerPostRequestDto {
         this.numberOfEmployee = numberOfEmployee;
         this.enrollDurationType = enrollDurationType;
         this.deadLine = deadLine;
-        this.minCareerYear = minCareerYear;
+        this.hopeCareerYear = hopeCareerYear;
     }
 
 }

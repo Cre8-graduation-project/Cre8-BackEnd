@@ -60,7 +60,7 @@ public class EmployerPostCRUDService {
                 .enrollDurationType(EnrollDurationType.toEnrollDurationTypeEnum(
                         saveEmployerPostRequestDto.getEnrollDurationType()))
                 .deadLine(saveEmployerPostRequestDto.getDeadLine())
-                .minCareerYear(saveEmployerPostRequestDto.getMinCareerYear())
+                .hopeCareerYear(saveEmployerPostRequestDto.getHopeCareerYear())
                 .build();
 
         employerPostRepository.save(employerPost);
@@ -127,7 +127,7 @@ public class EmployerPostCRUDService {
                 editEmployerPostRequestDto.getNumberOfEmployee(),
                 EnrollDurationType.toEnrollDurationTypeEnum(editEmployerPostRequestDto.getEnrollDurationType()),
                         editEmployerPostRequestDto.getDeadLine(),
-                        editEmployerPostRequestDto.getMinCareerYear()
+                        editEmployerPostRequestDto.getHopeCareerYear()
                         );
 
     }
