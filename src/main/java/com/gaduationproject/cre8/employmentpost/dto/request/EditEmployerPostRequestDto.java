@@ -24,6 +24,8 @@ public class EditEmployerPostRequestDto {
 
     private Integer payment;
 
+    private String companyName;
+
     private Integer numberOfEmployee;
 
     private String enrollDurationType;
@@ -35,7 +37,7 @@ public class EditEmployerPostRequestDto {
 
     @Builder
     public EditEmployerPostRequestDto(Long employerPostId, Long workFieldId,String title, List<Long> workFieldChildTagId,
-            String paymentMethod, Integer payment, Integer numberOfEmployee,
+            String paymentMethod, Integer payment,String companyName, Integer numberOfEmployee,
             String enrollDurationType,LocalDate deadLine, Integer minCareerYear) {
         this.employerPostId = employerPostId;
         this.workFieldId = workFieldId;

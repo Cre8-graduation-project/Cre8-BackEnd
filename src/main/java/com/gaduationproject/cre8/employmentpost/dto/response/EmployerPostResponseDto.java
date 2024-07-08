@@ -17,6 +17,8 @@ public class EmployerPostResponseDto {
 
     private String title;
 
+    private String companyName;
+
     private List<String> tagName = new ArrayList<>();
 
     private String paymentMethod;
@@ -33,7 +35,7 @@ public class EmployerPostResponseDto {
 
     public static EmployerPostResponseDto from(List<String> tagName, EmployerPost employerPost){
 
-        return new EmployerPostResponseDto(employerPost.getBasicPostContent().getTitle(),tagName,employerPost.getBasicPostContent().getPaymentMethod().name(),
+        return new EmployerPostResponseDto(employerPost.getBasicPostContent().getTitle(),employerPost.getCompanyName(),tagName,employerPost.getBasicPostContent().getPaymentMethod().name(),
                 employerPost.getBasicPostContent().getPayment(),employerPost.getNumberOfEmployee(),employerPost.getEnrollDurationType().getName(),
                 employerPost.getDeadLine(),employerPost.getMinCareerYear());
 

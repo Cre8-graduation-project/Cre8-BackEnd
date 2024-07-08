@@ -35,6 +35,8 @@ public class EmployerPost  {
     @Embedded
     private BasicPostContent basicPostContent;
 
+    private String companyName;
+
     private Integer numberOfEmployee;
 
     @Enumerated(EnumType.STRING)
@@ -47,8 +49,10 @@ public class EmployerPost  {
     @OneToMany(mappedBy = "employerPost")
     List<EmployerPostWorkFieldChildTag> employerPostWorkFieldChildTagList = new ArrayList<>();
 
+
+
     @Builder
-    public EmployerPost(Member member,String title, WorkFieldTag workFieldTag, PaymentMethod paymentMethod, Integer payment, Integer numberOfEmployee,
+    public EmployerPost(Member member,String title, WorkFieldTag workFieldTag, PaymentMethod paymentMethod, Integer payment,String companyName, Integer numberOfEmployee,
              EnrollDurationType enrollDurationType, LocalDate deadLine,Integer minCareerYear) {
 
         this.basicPostContent = BasicPostContent.builder()
@@ -58,16 +62,18 @@ public class EmployerPost  {
                 .paymentMethod(paymentMethod)
                 .payment(payment)
                 .build();
+        this.companyName = companyName;
         this.numberOfEmployee = numberOfEmployee;
         this.enrollDurationType = enrollDurationType;
         this.minCareerYear = minCareerYear;
         this.deadLine = deadLine;
     }
 
-    public void changeAllExceptMemberAndId(String title, WorkFieldTag workFieldTag,PaymentMethod paymentMethod,Integer payment, Integer numberOfEmployee,
+    public void changeAllExceptMemberAndId(String title, WorkFieldTag workFieldTag,PaymentMethod paymentMethod,Integer payment,String companyName, Integer numberOfEmployee,
             EnrollDurationType enrollDurationType,LocalDate deadLine,Integer minCareerYear){
 
         basicPostContent.changeExceptMember(title, workFieldTag,paymentMethod,payment);
+        this.companyName = companyName;
         this.numberOfEmployee = numberOfEmployee;
         this.enrollDurationType = enrollDurationType;
         this.minCareerYear = minCareerYear;
