@@ -37,6 +37,8 @@ public class BasicPostContent {
     @JoinColumn(name = "member_id")
     private Member member;
 
+    private String title;
+
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "work_field_tag_id")
     private WorkFieldTag workFieldTag;
@@ -47,16 +49,20 @@ public class BasicPostContent {
     private Integer payment;
 
 
+
+
     @Builder
-    public BasicPostContent(Member member, WorkFieldTag workFieldTag, PaymentMethod paymentMethod,
+    public BasicPostContent(Member member,String title, WorkFieldTag workFieldTag, PaymentMethod paymentMethod,
             Integer payment) {
         this.member = member;
+        this.title = title;
         this.workFieldTag = workFieldTag;
         this.paymentMethod = paymentMethod;
         this.payment = payment;
     }
 
-    public void changeExceptMember(WorkFieldTag workFieldTag,PaymentMethod paymentMethod,int payment){
+    public void changeExceptMember(String title, WorkFieldTag workFieldTag,PaymentMethod paymentMethod,int payment){
+        this.title = title;
         this.workFieldTag = workFieldTag;
         this.paymentMethod = paymentMethod;
         this.payment = payment;
