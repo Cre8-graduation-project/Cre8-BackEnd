@@ -7,7 +7,7 @@ import lombok.Getter;
 
 @Getter
 public enum EnrollDurationType {
-    ALWAYS("상시 채용"),DEAD_LINE("마감일 지정"),AT_COMPLETED("채용시 마감");
+    ALWAYS("상시 채용"),DEAD_LINE("마감일 지정"),AT_COMPLETED("채용 시 마감");
 
     private String name;
 

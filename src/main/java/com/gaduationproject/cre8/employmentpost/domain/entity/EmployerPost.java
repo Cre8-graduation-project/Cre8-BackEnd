@@ -1,5 +1,6 @@
 package com.gaduationproject.cre8.employmentpost.domain.entity;
 
+import com.gaduationproject.cre8.common.baseentity.BaseEntity;
 import com.gaduationproject.cre8.employmentpost.domain.type.EnrollDurationType;
 import com.gaduationproject.cre8.employmentpost.domain.type.PaymentMethod;
 import com.gaduationproject.cre8.member.entity.Member;
@@ -25,7 +26,7 @@ import lombok.NoArgsConstructor;
 @Entity
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Getter
-public class EmployerPost  {
+public class EmployerPost extends BaseEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -35,41 +36,48 @@ public class EmployerPost  {
     @Embedded
     private BasicPostContent basicPostContent;
 
+    private String companyName;
+
     private Integer numberOfEmployee;
 
     @Enumerated(EnumType.STRING)
     private EnrollDurationType enrollDurationType;
 
-    private Integer minCareerYear;
+    private Integer hopeCareerYear;
 
     private LocalDate deadLine;
 
     @OneToMany(mappedBy = "employerPost")
     List<EmployerPostWorkFieldChildTag> employerPostWorkFieldChildTagList = new ArrayList<>();
 
+
+
     @Builder
-    public EmployerPost(Member member, WorkFieldTag workFieldTag, PaymentMethod paymentMethod, Integer payment, Integer numberOfEmployee,
-             EnrollDurationType enrollDurationType, LocalDate deadLine,Integer minCareerYear) {
+    public EmployerPost(Member member,String title, WorkFieldTag workFieldTag, PaymentMethod paymentMethod, Integer paymentAmount,String companyName, Integer numberOfEmployee,
+             EnrollDurationType enrollDurationType, LocalDate deadLine,Integer hopeCareerYear) {
 
         this.basicPostContent = BasicPostContent.builder()
                 .member(member)
+                .title(title)
                 .workFieldTag(workFieldTag)
                 .paymentMethod(paymentMethod)
-                .payment(payment)
+                .paymentAmount(paymentAmount)
                 .build();
+        this.companyName = companyName;
         this.numberOfEmployee = numberOfEmployee;
         this.enrollDurationType = enrollDurationType;
-        this.minCareerYear = minCareerYear;
+        this.hopeCareerYear = hopeCareerYear;
         this.deadLine = deadLine;
     }
 
-    public void changeAllExceptMemberAndId(WorkFieldTag workFieldTag,PaymentMethod paymentMethod,Integer payment, Integer numberOfEmployee,
-            EnrollDurationType enrollDurationType,LocalDate deadLine,Integer minCareerYear){
+    public void changeAllExceptMemberAndId(String title, WorkFieldTag workFieldTag,PaymentMethod paymentMethod,Integer paymentAmount,String companyName, Integer numberOfEmployee,
+            EnrollDurationType enrollDurationType,LocalDate deadLine,Integer hopeCareerYear){
 
-        basicPostContent.changeExceptMember(workFieldTag,paymentMethod,payment);
+        basicPostContent.changeExceptMember(title, workFieldTag,paymentMethod,paymentAmount);
+        this.companyName = companyName;
         this.numberOfEmployee = numberOfEmployee;
         this.enrollDurationType = enrollDurationType;
-        this.minCareerYear = minCareerYear;
+        this.hopeCareerYear = hopeCareerYear;
         this.deadLine = deadLine;
 
     }

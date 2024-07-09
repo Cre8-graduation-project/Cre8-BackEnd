@@ -14,11 +14,15 @@ public class SaveEmployerPostRequestDto {
 
     private Long workFieldId;
 
+    private String title;
+
     private List<Long> workFieldChildTagId = new ArrayList<>();
 
     private String paymentMethod;
 
-    private Integer payment;
+    private Integer paymentAmount;
+
+    private String companyName;
 
     private Integer numberOfEmployee;
 
@@ -26,21 +30,23 @@ public class SaveEmployerPostRequestDto {
 
     private LocalDate deadLine;
 
-    private Integer minCareerYear;
+    private Integer hopeCareerYear;
 
 
     @Builder
-    public SaveEmployerPostRequestDto(Long workFieldId, List<Long> workFieldChildTagId,
-            String paymentMethod, Integer payment, Integer numberOfEmployee,
-            String enrollDurationType,LocalDate deadLine, Integer minCareerYear) {
+    public SaveEmployerPostRequestDto(Long workFieldId,String title, List<Long> workFieldChildTagId,
+            String paymentMethod,String companyName, Integer paymentAmount, Integer numberOfEmployee,
+            String enrollDurationType,LocalDate deadLine, Integer hopeCareerYear) {
         this.workFieldId = workFieldId;
+        this.title = title;
         this.workFieldChildTagId = workFieldChildTagId;
         this.paymentMethod = paymentMethod;
-        this.payment = payment;
+        this.paymentAmount = paymentAmount;
+        this.companyName = companyName;
         this.numberOfEmployee = numberOfEmployee;
         this.enrollDurationType = enrollDurationType;
         this.deadLine = deadLine;
-        this.minCareerYear = minCareerYear;
+        this.hopeCareerYear = hopeCareerYear;
     }
 
 

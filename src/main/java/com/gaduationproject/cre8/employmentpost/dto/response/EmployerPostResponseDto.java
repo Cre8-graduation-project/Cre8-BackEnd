@@ -15,11 +15,15 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor(access = AccessLevel.PROTECTED)
 public class EmployerPostResponseDto {
 
+    private String title;
+
+    private String companyName;
+
     private List<String> tagName = new ArrayList<>();
 
     private String paymentMethod;
 
-    private int pay;
+    private int paymentAmount;
 
     private int numberOfEmployee;
 
@@ -27,13 +31,13 @@ public class EmployerPostResponseDto {
 
     private LocalDate localDate;
 
-    private int minCareerYear;
+    private int hopeCareerYear;
 
     public static EmployerPostResponseDto from(List<String> tagName, EmployerPost employerPost){
 
-        return new EmployerPostResponseDto(tagName,employerPost.getBasicPostContent().getPaymentMethod().name(),
-                employerPost.getBasicPostContent().getPayment(),employerPost.getNumberOfEmployee(),employerPost.getEnrollDurationType().getName(),
-                employerPost.getDeadLine(),employerPost.getMinCareerYear());
+        return new EmployerPostResponseDto(employerPost.getBasicPostContent().getTitle(),employerPost.getCompanyName(),tagName,employerPost.getBasicPostContent().getPayment().getPaymentMethod().getName(),
+                employerPost.getBasicPostContent().getPayment().getPaymentAmount(),employerPost.getNumberOfEmployee(),employerPost.getEnrollDurationType().getName(),
+                employerPost.getDeadLine(),employerPost.getHopeCareerYear());
 
     }
 

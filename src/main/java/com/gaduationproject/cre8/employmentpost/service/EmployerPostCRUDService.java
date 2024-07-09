@@ -20,6 +20,7 @@ import com.gaduationproject.cre8.workfieldtag.entity.WorkFieldChildTag;
 import com.gaduationproject.cre8.workfieldtag.entity.WorkFieldTag;
 import com.gaduationproject.cre8.workfieldtag.repository.WorkFieldChildTagRepository;
 import com.gaduationproject.cre8.workfieldtag.repository.WorkFieldTagRepository;
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -43,6 +44,9 @@ public class EmployerPostCRUDService {
     @Transactional
     public void saveEmployerPost(final String loginId,final SaveEmployerPostRequestDto saveEmployerPostRequestDto){
 
+        checkDeadLineOnlyOnDeadLine(saveEmployerPostRequestDto.getDeadLine(),EnrollDurationType.toEnrollDurationTypeEnum(
+                saveEmployerPostRequestDto.getEnrollDurationType()));
+
         Member member = getLoginMember(loginId);
         WorkFieldTag workFieldTag = getWorkFieldTag(saveEmployerPostRequestDto.getWorkFieldId());
         List<WorkFieldChildTag> workFieldChildTagList = getWorkFieldChildTag(
@@ -51,14 +55,16 @@ public class EmployerPostCRUDService {
 
         EmployerPost employerPost = EmployerPost.builder()
                 .member(member)
+                .title(saveEmployerPostRequestDto.getTitle())
                 .workFieldTag(workFieldTag)
                 .paymentMethod(PaymentMethod.toPaymentMethodEnum(saveEmployerPostRequestDto.getPaymentMethod()))
-                .payment(saveEmployerPostRequestDto.getPayment())
+                .paymentAmount(saveEmployerPostRequestDto.getPaymentAmount())
+                .companyName(saveEmployerPostRequestDto.getCompanyName())
                 .numberOfEmployee(saveEmployerPostRequestDto.getNumberOfEmployee())
                 .enrollDurationType(EnrollDurationType.toEnrollDurationTypeEnum(
                         saveEmployerPostRequestDto.getEnrollDurationType()))
                 .deadLine(saveEmployerPostRequestDto.getDeadLine())
-                .minCareerYear(saveEmployerPostRequestDto.getMinCareerYear())
+                .hopeCareerYear(saveEmployerPostRequestDto.getHopeCareerYear())
                 .build();
 
         employerPostRepository.save(employerPost);
@@ -78,7 +84,7 @@ public class EmployerPostCRUDService {
     }
 
     //Employer Post 단건 조회
-    public EmployerPostResponseDto showEmployerPost(Long employerPostId){
+    public EmployerPostResponseDto showEmployerPost(final Long employerPostId){
 
         EmployerPost employerPost = employerPostRepository
                 .findByIdWithFetchWorkFieldTagAndEmployerPostChildTagListAndWorkFieldChildTag(employerPostId).orElseThrow(
@@ -100,6 +106,9 @@ public class EmployerPostCRUDService {
     @Transactional
     public void updateEmployerPost(final String loginId, final EditEmployerPostRequestDto editEmployerPostRequestDto){
 
+        checkDeadLineOnlyOnDeadLine(editEmployerPostRequestDto.getDeadLine(),EnrollDurationType.toEnrollDurationTypeEnum(
+                editEmployerPostRequestDto.getEnrollDurationType()));
+
         EmployerPost employerPost = findEmployerPostById(editEmployerPostRequestDto.getEmployerPostId());
         checkAccessMember(loginId,employerPost);
         WorkFieldTag workFieldTag = getWorkFieldTag(editEmployerPostRequestDto.getWorkFieldId());
@@ -120,12 +129,12 @@ public class EmployerPostCRUDService {
         });
 
 
-        employerPost.changeAllExceptMemberAndId(workFieldTag,PaymentMethod.toPaymentMethodEnum(editEmployerPostRequestDto.getPaymentMethod()),
-                editEmployerPostRequestDto.getPayment(),
+        employerPost.changeAllExceptMemberAndId(editEmployerPostRequestDto.getTitle(), workFieldTag,PaymentMethod.toPaymentMethodEnum(editEmployerPostRequestDto.getPaymentMethod()),
+                editEmployerPostRequestDto.getPaymentAmount(),editEmployerPostRequestDto.getCompanyName(),
                 editEmployerPostRequestDto.getNumberOfEmployee(),
                 EnrollDurationType.toEnrollDurationTypeEnum(editEmployerPostRequestDto.getEnrollDurationType()),
                         editEmployerPostRequestDto.getDeadLine(),
-                        editEmployerPostRequestDto.getMinCareerYear()
+                        editEmployerPostRequestDto.getHopeCareerYear()
                         );
 
     }
@@ -190,6 +199,19 @@ public class EmployerPostCRUDService {
             return workFieldChildTag;
 
         }).collect(Collectors.toList());
+
+    }
+
+    private void checkDeadLineOnlyOnDeadLine(final LocalDate deadLine,final EnrollDurationType enrollDurationType){
+
+        if(enrollDurationType!=EnrollDurationType.DEAD_LINE && deadLine!=null){
+            throw new BadRequestException(ErrorCode.CANT_SET_DEADLINE_WITH_NO_ENUM_DEADLINE);
+        }
+
+        if(enrollDurationType==EnrollDurationType.DEAD_LINE && deadLine ==null){
+            throw new BadRequestException(ErrorCode.INSERT_DEADLINE_ON_ENUM_DEADLINE);
+        }
+
 
     }
 
