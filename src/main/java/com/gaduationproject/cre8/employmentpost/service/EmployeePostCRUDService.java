@@ -11,14 +11,18 @@ import com.gaduationproject.cre8.employmentpost.domain.type.EnrollDurationType;
 import com.gaduationproject.cre8.employmentpost.domain.type.PaymentMethod;
 import com.gaduationproject.cre8.employmentpost.dto.request.SaveEmployeePostRequestDto;
 import com.gaduationproject.cre8.employmentpost.dto.request.SaveEmployerPostRequestDto;
+import com.gaduationproject.cre8.employmentpost.dto.response.EmployeePostResponseDto;
+import com.gaduationproject.cre8.employmentpost.dto.response.EmployerPostResponseDto;
 import com.gaduationproject.cre8.employmentpost.repository.EmployeePostRepository;
 import com.gaduationproject.cre8.employmentpost.repository.EmployeePostWorkFieldChildTagRepository;
 import com.gaduationproject.cre8.member.entity.Member;
 import com.gaduationproject.cre8.member.repository.MemberRepository;
+import com.gaduationproject.cre8.portfolio.service.PortfolioService;
 import com.gaduationproject.cre8.workfieldtag.entity.WorkFieldChildTag;
 import com.gaduationproject.cre8.workfieldtag.entity.WorkFieldTag;
 import com.gaduationproject.cre8.workfieldtag.repository.WorkFieldChildTagRepository;
 import com.gaduationproject.cre8.workfieldtag.repository.WorkFieldTagRepository;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
@@ -30,6 +34,7 @@ import org.springframework.transaction.annotation.Transactional;
 @Transactional(readOnly = true)
 public class EmployeePostCRUDService {
 
+    private final PortfolioService portfolioService;
     private final EmployeePostRepository employeePostRepository;
     private final MemberRepository memberRepository;
     private final WorkFieldTagRepository workFieldTagRepository;
@@ -68,6 +73,27 @@ public class EmployeePostCRUDService {
 
         });
 
+
+    }
+
+    public EmployeePostResponseDto showEmployeePost(final Long employeePostId){
+
+        EmployeePost employeePost = employeePostRepository
+                .findByIdWithFetchMemberAndWorkFieldTagAndEmployeePostChildTagListAndWorkFieldChildTag(employeePostId).orElseThrow(
+                        ()-> new NotFoundException(ErrorCode.CANT_FIND_EMPLOYEE_POST));
+
+        List<String> tagList = new ArrayList<>();
+
+        if(employeePost.getBasicPostContent().getWorkFieldTag()!=null){
+            tagList.add(employeePost.getBasicPostContent().getWorkFieldTag().getName());
+        }
+
+        employeePost.getEmployeePostWorkFieldChildTagList().stream().forEach(employeePostWorkFieldChildTag -> {
+            tagList.add(employeePostWorkFieldChildTag.getWorkFieldChildTag().getName());
+        });
+
+        return EmployeePostResponseDto.of(employeePost,tagList,portfolioService.showPortfolioList(employeePost.getBasicPostContent().getMember()
+                .getId()));
 
     }
 

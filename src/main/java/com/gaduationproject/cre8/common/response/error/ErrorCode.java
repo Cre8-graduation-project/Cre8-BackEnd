@@ -44,6 +44,7 @@ public enum ErrorCode {
     CANT_FIND_WORK_FIELD_CHILD_TAG("하위 태그가 존재하지 않습니다"),
     CANT_FIND_PORTFOLIO("포트폴리오를 찾을 수 없습니다"),
     CANT_FIND_EMPLOYER_POST("구인글을 찾을 수 없습니다"),
+    CANT_FIND_EMPLOYEE_POST("구직글을 찾을 수 없습니다"),
     CANT_FIND_PAYMENT_METHOD("해당 급여 지급 방식을 다시 확인해주세요"),
     CANT_FIND_ENROLL_DURATION_TYPE("해당 채용 방식을 다시 확인해주세요"),
 
