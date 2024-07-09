@@ -169,7 +169,7 @@ public class EmployerPostCRUDService {
 
     private void checkAccessMember(final String loginId,final EmployerPost employerPost){
 
-        if(!loginId.equals(employerPost.getBasicPostContent().getMember().getLoginId())){
+        if(loginId==null || !loginId.equals(employerPost.getBasicPostContent().getMember().getLoginId())){
             throw new BadRequestException(ErrorCode.CANT_ACCESS_EMPLOYER_POST);
         }
 
