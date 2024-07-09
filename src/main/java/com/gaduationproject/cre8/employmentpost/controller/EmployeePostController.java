@@ -17,6 +17,7 @@ import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -77,6 +78,22 @@ public class EmployeePostController {
 
         return ResponseEntity.ok().build();
     }
+
+    @DeleteMapping("/{postId}")
+    @Operation(summary = "구직자 게시글 삭제",description = "구직자가 게시글을 Id 기반으로 삭제합니다 ")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200",description = "구직자 게시글 성공적 삭제"),
+            @ApiResponse(responseCode = "400",description = "다른 사람의 구직자 게시글을 삭제할 때"),
+            @ApiResponse(responseCode = "404",description = "ID 기반으로 구직자 게시글을 찾지 못할 때")
+
+    })
+    public ResponseEntity<Void> deleteEmployeePost(@CurrentMemberLoginId String loginId, @PathVariable("postId") Long employeePostId){
+
+        employeePostCRUDService.deleteEmployeePost(loginId,employeePostId);
+
+        return ResponseEntity.ok().build();
+    }
+
 
 
 }

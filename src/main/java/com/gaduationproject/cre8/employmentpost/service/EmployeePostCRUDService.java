@@ -129,6 +129,18 @@ public class EmployeePostCRUDService {
 
     }
 
+    @Transactional
+    public void deleteEmployeePost(final String loginId,final Long employeePostId){
+
+        EmployeePost employeePost = findEmployeePostById(employeePostId);
+        checkAccessMember(loginId,employeePost);
+
+        employeePostWorkFieldChildTagRepository.deleteByEmployeePost(employeePost);
+
+        employeePostRepository.deleteById(employeePostId);
+
+    }
+
     private Member getLoginMember(final String loginId){
 
         return memberRepository.findMemberByLoginId(loginId).orElseThrow(()->new NotFoundException(
