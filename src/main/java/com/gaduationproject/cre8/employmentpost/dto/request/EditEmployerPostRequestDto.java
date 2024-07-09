@@ -1,5 +1,7 @@
 package com.gaduationproject.cre8.employmentpost.dto.request;
 
+import jakarta.validation.constraints.Min;
+import jakarta.validation.constraints.NotBlank;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;

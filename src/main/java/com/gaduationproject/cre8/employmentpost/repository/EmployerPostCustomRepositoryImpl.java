@@ -7,32 +7,30 @@ import static com.gaduationproject.cre8.workfieldtag.entity.QWorkFieldTag.workFi
 import com.gaduationproject.cre8.employmentpost.domain.entity.EmployerPost;
 import com.gaduationproject.cre8.employmentpost.domain.entity.EmployerPostWorkFieldChildTag;
 import com.gaduationproject.cre8.employmentpost.dto.request.EmployerPostSearch;
+import com.querydsl.core.types.CollectionExpression;
+import com.querydsl.core.types.Order;
+import com.querydsl.core.types.OrderSpecifier;
 import com.querydsl.core.types.dsl.BooleanExpression;
 import com.querydsl.jpa.JPAExpressions;
+import com.querydsl.jpa.impl.JPAQuery;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 
 @RequiredArgsConstructor
 public class EmployerPostCustomRepositoryImpl implements EmployerPostCustomRepository{
 
     private final JPAQueryFactory queryFactory;
+    private static final String CREATED_AT="createdAt";
+    private static final String DEAD_LINE="deadLine";
+    private static final String HOPE_CAREER = "hopeCareer";
 
     @Override
-    public List<EmployerPost> showEmployerPostListWithPage(EmployerPostSearch employerPostSearch,Pageable pageable){
-
-        System.out.println(employerPostSearch.getWorkFieldChildTagId());
-        System.out.println(employerPostSearch.getWorkFieldId());
-
-      /*  List<EmployerPost> employerPostList = queryFactory
-                .selectFrom(employerPost)
-                .leftJoin(employerPost.basicPostContent.workFieldTag,workFieldTag).fetchJoin()
-                .leftJoin(employerPost.employerPostWorkFieldChildTagList,employerPostWorkFieldChildTag)
-                .where(workFieldChildTagEq(employerPostSearch.getWorkFieldChildTagId()))
-                .fetch();*/
-
+    public Page<EmployerPost> showEmployerPostListWithPage(final EmployerPostSearch employerPostSearch,final Pageable pageable){
 
         List<Long> employerPostTmpList = queryFactory
                 .select(employerPostWorkFieldChildTag.employerPost.id)
@@ -42,50 +40,87 @@ public class EmployerPostCustomRepositoryImpl implements EmployerPostCustomRepos
                 .having(employerPostWorkFieldChildTag.workFieldChildTag.id.countDistinct().eq((long) employerPostSearch.getWorkFieldChildTagId().size()))
                 .fetch();
 
-        System.out.println(employerPostTmpList);
-
-        List<EmployerPost> employerPostList = queryFactory
+        List<EmployerPost> content = queryFactory
                 .selectFrom(employerPost)
-                .where(checkChildIdByEmployerPostId(employerPostTmpList),moreThanPay(employerPostSearch.getPay()),moreThanMinCareer(employerPostSearch.getMinCareer()))
+                .leftJoin(employerPost.basicPostContent.workFieldTag).fetchJoin()
+                .where(checkChildIdByEmployerPostId(employerPostTmpList,employerPostSearch.getWorkFieldChildTagId())
+                        ,greaterThanMinCareer(employerPostSearch.getMinCareer()),lowerThanMaxCareer(employerPostSearch.getMaxCareer())
+                        ,workFieldIdEqWithEmployerPostTmpList(employerPostSearch.getWorkFieldId()))
                 .offset(pageable.getOffset())
                 .limit(pageable.getPageSize())
+                .orderBy(employerPostSort(pageable))
                 .fetch();
 
-        System.out.println(employerPostList);
+        Long count = queryFactory
+                .select(employerPost.count())
+                .from(employerPost)
+                .where(checkChildIdByEmployerPostId(employerPostTmpList,employerPostSearch.getWorkFieldChildTagId())
+                        ,greaterThanMinCareer(employerPostSearch.getMinCareer()),lowerThanMaxCareer(employerPostSearch.getMaxCareer())
+                        ,workFieldIdEqWithEmployerPostTmpList(employerPostSearch.getWorkFieldId()))
+                .fetchOne();
 
 
+        return new PageImpl<>(content,pageable,count);
 
-        return employerPostList;
 
     }
 
-    private BooleanExpression workFieldChildTagEq(List<Long> childTagId){
 
-        if(childTagId == null || childTagId.isEmpty()){
+    private BooleanExpression checkChildIdByEmployerPostId(final List<Long> employerPostIdList,final List<Long> beforeWorkFieldChildTag){
+
+        if(beforeWorkFieldChildTag.isEmpty()){
             return null;
         }
 
-        return JPAExpressions.select(employerPostWorkFieldChildTag.employerPost.id)
-                .from(employerPostWorkFieldChildTag)
-                .where(employerPostWorkFieldChildTag.workFieldChildTag.id.in(childTagId))
-                .groupBy(employerPostWorkFieldChildTag.employerPost.id)
-                .having(employerPostWorkFieldChildTag.workFieldChildTag.id.countDistinct().eq((long) childTagId.size()))
-                .exists();
-
-       // return childTagId.isEmpty()||childTagId ==null?null:employerPostWorkFieldChildTag.workFieldChildTag.id.in(childTagId);
+        return employerPost.id.in(employerPostIdList);
     }
 
-    private BooleanExpression checkChildIdByEmployerPostId(List<Long> employerPostIdList){
-        return employerPostIdList.isEmpty()?null:employerPost.id.in(employerPostIdList);
+
+
+
+    private BooleanExpression greaterThanMinCareer(final Integer minCareer){
+
+        return minCareer==null?null:employerPost.hopeCareerYear.goe(minCareer);
     }
 
-    private BooleanExpression moreThanPay(Integer paymentAmount){
-        return paymentAmount==null?null:employerPost.basicPostContent.payment.paymentAmount.goe(paymentAmount);
+    private BooleanExpression lowerThanMaxCareer(final Integer maxCareer){
+
+        return maxCareer==null?null:employerPost.hopeCareerYear.loe(maxCareer);
     }
 
-    private BooleanExpression moreThanMinCareer(Integer minCareer){
-        return minCareer==null?null:employerPost.minCareerYear.goe(minCareer);
+    private BooleanExpression workFieldIdEqWithEmployerPostTmpList(final Long workFieldTagId){
+
+        return workFieldTagId==null?null:employerPost.basicPostContent.workFieldTag.id.eq(workFieldTagId);
+
     }
+
+    private OrderSpecifier<?> employerPostSort(final Pageable pageable){
+        if(!pageable.getSort().isEmpty()){
+
+            for(Sort.Order order: pageable.getSort()){
+                Order direction  = order.getDirection().isAscending()? Order.ASC:Order.DESC;
+
+                switch (order.getProperty()){
+
+                    case CREATED_AT:
+                        return new OrderSpecifier(direction,employerPost.createdAt);
+
+                    case DEAD_LINE:
+                        return new OrderSpecifier(direction,employerPost.deadLine);
+
+                    case HOPE_CAREER:
+                        return new OrderSpecifier(direction,employerPost.hopeCareerYear);
+
+                }
+            }
+        }
+
+        return new OrderSpecifier(Order.ASC,employerPost.id);
+    }
+
+
+
+
 
 
 }
