@@ -1,5 +1,6 @@
 package com.gaduationproject.cre8.employmentpost.domain.entity;
 
+import com.gaduationproject.cre8.employmentpost.domain.type.EnrollDurationType;
 import com.gaduationproject.cre8.employmentpost.domain.type.PaymentMethod;
 import com.gaduationproject.cre8.member.entity.Member;
 import com.gaduationproject.cre8.workfieldtag.entity.WorkFieldTag;
@@ -10,6 +11,7 @@ import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.OneToMany;
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 import lombok.AccessLevel;
@@ -45,5 +47,13 @@ public class EmployeePost {
                 .paymentAmount(paymentAmount)
                 .build();
         this.careerYear = careerYear;
+    }
+
+    public void changeAllExceptMemberAndId(String title, WorkFieldTag workFieldTag,PaymentMethod paymentMethod,Integer paymentAmount,
+            Integer careerYear){
+
+        basicPostContent.changeExceptMember(title, workFieldTag,paymentMethod,paymentAmount);
+        this.careerYear = careerYear;
+
     }
 }

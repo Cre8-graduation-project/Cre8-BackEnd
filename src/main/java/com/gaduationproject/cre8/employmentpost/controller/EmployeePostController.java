@@ -2,6 +2,8 @@ package com.gaduationproject.cre8.employmentpost.controller;
 
 import com.gaduationproject.cre8.auth.interfaces.CurrentMemberLoginId;
 import com.gaduationproject.cre8.common.response.BaseResponse;
+import com.gaduationproject.cre8.employmentpost.dto.request.EditEmployeePostRequestDto;
+import com.gaduationproject.cre8.employmentpost.dto.request.EditEmployerPostRequestDto;
 import com.gaduationproject.cre8.employmentpost.dto.request.SaveEmployeePostRequestDto;
 import com.gaduationproject.cre8.employmentpost.dto.request.SaveEmployerPostRequestDto;
 import com.gaduationproject.cre8.employmentpost.dto.response.EmployeePostResponseDto;
@@ -18,6 +20,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -53,10 +56,26 @@ public class EmployeePostController {
             @ApiResponse(responseCode = "404",description = "ID로 구직자 게시글을 찾지 못했을 때")
 
     })
-    public ResponseEntity<BaseResponse<EmployeePostResponseDto>> showEmployeePost(@PathVariable("postId") Long postId){
+    public ResponseEntity<BaseResponse<EmployeePostResponseDto>> showEmployeePost(@PathVariable("postId") final Long postId){
 
         return ResponseEntity.ok(BaseResponse.createSuccess(employeePostCRUDService.showEmployeePost(postId)));
 
+    }
+
+    @PutMapping
+    @Operation(summary = "구직자 게시글 수정",description = "구직자가 게시글을 Id 기반으로 수정합니다 ")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200",description = "구직자 게시글 성공적 수정"),
+            @ApiResponse(responseCode = "400",description = "다른 사람의 구직자 게시글을 수정할 때, 하위 태그의 부모가 상위 태그랑 같지 않을 때"),
+            @ApiResponse(responseCode = "404",description = "ID 기반으로 구직자 게시글을 못찾을 때, 작업 태그를 찾지 못할 때 ")
+
+    })
+    public ResponseEntity<Void> editEmployeePost(@CurrentMemberLoginId final String longinId,
+            @RequestBody @Valid EditEmployeePostRequestDto editEmployeePostRequestDto){
+
+        employeePostCRUDService.updateEmployeePost(longinId,editEmployeePostRequestDto);
+
+        return ResponseEntity.ok().build();
     }
 
 

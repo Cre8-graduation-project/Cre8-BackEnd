@@ -9,6 +9,8 @@ import com.gaduationproject.cre8.employmentpost.domain.entity.EmployerPost;
 import com.gaduationproject.cre8.employmentpost.domain.entity.EmployerPostWorkFieldChildTag;
 import com.gaduationproject.cre8.employmentpost.domain.type.EnrollDurationType;
 import com.gaduationproject.cre8.employmentpost.domain.type.PaymentMethod;
+import com.gaduationproject.cre8.employmentpost.dto.request.EditEmployeePostRequestDto;
+import com.gaduationproject.cre8.employmentpost.dto.request.EditEmployerPostRequestDto;
 import com.gaduationproject.cre8.employmentpost.dto.request.SaveEmployeePostRequestDto;
 import com.gaduationproject.cre8.employmentpost.dto.request.SaveEmployerPostRequestDto;
 import com.gaduationproject.cre8.employmentpost.dto.response.EmployeePostResponseDto;
@@ -97,6 +99,36 @@ public class EmployeePostCRUDService {
 
     }
 
+    @Transactional
+    public void updateEmployeePost(final String loginId, final EditEmployeePostRequestDto editEmployeePostRequestDto){
+
+
+        EmployeePost employeePost = findEmployeePostById(editEmployeePostRequestDto.getEmployeePostId());
+        checkAccessMember(loginId,employeePost);
+        WorkFieldTag workFieldTag = getWorkFieldTag(editEmployeePostRequestDto.getWorkFieldId());
+        List<WorkFieldChildTag> workFieldChildTagList = getWorkFieldChildTag(editEmployeePostRequestDto.getWorkFieldChildTagId(),
+                editEmployeePostRequestDto.getWorkFieldId());
+
+
+        employeePostWorkFieldChildTagRepository.deleteByEmployeePost(employeePost);
+        workFieldChildTagList.forEach(workFieldChildTag -> {
+
+            EmployeePostWorkFieldChildTag employeePostWorkFieldChildTag = EmployeePostWorkFieldChildTag.builder()
+                    .employeePost(employeePost)
+                    .workFieldChildTag(workFieldChildTag)
+                    .build();
+
+            employeePostWorkFieldChildTagRepository.save(employeePostWorkFieldChildTag);
+
+        });
+
+
+        employeePost.changeAllExceptMemberAndId(editEmployeePostRequestDto.getTitle(), workFieldTag,PaymentMethod.toPaymentMethodEnum(editEmployeePostRequestDto.getPaymentMethod()),
+                editEmployeePostRequestDto.getPaymentAmount(),
+                editEmployeePostRequestDto.getCareerYear());
+
+    }
+
     private Member getLoginMember(final String loginId){
 
         return memberRepository.findMemberByLoginId(loginId).orElseThrow(()->new NotFoundException(
@@ -127,6 +159,18 @@ public class EmployeePostCRUDService {
             return workFieldChildTag;
 
         }).collect(Collectors.toList());
+
+    }
+
+    private EmployeePost findEmployeePostById(Long employeePostId){
+        return employeePostRepository.findById(employeePostId).orElseThrow(()->new NotFoundException(ErrorCode.CANT_FIND_EMPLOYEE_POST));
+    }
+
+    private void checkAccessMember(final String loginId,final EmployeePost employeePost){
+
+        if(loginId==null || !loginId.equals(employeePost.getBasicPostContent().getMember().getLoginId())){
+            throw new BadRequestException(ErrorCode.CANT_ACCESS_EMPLOYEE_POST);
+        }
 
     }
 
