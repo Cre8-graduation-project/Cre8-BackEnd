@@ -20,6 +20,7 @@ import com.gaduationproject.cre8.workfieldtag.entity.WorkFieldChildTag;
 import com.gaduationproject.cre8.workfieldtag.entity.WorkFieldTag;
 import com.gaduationproject.cre8.workfieldtag.repository.WorkFieldChildTagRepository;
 import com.gaduationproject.cre8.workfieldtag.repository.WorkFieldTagRepository;
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -42,6 +43,9 @@ public class EmployerPostCRUDService {
     //Employer Post 저장
     @Transactional
     public void saveEmployerPost(final String loginId,final SaveEmployerPostRequestDto saveEmployerPostRequestDto){
+
+        checkDeadLineOnlyOnDeadLine(saveEmployerPostRequestDto.getDeadLine(),EnrollDurationType.toEnrollDurationTypeEnum(
+                saveEmployerPostRequestDto.getEnrollDurationType()));
 
         Member member = getLoginMember(loginId);
         WorkFieldTag workFieldTag = getWorkFieldTag(saveEmployerPostRequestDto.getWorkFieldId());
@@ -101,6 +105,9 @@ public class EmployerPostCRUDService {
 
     @Transactional
     public void updateEmployerPost(final String loginId, final EditEmployerPostRequestDto editEmployerPostRequestDto){
+
+        checkDeadLineOnlyOnDeadLine(editEmployerPostRequestDto.getDeadLine(),EnrollDurationType.toEnrollDurationTypeEnum(
+                editEmployerPostRequestDto.getEnrollDurationType()));
 
         EmployerPost employerPost = findEmployerPostById(editEmployerPostRequestDto.getEmployerPostId());
         checkAccessMember(loginId,employerPost);
@@ -192,6 +199,19 @@ public class EmployerPostCRUDService {
             return workFieldChildTag;
 
         }).collect(Collectors.toList());
+
+    }
+
+    private void checkDeadLineOnlyOnDeadLine(final LocalDate deadLine,final EnrollDurationType enrollDurationType){
+
+        if(enrollDurationType!=EnrollDurationType.DEAD_LINE && deadLine!=null){
+            throw new BadRequestException(ErrorCode.CANT_SET_DEADLINE_WITH_NO_ENUM_DEADLINE);
+        }
+
+        if(enrollDurationType==EnrollDurationType.DEAD_LINE && deadLine ==null){
+            throw new BadRequestException(ErrorCode.INSERT_DEADLINE_ON_ENUM_DEADLINE);
+        }
+
 
     }
 
