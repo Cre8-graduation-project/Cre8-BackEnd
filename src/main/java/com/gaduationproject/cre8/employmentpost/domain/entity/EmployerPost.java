@@ -1,5 +1,6 @@
 package com.gaduationproject.cre8.employmentpost.domain.entity;
 
+import com.gaduationproject.cre8.common.baseentity.BaseEntity;
 import com.gaduationproject.cre8.employmentpost.domain.type.EnrollDurationType;
 import com.gaduationproject.cre8.employmentpost.domain.type.PaymentMethod;
 import com.gaduationproject.cre8.member.entity.Member;
@@ -25,7 +26,7 @@ import lombok.NoArgsConstructor;
 @Entity
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Getter
-public class EmployerPost  {
+public class EmployerPost extends BaseEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
