@@ -20,6 +20,8 @@ public enum ErrorCode {
     NOT_CORRECT_PARENT_TAG("하위 태그의 부모 코드가 일치하지 않습니다"),
     CANT_ACCESS_PORTFOLIO("자신의 포트폴리오만 수정,삭제할 수 있습니다"),
     CANT_ACCESS_EMPLOYER_POST("자신의 구인글만 수정, 삭제할 수 있습니다"),
+    CANT_SET_DEADLINE_WITH_NO_ENUM_DEADLINE("데드라인을 선택해야 날짜를 입력할 수 있습니다"),
+    INSERT_DEADLINE_ON_ENUM_DEADLINE("데드라인을 선택하면 날짜를 입력하셔야 합니다"),
 
 
     /**

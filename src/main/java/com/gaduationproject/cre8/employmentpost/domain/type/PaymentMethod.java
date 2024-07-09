@@ -8,7 +8,7 @@ import lombok.Getter;
 @Getter
 public enum PaymentMethod {
 
-    PER_PIECE("작업물 건당 지급"),PER_MINUTE("작업물 분 당 지급"),MONTH("월급"), ELSE("기타");
+    PER_PIECE("작업물 건 당 지급"),PER_MINUTE("작업물 분 당 지급"),MONTH("월급"), ELSE("기타");
 
     private String name;
 
