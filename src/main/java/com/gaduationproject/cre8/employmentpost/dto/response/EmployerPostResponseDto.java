@@ -31,13 +31,13 @@ public class EmployerPostResponseDto {
 
     private LocalDate localDate;
 
-    private int minCareerYear;
+    private int hopeCareerYear;
 
     public static EmployerPostResponseDto from(List<String> tagName, EmployerPost employerPost){
 
         return new EmployerPostResponseDto(employerPost.getBasicPostContent().getTitle(),employerPost.getCompanyName(),tagName,employerPost.getBasicPostContent().getPayment().getPaymentMethod().getName(),
                 employerPost.getBasicPostContent().getPayment().getPaymentAmount(),employerPost.getNumberOfEmployee(),employerPost.getEnrollDurationType().getName(),
-                employerPost.getDeadLine(),employerPost.getMinCareerYear());
+                employerPost.getDeadLine(),employerPost.getHopeCareerYear());
 
     }
 
