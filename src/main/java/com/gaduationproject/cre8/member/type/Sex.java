@@ -1,9 +1,16 @@
 package com.gaduationproject.cre8.member.type;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
+import lombok.Getter;
 
+@Getter
 public enum Sex {
-    M,W;
+    M("남"),W("여");
+
+    private String name;
+    Sex(String name){
+        this.name = name;
+    }
     @JsonCreator
     public static Sex from(String val){
         for(Sex sex : Sex.values()){
