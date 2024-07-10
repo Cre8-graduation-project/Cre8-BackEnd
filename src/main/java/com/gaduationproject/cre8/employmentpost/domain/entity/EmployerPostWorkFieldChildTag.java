@@ -33,8 +33,9 @@ public class EmployerPostWorkFieldChildTag {
     private WorkFieldChildTag workFieldChildTag;
 
     @Builder
-    public EmployerPostWorkFieldChildTag(EmployerPost employerPost,
-            WorkFieldChildTag workFieldChildTag) {
+    public EmployerPostWorkFieldChildTag(final EmployerPost employerPost,
+            final WorkFieldChildTag workFieldChildTag) {
+
         this.employerPost = employerPost;
         this.workFieldChildTag = workFieldChildTag;
         employerPost.getEmployerPostWorkFieldChildTagList().add(this);

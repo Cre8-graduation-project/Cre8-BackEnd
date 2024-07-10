@@ -20,25 +20,30 @@ public class EmployeePostResponseDto {
     private String name;
     private String sex;
     private int birthYear;
-    private List<String> tagName = new ArrayList<>();
+    private TagPostResponseDto tagPostResponseDto;
     private List<PortfolioSimpleResponseDto> portfolioSimpleResponseDtoList = new ArrayList<>();
     private String paymentMethod;
-    private int paymentAmount;
-    private int careerYear;
+    private Integer paymentAmount;
+    private Integer careerYear;
+    private String contents;
 
 
-    public static EmployeePostResponseDto of(final EmployeePost employeePost,final List<String> tagName,
+    public static EmployeePostResponseDto of(final List<SubCategoryWithChildTagResponseDto> subCategoryWithChildTagResponseDtoList,
+                                             final EmployeePost employeePost,
                                              final List<PortfolioSimpleResponseDto> portfolioSimpleResponseDtoList){
+
+        String workFieldName = employeePost.getBasicPostContent().getWorkFieldTag()==null?null:employeePost.getBasicPostContent().getWorkFieldTag().getName();
 
         return new EmployeePostResponseDto(employeePost.getBasicPostContent().getTitle(),
                 employeePost.getBasicPostContent().getMember().getName(),
                 employeePost.getBasicPostContent().getMember().getSex().getName(),
                 employeePost.getBasicPostContent().getMember().getBirthDay().getYear(),
-                tagName,
+                TagPostResponseDto.of(workFieldName,subCategoryWithChildTagResponseDtoList),
                 portfolioSimpleResponseDtoList,
                 employeePost.getBasicPostContent().getPayment().getPaymentMethod().getName(),
                 employeePost.getBasicPostContent().getPayment().getPaymentAmount(),
-                employeePost.getCareerYear());
+                employeePost.getCareerYear(),
+                employeePost.getBasicPostContent().getContents());
 
     }
 

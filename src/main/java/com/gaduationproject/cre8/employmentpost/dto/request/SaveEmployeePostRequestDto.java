@@ -18,11 +18,12 @@ public class SaveEmployeePostRequestDto {
     private String paymentMethod;
     private Integer paymentAmount;
     private Integer careerYear;
+    private String contents;
 
     @Builder
     public SaveEmployeePostRequestDto(final String title, final Long workFieldId,
             final List<Long> workFieldChildTagId,
-            final String paymentMethod, final Integer paymentAmount, final Integer careerYear) {
+            final String paymentMethod, final Integer paymentAmount, final Integer careerYear,final String contents) {
 
         this.title = title;
         this.workFieldId = workFieldId;
@@ -30,5 +31,6 @@ public class SaveEmployeePostRequestDto {
         this.paymentMethod = paymentMethod;
         this.paymentAmount = paymentAmount;
         this.careerYear = careerYear;
+        this.contents = contents;
     }
 }

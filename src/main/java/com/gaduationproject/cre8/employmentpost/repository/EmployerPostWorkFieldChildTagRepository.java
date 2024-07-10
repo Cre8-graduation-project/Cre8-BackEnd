@@ -6,6 +6,6 @@ import org.springframework.data.jpa.repository.JpaRepository;
 
 public interface EmployerPostWorkFieldChildTagRepository extends JpaRepository<EmployerPostWorkFieldChildTag,Long> {
 
-    void deleteByEmployerPost(EmployerPost employerPost);
+    void deleteByEmployerPost(final EmployerPost employerPost);
 
 }

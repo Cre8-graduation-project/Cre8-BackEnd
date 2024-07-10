@@ -16,28 +16,26 @@ import lombok.NoArgsConstructor;
 public class EmployerPostResponseDto {
 
     private String title;
-
     private String companyName;
-
-    private List<String> tagName = new ArrayList<>();
-
+    private TagPostResponseDto tagPostResponseDto;
     private String paymentMethod;
-
-    private int paymentAmount;
-
-    private int numberOfEmployee;
-
+    private Integer paymentAmount;
+    private Integer numberOfEmployee;
     private String enrollDurationType;
-
     private LocalDate localDate;
+    private Integer hopeCareerYear;
+    private String contents;
 
-    private int hopeCareerYear;
+    public static EmployerPostResponseDto of(final List<SubCategoryWithChildTagResponseDto> subCategoryWithChildTagResponseDtoList, final EmployerPost employerPost){
 
-    public static EmployerPostResponseDto from(List<String> tagName, EmployerPost employerPost){
+        String workFieldName = employerPost.getBasicPostContent().getWorkFieldTag()==null?null:employerPost.getBasicPostContent().getWorkFieldTag().getName();
 
-        return new EmployerPostResponseDto(employerPost.getBasicPostContent().getTitle(),employerPost.getCompanyName(),tagName,employerPost.getBasicPostContent().getPayment().getPaymentMethod().getName(),
+        return new EmployerPostResponseDto(employerPost.getBasicPostContent().getTitle(),employerPost.getCompanyName(),
+                TagPostResponseDto.of(workFieldName,subCategoryWithChildTagResponseDtoList),
+                employerPost.getBasicPostContent().getPayment().getPaymentMethod().getName(),
                 employerPost.getBasicPostContent().getPayment().getPaymentAmount(),employerPost.getNumberOfEmployee(),employerPost.getEnrollDurationType().getName(),
-                employerPost.getDeadLine(),employerPost.getHopeCareerYear());
+                employerPost.getDeadLine(),employerPost.getHopeCareerYear(),employerPost.getBasicPostContent()
+                .getContents());
 
     }
 
