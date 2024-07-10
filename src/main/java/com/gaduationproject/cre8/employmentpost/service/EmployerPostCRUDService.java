@@ -11,6 +11,7 @@ import com.gaduationproject.cre8.employmentpost.domain.type.PaymentMethod;
 import com.gaduationproject.cre8.employmentpost.dto.request.EditEmployerPostRequestDto;
 import com.gaduationproject.cre8.employmentpost.dto.request.SaveEmployerPostRequestDto;
 import com.gaduationproject.cre8.employmentpost.dto.response.EmployerPostResponseDto;
+import com.gaduationproject.cre8.employmentpost.dto.response.SubCategoryWithChildTagResponseDto;
 import com.gaduationproject.cre8.employmentpost.repository.EmployerPostRepository;
 import com.gaduationproject.cre8.employmentpost.repository.EmployerPostWorkFieldChildTagRepository;
 import com.gaduationproject.cre8.member.entity.Member;
@@ -22,7 +23,10 @@ import com.gaduationproject.cre8.workfieldtag.repository.WorkFieldChildTagReposi
 import com.gaduationproject.cre8.workfieldtag.repository.WorkFieldTagRepository;
 import java.time.LocalDate;
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -91,16 +95,24 @@ public class EmployerPostCRUDService {
                 .findByIdWithFetchWorkFieldTagAndEmployerPostChildTagListAndWorkFieldChildTag(employerPostId).orElseThrow(
                         ()-> new NotFoundException(ErrorCode.CANT_FIND_EMPLOYER_POST));
 
-        List<String> tagList = new ArrayList<>();
+        Map<String,List<String>> childTagMap = new LinkedHashMap<>();
 
-        if(employerPost.getBasicPostContent().getWorkFieldTag()!=null){
-            tagList.add(employerPost.getBasicPostContent().getWorkFieldTag().getName());
-        }
-        employerPost.getEmployerPostWorkFieldChildTagList().stream().forEach(employerPostWorkFieldChildTag -> {
-            tagList.add(employerPostWorkFieldChildTag.getWorkFieldChildTag().getName());
+        employerPost.getEmployerPostWorkFieldChildTagList()
+                .stream().forEach(employerPostWorkFieldChildTag -> {
+
+            String subCategoryName = employerPostWorkFieldChildTag.getWorkFieldChildTag().getWorkFieldSubCategory().getName();
+            String childTagName = employerPostWorkFieldChildTag.getWorkFieldChildTag().getName();
+
+            childTagMap.computeIfAbsent(subCategoryName, categoryName -> new ArrayList<>()).add(childTagName);
+
         });
 
-        return EmployerPostResponseDto.of(tagList,employerPost);
+        List<SubCategoryWithChildTagResponseDto> subCategoryWithChildTagResponseDtoList = childTagMap.keySet().stream().map(subCategoryName ->{
+            return SubCategoryWithChildTagResponseDto.of(subCategoryName,childTagMap.get(subCategoryName));
+        }).collect(Collectors.toList());
+
+
+        return EmployerPostResponseDto.of(subCategoryWithChildTagResponseDtoList,employerPost);
 
     }
 

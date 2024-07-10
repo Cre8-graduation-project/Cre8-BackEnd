@@ -15,6 +15,7 @@ import com.gaduationproject.cre8.employmentpost.dto.request.SaveEmployeePostRequ
 import com.gaduationproject.cre8.employmentpost.dto.request.SaveEmployerPostRequestDto;
 import com.gaduationproject.cre8.employmentpost.dto.response.EmployeePostResponseDto;
 import com.gaduationproject.cre8.employmentpost.dto.response.EmployerPostResponseDto;
+import com.gaduationproject.cre8.employmentpost.dto.response.SubCategoryWithChildTagResponseDto;
 import com.gaduationproject.cre8.employmentpost.repository.EmployeePostRepository;
 import com.gaduationproject.cre8.employmentpost.repository.EmployeePostWorkFieldChildTagRepository;
 import com.gaduationproject.cre8.member.entity.Member;
@@ -25,7 +26,9 @@ import com.gaduationproject.cre8.workfieldtag.entity.WorkFieldTag;
 import com.gaduationproject.cre8.workfieldtag.repository.WorkFieldChildTagRepository;
 import com.gaduationproject.cre8.workfieldtag.repository.WorkFieldTagRepository;
 import java.util.ArrayList;
+import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -85,18 +88,25 @@ public class EmployeePostCRUDService {
                 .findByIdWithFetchMemberAndWorkFieldTagAndEmployeePostChildTagListAndWorkFieldChildTag(employeePostId).orElseThrow(
                         ()-> new NotFoundException(ErrorCode.CANT_FIND_EMPLOYEE_POST));
 
-        List<String> tagList = new ArrayList<>();
+        Map<String,List<String>> childTagMap = new LinkedHashMap<>();
 
-        if(employeePost.getBasicPostContent().getWorkFieldTag()!=null){
-            tagList.add(employeePost.getBasicPostContent().getWorkFieldTag().getName());
-        }
+        employeePost.getEmployeePostWorkFieldChildTagList()
+                .stream().forEach(employeePostWorkFieldChildTag -> {
 
-        employeePost.getEmployeePostWorkFieldChildTagList().stream().forEach(employeePostWorkFieldChildTag -> {
-            tagList.add(employeePostWorkFieldChildTag.getWorkFieldChildTag().getName());
-        });
+                    String subCategoryName = employeePostWorkFieldChildTag.getWorkFieldChildTag().getWorkFieldSubCategory().getName();
+                    String childTagName = employeePostWorkFieldChildTag.getWorkFieldChildTag().getName();
 
-        return EmployeePostResponseDto.of(employeePost,tagList,portfolioService.showPortfolioList(employeePost.getBasicPostContent().getMember()
-                .getId()));
+                    childTagMap.computeIfAbsent(subCategoryName, categoryName -> new ArrayList<>()).add(childTagName);
+
+                });
+
+        List<SubCategoryWithChildTagResponseDto> subCategoryWithChildTagResponseDtoList = childTagMap.keySet().stream().map(subCategoryName ->{
+            return SubCategoryWithChildTagResponseDto.of(subCategoryName,childTagMap.get(subCategoryName));
+        }).collect(Collectors.toList());
+
+        return EmployeePostResponseDto.of(subCategoryWithChildTagResponseDtoList
+                                          ,employeePost
+                                          ,portfolioService.showPortfolioList(employeePost.getBasicPostContent().getMember().getId()));
 
     }
 
