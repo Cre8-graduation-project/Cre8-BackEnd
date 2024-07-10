@@ -16,9 +16,10 @@ public class EmployerPostSearchWithCountResponseDto {
     private List<EmployerPostSearchResponseDto> employerPostSearchResponseDtoList = new ArrayList<>();
     private int totalPages;
 
-    public static EmployerPostSearchWithCountResponseDto of(Long totalCount,
-                                                            List<EmployerPostSearchResponseDto> employerPostSearchResponseDtoList,
+    public static EmployerPostSearchWithCountResponseDto of(final Long totalCount,
+                                                            final List<EmployerPostSearchResponseDto> employerPostSearchResponseDtoList,
                                                             int totalPages){
+
         return new EmployerPostSearchWithCountResponseDto(totalCount,employerPostSearchResponseDtoList,totalPages);
     }
 

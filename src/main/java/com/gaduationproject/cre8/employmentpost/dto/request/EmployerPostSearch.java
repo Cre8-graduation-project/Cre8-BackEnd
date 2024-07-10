@@ -12,15 +12,12 @@ import lombok.NoArgsConstructor;
 public class EmployerPostSearch {
 
     private Long workFieldId;
-
     private List<Long> workFieldChildTagId = new ArrayList<>();
-
     private Integer minCareer;
-
     private Integer maxCareer;
 
     public EmployerPostSearch(final Long workFieldId, final List<Long> workFieldChildTagId, final Integer minCareer,
-            Integer maxCareer) {
+            final Integer maxCareer) {
         this.workFieldId = workFieldId;
         this.minCareer = minCareer;
         this.maxCareer = maxCareer;

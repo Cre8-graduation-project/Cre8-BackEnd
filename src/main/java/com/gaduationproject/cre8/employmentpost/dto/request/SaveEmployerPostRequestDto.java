@@ -26,9 +26,9 @@ public class SaveEmployerPostRequestDto {
 
 
     @Builder
-    public SaveEmployerPostRequestDto(Long workFieldId,String title, List<Long> workFieldChildTagId,
-            String paymentMethod,String companyName, Integer paymentAmount, Integer numberOfEmployee,
-            String enrollDurationType,LocalDate deadLine, Integer hopeCareerYear,String contents) {
+    public SaveEmployerPostRequestDto(final Long workFieldId,final String title, final List<Long> workFieldChildTagId,
+            final String paymentMethod,final String companyName, final Integer paymentAmount, final Integer numberOfEmployee,
+            final String enrollDurationType,final LocalDate deadLine, final Integer hopeCareerYear,final String contents) {
         this.workFieldId = workFieldId;
         this.title = title;
         this.workFieldChildTagId = workFieldChildTagId;

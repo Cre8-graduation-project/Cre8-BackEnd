@@ -29,9 +29,9 @@ public class EditEmployerPostRequestDto {
 
 
     @Builder
-    public EditEmployerPostRequestDto(Long employerPostId, Long workFieldId,String title, List<Long> workFieldChildTagId,
-            String paymentMethod, Integer paymentAmount,String companyName, Integer numberOfEmployee,
-            String enrollDurationType,LocalDate deadLine, Integer hopeCareerYear,String contents) {
+    public EditEmployerPostRequestDto(final Long employerPostId, final Long workFieldId,final String title, final List<Long> workFieldChildTagId,
+            final String paymentMethod, final Integer paymentAmount,final String companyName, final Integer numberOfEmployee,
+            final String enrollDurationType,final LocalDate deadLine, final Integer hopeCareerYear,final String contents) {
         this.employerPostId = employerPostId;
         this.workFieldId = workFieldId;
         this.title = title;

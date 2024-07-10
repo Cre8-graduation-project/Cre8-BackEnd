@@ -185,7 +185,7 @@ public class EmployeePostCRUDService {
 
     }
 
-    private EmployeePost findEmployeePostById(Long employeePostId){
+    private EmployeePost findEmployeePostById(final Long employeePostId){
         return employeePostRepository.findById(employeePostId).orElseThrow(()->new NotFoundException(ErrorCode.CANT_FIND_EMPLOYEE_POST));
     }
 

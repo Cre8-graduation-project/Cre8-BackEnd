@@ -15,7 +15,7 @@ public class TagPostResponseDto {
     private String workFieldTagName;
     private List<SubCategoryWithChildTagResponseDto> subCategoryWithChildTagResponseDtoList;
 
-    public static TagPostResponseDto of(String workFieldTagName,List<SubCategoryWithChildTagResponseDto> subCategoryWithChildTagResponseDtoList){
+    public static TagPostResponseDto of(final String workFieldTagName,final List<SubCategoryWithChildTagResponseDto> subCategoryWithChildTagResponseDtoList){
 
         return new TagPostResponseDto(workFieldTagName,subCategoryWithChildTagResponseDtoList);
     }

@@ -26,7 +26,7 @@ public class EmployerPostResponseDto {
     private Integer hopeCareerYear;
     private String contents;
 
-    public static EmployerPostResponseDto of(List<SubCategoryWithChildTagResponseDto> subCategoryWithChildTagResponseDtoList, EmployerPost employerPost){
+    public static EmployerPostResponseDto of(final List<SubCategoryWithChildTagResponseDto> subCategoryWithChildTagResponseDtoList, final EmployerPost employerPost){
 
         String workFieldName = employerPost.getBasicPostContent().getWorkFieldTag()==null?null:employerPost.getBasicPostContent().getWorkFieldTag().getName();
 

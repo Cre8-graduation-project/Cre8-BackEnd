@@ -37,7 +37,7 @@ public class EmployeePost {
 
     @Builder
     public EmployeePost(final Member member,final String title,final WorkFieldTag workFieldTag,final
-            PaymentMethod paymentMethod,final Integer paymentAmount, Integer careerYear,String contents) {
+            PaymentMethod paymentMethod,final Integer paymentAmount, final Integer careerYear,final String contents) {
 
         this.basicPostContent = BasicPostContent.builder()
                 .member(member)
@@ -50,8 +50,8 @@ public class EmployeePost {
         this.careerYear = careerYear;
     }
 
-    public void changeAllExceptMemberAndId(String title, WorkFieldTag workFieldTag,PaymentMethod paymentMethod,Integer paymentAmount,
-            Integer careerYear,String contents){
+    public void changeAllExceptMemberAndId(final String title, final WorkFieldTag workFieldTag,final PaymentMethod paymentMethod,final Integer paymentAmount,
+            final Integer careerYear,final String contents){
 
         basicPostContent.changeExceptMember(title, workFieldTag,paymentMethod,paymentAmount,contents);
         this.careerYear = careerYear;

@@ -54,8 +54,8 @@ public class BasicPostContent {
 
 
     @Builder
-    public BasicPostContent(Member member,String title, WorkFieldTag workFieldTag, PaymentMethod paymentMethod,
-            Integer paymentAmount,String contents) {
+    public BasicPostContent(final Member member,final String title, final WorkFieldTag workFieldTag, final PaymentMethod paymentMethod,
+            final Integer paymentAmount,final String contents) {
 
         this.member = member;
         this.title = title;
@@ -70,8 +70,8 @@ public class BasicPostContent {
 
     }
 
-    public void changeExceptMember(String title, WorkFieldTag workFieldTag,PaymentMethod paymentMethod,Integer paymentAmount,
-    String contents){
+    public void changeExceptMember(final String title, final WorkFieldTag workFieldTag,final PaymentMethod paymentMethod,final Integer paymentAmount,
+    final String contents){
 
         this.title = title;
         this.workFieldTag = workFieldTag;

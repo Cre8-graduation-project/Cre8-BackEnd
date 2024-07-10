@@ -20,7 +20,8 @@ public class EmployerPostSearchResponseDto {
     private String  enrollDurationType;
     private List<String> tagNameList = new ArrayList<>();
 
-    public static EmployerPostSearchResponseDto of(EmployerPost employerPost,List<String> tagNameList){
+    public static EmployerPostSearchResponseDto of(final EmployerPost employerPost,final List<String> tagNameList){
+
         return new EmployerPostSearchResponseDto(employerPost.getId(),employerPost.getBasicPostContent().getTitle(),
                 employerPost.getCompanyName(), employerPost.getEnrollDurationType().getName(),tagNameList);
     }

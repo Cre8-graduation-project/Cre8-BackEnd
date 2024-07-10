@@ -14,7 +14,8 @@ public class SubCategoryWithChildTagResponseDto {
     private String subCategoryName;
     private List<String> childTagName;
 
-    public static SubCategoryWithChildTagResponseDto of(String subCategoryName,List<String> childTagName){
+    public static SubCategoryWithChildTagResponseDto of(final String subCategoryName,final List<String> childTagName){
+
         return new SubCategoryWithChildTagResponseDto(subCategoryName,childTagName);
     }
 

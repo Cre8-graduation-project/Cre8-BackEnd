@@ -11,6 +11,6 @@ public interface EmployeePostRepository extends JpaRepository<EmployeePost,Long>
 
     @Query("select ep from EmployeePost ep join fetch ep.basicPostContent.member left join fetch ep.basicPostContent.workFieldTag left join fetch ep.employeePostWorkFieldChildTagList epwfct "
             + "left join fetch epwfct.workFieldChildTag where ep.id=:employeePostId")
-    Optional<EmployeePost> findByIdWithFetchMemberAndWorkFieldTagAndEmployeePostChildTagListAndWorkFieldChildTag(@Param("employeePostId") Long employeePostId);
+    Optional<EmployeePost> findByIdWithFetchMemberAndWorkFieldTagAndEmployeePostChildTagListAndWorkFieldChildTag(@Param("employeePostId") final Long employeePostId);
 
 }
