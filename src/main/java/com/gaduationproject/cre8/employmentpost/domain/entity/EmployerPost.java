@@ -54,7 +54,7 @@ public class EmployerPost extends BaseEntity {
 
     @Builder
     public EmployerPost(Member member,String title, WorkFieldTag workFieldTag, PaymentMethod paymentMethod, Integer paymentAmount,String companyName, Integer numberOfEmployee,
-             EnrollDurationType enrollDurationType, LocalDate deadLine,Integer hopeCareerYear) {
+             EnrollDurationType enrollDurationType, LocalDate deadLine,Integer hopeCareerYear,String contents) {
 
         this.basicPostContent = BasicPostContent.builder()
                 .member(member)
@@ -62,6 +62,7 @@ public class EmployerPost extends BaseEntity {
                 .workFieldTag(workFieldTag)
                 .paymentMethod(paymentMethod)
                 .paymentAmount(paymentAmount)
+                .contents(contents)
                 .build();
         this.companyName = companyName;
         this.numberOfEmployee = numberOfEmployee;
@@ -71,9 +72,9 @@ public class EmployerPost extends BaseEntity {
     }
 
     public void changeAllExceptMemberAndId(String title, WorkFieldTag workFieldTag,PaymentMethod paymentMethod,Integer paymentAmount,String companyName, Integer numberOfEmployee,
-            EnrollDurationType enrollDurationType,LocalDate deadLine,Integer hopeCareerYear){
+            EnrollDurationType enrollDurationType,LocalDate deadLine,Integer hopeCareerYear,String contents){
 
-        basicPostContent.changeExceptMember(title, workFieldTag,paymentMethod,paymentAmount);
+        basicPostContent.changeExceptMember(title, workFieldTag,paymentMethod,paymentAmount,contents);
         this.companyName = companyName;
         this.numberOfEmployee = numberOfEmployee;
         this.enrollDurationType = enrollDurationType;

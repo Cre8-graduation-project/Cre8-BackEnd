@@ -16,28 +16,22 @@ import lombok.NoArgsConstructor;
 public class EmployerPostResponseDto {
 
     private String title;
-
     private String companyName;
-
     private List<String> tagName = new ArrayList<>();
-
     private String paymentMethod;
-
     private int paymentAmount;
-
     private int numberOfEmployee;
-
     private String enrollDurationType;
-
     private LocalDate localDate;
-
     private int hopeCareerYear;
+    private String contents;
 
-    public static EmployerPostResponseDto from(List<String> tagName, EmployerPost employerPost){
+    public static EmployerPostResponseDto of(List<String> tagName, EmployerPost employerPost){
 
         return new EmployerPostResponseDto(employerPost.getBasicPostContent().getTitle(),employerPost.getCompanyName(),tagName,employerPost.getBasicPostContent().getPayment().getPaymentMethod().getName(),
                 employerPost.getBasicPostContent().getPayment().getPaymentAmount(),employerPost.getNumberOfEmployee(),employerPost.getEnrollDurationType().getName(),
-                employerPost.getDeadLine(),employerPost.getHopeCareerYear());
+                employerPost.getDeadLine(),employerPost.getHopeCareerYear(),employerPost.getBasicPostContent()
+                .getContents());
 
     }
 

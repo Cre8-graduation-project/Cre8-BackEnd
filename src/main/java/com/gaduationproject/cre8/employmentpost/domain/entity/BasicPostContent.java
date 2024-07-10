@@ -48,15 +48,19 @@ public class BasicPostContent {
     @Embedded
     private Payment payment;
 
+    private String contents;
+
 
 
 
     @Builder
     public BasicPostContent(Member member,String title, WorkFieldTag workFieldTag, PaymentMethod paymentMethod,
-            Integer paymentAmount) {
+            Integer paymentAmount,String contents) {
+
         this.member = member;
         this.title = title;
         this.workFieldTag = workFieldTag;
+        this.contents = contents;
 
         payment = Payment.builder()
                 .paymentAmount(paymentAmount)
@@ -66,9 +70,12 @@ public class BasicPostContent {
 
     }
 
-    public void changeExceptMember(String title, WorkFieldTag workFieldTag,PaymentMethod paymentMethod,Integer paymentAmount){
+    public void changeExceptMember(String title, WorkFieldTag workFieldTag,PaymentMethod paymentMethod,Integer paymentAmount,
+    String contents){
+
         this.title = title;
         this.workFieldTag = workFieldTag;
         payment.changePaymentMethodAndPaymentAmount(paymentMethod,paymentAmount);
+        this.contents = contents;
     }
 }

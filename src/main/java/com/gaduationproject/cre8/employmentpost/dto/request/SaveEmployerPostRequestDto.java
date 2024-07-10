@@ -12,31 +12,23 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class SaveEmployerPostRequestDto {
 
-    private Long workFieldId;
-
     private String title;
-
+    private Long workFieldId;
     private List<Long> workFieldChildTagId = new ArrayList<>();
-
     private String paymentMethod;
-
     private Integer paymentAmount;
-
     private String companyName;
-
     private Integer numberOfEmployee;
-
     private String enrollDurationType;
-
     private LocalDate deadLine;
-
     private Integer hopeCareerYear;
+    private String contents;
 
 
     @Builder
     public SaveEmployerPostRequestDto(Long workFieldId,String title, List<Long> workFieldChildTagId,
             String paymentMethod,String companyName, Integer paymentAmount, Integer numberOfEmployee,
-            String enrollDurationType,LocalDate deadLine, Integer hopeCareerYear) {
+            String enrollDurationType,LocalDate deadLine, Integer hopeCareerYear,String contents) {
         this.workFieldId = workFieldId;
         this.title = title;
         this.workFieldChildTagId = workFieldChildTagId;
@@ -47,6 +39,7 @@ public class SaveEmployerPostRequestDto {
         this.enrollDurationType = enrollDurationType;
         this.deadLine = deadLine;
         this.hopeCareerYear = hopeCareerYear;
+        this.contents = contents;
     }
 
 

@@ -15,32 +15,23 @@ import lombok.NoArgsConstructor;
 public class EditEmployerPostRequestDto {
 
     private Long employerPostId;
-
-    private Long workFieldId;
-
     private String title;
-
+    private Long workFieldId;
     private List<Long> workFieldChildTagId = new ArrayList<>();
-
     private String paymentMethod;
-
     private Integer paymentAmount;
-
     private String companyName;
-
     private Integer numberOfEmployee;
-
     private String enrollDurationType;
-
     private LocalDate deadLine;
-
     private Integer hopeCareerYear;
+    private String contents;
 
 
     @Builder
     public EditEmployerPostRequestDto(Long employerPostId, Long workFieldId,String title, List<Long> workFieldChildTagId,
             String paymentMethod, Integer paymentAmount,String companyName, Integer numberOfEmployee,
-            String enrollDurationType,LocalDate deadLine, Integer hopeCareerYear) {
+            String enrollDurationType,LocalDate deadLine, Integer hopeCareerYear,String contents) {
         this.employerPostId = employerPostId;
         this.workFieldId = workFieldId;
         this.title = title;
@@ -52,6 +43,7 @@ public class EditEmployerPostRequestDto {
         this.enrollDurationType = enrollDurationType;
         this.deadLine = deadLine;
         this.hopeCareerYear = hopeCareerYear;
+        this.contents = contents;
     }
 
 }

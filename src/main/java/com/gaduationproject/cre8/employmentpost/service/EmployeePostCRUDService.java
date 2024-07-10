@@ -60,6 +60,7 @@ public class EmployeePostCRUDService {
                 .paymentMethod(PaymentMethod.toPaymentMethodEnum(saveEmployeePostRequestDto.getPaymentMethod()))
                 .paymentAmount(saveEmployeePostRequestDto.getPaymentAmount())
                 .careerYear(saveEmployeePostRequestDto.getCareerYear())
+                .contents(saveEmployeePostRequestDto.getContents())
                 .build();
 
         employeePostRepository.save(employeePost);
@@ -125,7 +126,7 @@ public class EmployeePostCRUDService {
 
         employeePost.changeAllExceptMemberAndId(editEmployeePostRequestDto.getTitle(), workFieldTag,PaymentMethod.toPaymentMethodEnum(editEmployeePostRequestDto.getPaymentMethod()),
                 editEmployeePostRequestDto.getPaymentAmount(),
-                editEmployeePostRequestDto.getCareerYear());
+                editEmployeePostRequestDto.getCareerYear(), editEmployeePostRequestDto.getContents());
 
     }
 

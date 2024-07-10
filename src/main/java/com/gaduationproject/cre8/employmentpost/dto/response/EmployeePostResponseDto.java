@@ -25,6 +25,7 @@ public class EmployeePostResponseDto {
     private String paymentMethod;
     private int paymentAmount;
     private int careerYear;
+    private String contents;
 
 
     public static EmployeePostResponseDto of(final EmployeePost employeePost,final List<String> tagName,
@@ -38,7 +39,8 @@ public class EmployeePostResponseDto {
                 portfolioSimpleResponseDtoList,
                 employeePost.getBasicPostContent().getPayment().getPaymentMethod().getName(),
                 employeePost.getBasicPostContent().getPayment().getPaymentAmount(),
-                employeePost.getCareerYear());
+                employeePost.getCareerYear(),
+                employeePost.getBasicPostContent().getContents());
 
     }
 

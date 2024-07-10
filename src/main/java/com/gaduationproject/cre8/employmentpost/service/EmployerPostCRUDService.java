@@ -65,6 +65,7 @@ public class EmployerPostCRUDService {
                         saveEmployerPostRequestDto.getEnrollDurationType()))
                 .deadLine(saveEmployerPostRequestDto.getDeadLine())
                 .hopeCareerYear(saveEmployerPostRequestDto.getHopeCareerYear())
+                .contents(saveEmployerPostRequestDto.getContents())
                 .build();
 
         employerPostRepository.save(employerPost);
@@ -99,7 +100,7 @@ public class EmployerPostCRUDService {
             tagList.add(employerPostWorkFieldChildTag.getWorkFieldChildTag().getName());
         });
 
-        return EmployerPostResponseDto.from(tagList,employerPost);
+        return EmployerPostResponseDto.of(tagList,employerPost);
 
     }
 
@@ -134,7 +135,7 @@ public class EmployerPostCRUDService {
                 editEmployerPostRequestDto.getNumberOfEmployee(),
                 EnrollDurationType.toEnrollDurationTypeEnum(editEmployerPostRequestDto.getEnrollDurationType()),
                         editEmployerPostRequestDto.getDeadLine(),
-                        editEmployerPostRequestDto.getHopeCareerYear()
+                        editEmployerPostRequestDto.getHopeCareerYear(),editEmployerPostRequestDto.getContents()
                         );
 
     }
