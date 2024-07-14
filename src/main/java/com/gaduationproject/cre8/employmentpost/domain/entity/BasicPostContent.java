@@ -36,9 +36,10 @@ public class BasicPostContent {
 
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "member_id")
+    @JoinColumn(name = "member_id",nullable = false)
     private Member member;
 
+    @Column(nullable = false)
     private String title;
 
     @ManyToOne(fetch = FetchType.LAZY)
@@ -48,6 +49,7 @@ public class BasicPostContent {
     @Embedded
     private Payment payment;
 
+    @Column(nullable = false,length = 2000)
     private String contents;
 
 
