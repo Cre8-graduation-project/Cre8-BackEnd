@@ -53,7 +53,7 @@ public class PortfolioController {
             @ApiResponse(responseCode = "404",description = "작업 태그를 찾을 수 없습니다"),
             @ApiResponse(responseCode = "404",description = "하위 태그를 찾을 수 없습니다.")
     })
-    public ResponseEntity<Void> changePortfolio(@CurrentMemberLoginId final String loginId,@ModelAttribute
+    public ResponseEntity<Void> changePortfolio(@CurrentMemberLoginId final String loginId,@Valid @ModelAttribute
     final PortfolioEditRequestDto portfolioEditRequestDto){
 
         portfolioService.updatePortfolio(loginId, portfolioEditRequestDto);
