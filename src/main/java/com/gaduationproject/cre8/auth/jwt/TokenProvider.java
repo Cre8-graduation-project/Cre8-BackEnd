@@ -2,6 +2,9 @@ package com.gaduationproject.cre8.auth.jwt;
 
 import com.gaduationproject.cre8.auth.dto.TokenDto;
 import com.gaduationproject.cre8.auth.service.CustomUserDetails;
+import com.gaduationproject.cre8.common.response.error.ErrorCode;
+import com.gaduationproject.cre8.common.response.error.exception.BadRequestException;
+import com.gaduationproject.cre8.common.response.error.exception.UnauthorizedException;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.ExpiredJwtException;
 import io.jsonwebtoken.Jwts;
@@ -19,6 +22,7 @@ import java.util.stream.Collectors;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.messaging.MessageDeliveryException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
@@ -107,13 +111,16 @@ public class TokenProvider implements InitializingBean {
             return true;
         } catch(MalformedJwtException | SecurityException e) {
             log.info("잘못된 형식의 토큰입니다.");
+            throw new BadRequestException(ErrorCode.ACCESS_TOKEN_NOT_MATCH);
         } catch(ExpiredJwtException e) {
             log.info("만료된 토큰입니다.");
         } catch(UnsupportedJwtException e) {
             log.info("지원하지 않는 형식의 토큰입니다.");
         } catch(IllegalArgumentException e) {
             log.info("잘못된 토큰입니다.");
+            throw new BadRequestException(ErrorCode.ACCESS_TOKEN_NOT_MATCH);
         }
+
         return false;
     }
 

@@ -10,11 +10,15 @@ import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import lombok.AccessLevel;
+import lombok.Builder;
+import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 @Entity
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
+@Getter
 public class Message {
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "message_id")
@@ -32,6 +36,10 @@ public class Message {
     @Column(length = 500,nullable = false,updatable = false)
     private String contents;
 
-
-
+    @Builder
+    public Message(ChattingRoom chattingRoom, Member sender, String contents) {
+        this.chattingRoom = chattingRoom;
+        this.sender = sender;
+        this.contents = contents;
+    }
 }
