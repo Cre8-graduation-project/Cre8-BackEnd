@@ -23,6 +23,9 @@ public enum ErrorCode {
     CANT_ACCESS_EMPLOYEE_POST("자신의 구직글만 수정, 삭제할 수 있습니다"),
     CANT_SET_DEADLINE_WITH_NO_ENUM_DEADLINE("데드라인을 선택해야 날짜를 입력할 수 있습니다"),
     INSERT_DEADLINE_ON_ENUM_DEADLINE("데드라인을 선택하면 날짜를 입력하셔야 합니다"),
+    SUB_URL_NOT_MATCH("유효한 구독 URL 경로가 아닙니다"),
+    SUB_URL_CANT_ACCESS("접근할 수 있는 구독 아이디가 아닙니다"),
+    PUB_URL_CANT_ACCESS("해당 채팅방 참가하지 않았기에 pub 를 할 수 없습니다"),
 
 
     /**
@@ -48,6 +51,7 @@ public enum ErrorCode {
     CANT_FIND_EMPLOYEE_POST("구직글을 찾을 수 없습니다"),
     CANT_FIND_PAYMENT_METHOD("해당 급여 지급 방식을 다시 확인해주세요"),
     CANT_FIND_ENROLL_DURATION_TYPE("해당 채용 방식을 다시 확인해주세요"),
+    CANT_FIND_CHATTING_ROOM("채팅방을 찾을 수 없습니다"),
 
 
     /**
