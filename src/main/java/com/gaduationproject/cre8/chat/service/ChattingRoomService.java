@@ -26,6 +26,7 @@ public class ChattingRoomService {
     @Transactional
     public List<MessageResponseDto> showChattingList(final Long opponentId,final String loginId){
 
+
         ChattingRoom chattingRoom = getChattingRoomByParticipant(opponentId,loginId);
 
         return messageRepository.findByChattingRoom(chattingRoom)
@@ -44,7 +45,6 @@ public class ChattingRoomService {
         return chattingRoomRepository.findByParticipant(opponentId,loginMember.getId()).orElseGet(
                 ()-> {
 
-                    System.out.println("여기 실행이 되니?");
                     ChattingRoom newChattingRoom = ChattingRoom.builder()
                             .sender(loginMember)
                             .receiver(getMemberById(opponentId))
