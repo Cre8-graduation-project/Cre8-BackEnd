@@ -1,5 +1,6 @@
 package com.gaduationproject.cre8.chat.entity;
 
+import com.gaduationproject.cre8.common.baseentity.BaseEntity;
 import com.gaduationproject.cre8.member.entity.Member;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -17,7 +18,7 @@ import lombok.NoArgsConstructor;
 @Entity
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Getter
-public class Message {
+public class Message extends BaseEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
