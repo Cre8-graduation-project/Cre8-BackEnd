@@ -29,15 +29,12 @@ public class ChattingRoomService {
     private final MemberRepository memberRepository;
     private final MessageRepository messageRepository;
     @Transactional
-    public List<MessageResponseDto> showChattingListByOpponentId(final Long opponentId,final String loginId){
+    public Long getChattingRoomNumberByOpponentId(final Long opponentId,final String loginId){
 
 
         ChattingRoom chattingRoom = getChattingRoomByParticipant(opponentId,loginId);
 
-        return messageRepository.findByChattingRoom(chattingRoom)
-                .stream()
-                .map(MessageResponseDto::of)
-                .collect(Collectors.toList());
+        return chattingRoom.getId();
 
     }
 

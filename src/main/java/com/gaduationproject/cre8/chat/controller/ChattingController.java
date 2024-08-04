@@ -45,15 +45,15 @@ public class ChattingController {
 
 
     @GetMapping("/user/{opponentId}")
-    @Operation(summary = "상대방과의 채팅 내역 조회",description = "상대방과의 채팅 기록이 존재시 상대방과의 채팅 내역을 조회할 수 있습니다. 그렇지 않으면 "
-            + "새로운 채팅방을 생성하면서 빈 값 [] 이 반환됩니다")
+    @Operation(summary = "상대방과의 채팅방 조회",description = "상대방과의 채팅 기록이 존재시 그 채팅방의 아이디를, "
+            + "처음 채팅시 그 채팅방을 새로 생성후 그 아이디를 반환한다.")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "404",description = "member 의 loginId 를 기반으로 조회해 오는 것을 실패")
     })
-    public ResponseEntity<BaseResponse<List<MessageResponseDto>>> showChatListByOpponentId(@CurrentMemberLoginId String loginId,
+    public ResponseEntity<BaseResponse<Long>> showChatListByOpponentId(@CurrentMemberLoginId String loginId,
                                                                                @PathVariable(name = "opponentId") final Long opponentId){
 
-        return ResponseEntity.ok(BaseResponse.createSuccess(chattingRoomService.showChattingListByOpponentId(opponentId,loginId)));
+        return ResponseEntity.ok(BaseResponse.createSuccess(chattingRoomService.getChattingRoomNumberByOpponentId(opponentId,loginId)));
 
     }
 
