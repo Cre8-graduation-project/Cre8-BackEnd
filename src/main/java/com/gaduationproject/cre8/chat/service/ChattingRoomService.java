@@ -1,13 +1,18 @@
 package com.gaduationproject.cre8.chat.service;
 
+import com.gaduationproject.cre8.chat.dto.response.ChattingRoomResponseDto;
 import com.gaduationproject.cre8.chat.dto.response.MessageResponseDto;
 import com.gaduationproject.cre8.chat.entity.ChattingRoom;
+import com.gaduationproject.cre8.chat.entity.Message;
 import com.gaduationproject.cre8.chat.repository.ChattingRoomRepository;
 import com.gaduationproject.cre8.chat.repository.MessageRepository;
 import com.gaduationproject.cre8.common.response.error.ErrorCode;
+import com.gaduationproject.cre8.common.response.error.exception.BadRequestException;
+import com.gaduationproject.cre8.common.response.error.exception.InternalServerErrorException;
 import com.gaduationproject.cre8.common.response.error.exception.NotFoundException;
 import com.gaduationproject.cre8.member.entity.Member;
 import com.gaduationproject.cre8.member.repository.MemberRepository;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
@@ -24,7 +29,7 @@ public class ChattingRoomService {
     private final MemberRepository memberRepository;
     private final MessageRepository messageRepository;
     @Transactional
-    public List<MessageResponseDto> showChattingList(final Long opponentId,final String loginId){
+    public List<MessageResponseDto> showChattingListByOpponentId(final Long opponentId,final String loginId){
 
 
         ChattingRoom chattingRoom = getChattingRoomByParticipant(opponentId,loginId);
@@ -33,6 +38,52 @@ public class ChattingRoomService {
                 .stream()
                 .map(MessageResponseDto::of)
                 .collect(Collectors.toList());
+
+    }
+
+    public List<MessageResponseDto> showChattingListByChattingRoomId(final Long chattingRoomId, final String loginId){
+
+        Member currentMember = getCurrentLoginMember(loginId);
+
+        ChattingRoom chattingRoom = chattingRoomRepository.findById(chattingRoomId)
+                .orElseThrow(()->new NotFoundException(ErrorCode.CANT_FIND_CHATTING_ROOM));
+
+        if(!chattingRoom.getReceiver().getId().equals(currentMember.getId())&&
+           !chattingRoom.getSender().getId().equals(currentMember.getId())){
+
+            throw new BadRequestException(ErrorCode.CANT_ACCESS_CHAT_ROOM);
+        }
+
+        return messageRepository.findByChattingRoom(chattingRoom).stream().map(MessageResponseDto::of)
+                .collect(Collectors.toList());
+
+    }
+
+
+
+    public List<ChattingRoomResponseDto> showChattingRoomList(final String loginId){
+
+        Member currentMember = getCurrentLoginMember(loginId);
+
+        List<ChattingRoom> chattingRoomList = chattingRoomRepository.findByBelongChattingRoom(currentMember.getId());
+
+
+        return chattingRoomList.stream().filter(chattingRoom -> messageRepository.findLatestMessageByChattingRoom(chattingRoom).isPresent())
+                        .map(chattingRoom -> {
+                            String opponentNickName = chattingRoom.getSender().getId()== currentMember.getId()
+                                    ?chattingRoom.getReceiver().getNickName()
+                                    :chattingRoom.getSender().getNickName();
+
+                            Message message = messageRepository.findLatestMessageByChattingRoom(chattingRoom)
+                                    .orElseThrow(()->new InternalServerErrorException(ErrorCode.NOT_APPLY_RECENT_CHAT_FILTER));
+
+                            return ChattingRoomResponseDto.builder()
+                                    .roomId(chattingRoom.getId())
+                                    .latestMessage(message.getContents())
+                                    .nickName(opponentNickName)
+                                    .build();
+
+                        }).collect(Collectors.toList());
 
     }
 

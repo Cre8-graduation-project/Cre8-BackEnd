@@ -26,6 +26,7 @@ public enum ErrorCode {
     SUB_URL_NOT_MATCH("유효한 구독 URL 경로가 아닙니다"),
     SUB_URL_CANT_ACCESS("접근할 수 있는 구독 아이디가 아닙니다"),
     PUB_URL_CANT_ACCESS("해당 채팅방 참가하지 않았기에 pub 를 할 수 없습니다"),
+    CANT_ACCESS_CHAT_ROOM("자신의 채팅방의 채팅만 조회가능합니다"),
 
 
     /**
@@ -75,8 +76,7 @@ public enum ErrorCode {
     /**
      * 500 Internal Server Error
      */
-
-
+    NOT_APPLY_RECENT_CHAT_FILTER("최근 메시지 의 빈값을 거르기 위한 filter가 동작하지 않습니다"),
     /**
      * 500 Internal Server Error
      */
