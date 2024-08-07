@@ -1,7 +1,5 @@
 package com.gaduationproject.cre8.member.controller;
 
-import static org.junit.jupiter.api.Assertions.*;
-import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.doReturn;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
@@ -9,25 +7,16 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 
-import com.fasterxml.jackson.core.JsonParseException;
+import com.gaduationproject.cre8.api.member.controller.MemberController;
 import com.gaduationproject.cre8.common.LocalDateDeserializer;
 import com.gaduationproject.cre8.common.LocalDateSerializer;
 import com.gaduationproject.cre8.common.response.error.RestExceptionHandler;
-import com.gaduationproject.cre8.member.dto.MemberSignUpRequestDto;
-import com.gaduationproject.cre8.member.service.MemberSignUpService;
-import com.gaduationproject.cre8.member.type.Sex;
+import com.gaduationproject.cre8.api.member.dto.MemberSignUpRequestDto;
+import com.gaduationproject.cre8.api.member.service.MemberSignUpService;
+import com.gaduationproject.cre8.domain.member.type.Sex;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
-import com.google.gson.JsonDeserializationContext;
-import com.google.gson.JsonDeserializer;
-import com.google.gson.JsonElement;
-import com.google.gson.JsonPrimitive;
-import com.google.gson.JsonSerializationContext;
-import com.google.gson.JsonSerializer;
-import java.lang.reflect.Type;
 import java.time.LocalDate;
-import java.time.format.DateTimeFormatter;
-import java.util.Locale;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -38,10 +27,8 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.ResultActions;
-import org.springframework.test.web.servlet.ResultMatcher;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
-import org.springframework.web.bind.annotation.ResponseBody;
 
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.eq;

@@ -1,9 +1,9 @@
 package com.gaduationproject.cre8.common;
 
-import com.gaduationproject.cre8.auth.service.CustomUserDetails;
-import com.gaduationproject.cre8.member.entity.Authority;
-import com.gaduationproject.cre8.member.entity.Member;
-import com.gaduationproject.cre8.member.type.Sex;
+import com.gaduationproject.cre8.security.CustomUserDetails;
+import com.gaduationproject.cre8.domain.member.entity.Authority;
+import com.gaduationproject.cre8.domain.member.entity.Member;
+import com.gaduationproject.cre8.domain.member.type.Sex;
 import java.time.LocalDate;
 import java.util.Collections;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;

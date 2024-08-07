@@ -4,11 +4,12 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;
 
-import com.gaduationproject.cre8.member.dto.ProfileWithUserInfoEditRequestDto;
-import com.gaduationproject.cre8.member.dto.ProfileWithUserInfoResponseDto;
-import com.gaduationproject.cre8.member.entity.Member;
-import com.gaduationproject.cre8.member.repository.MemberRepository;
-import com.gaduationproject.cre8.member.type.Sex;
+import com.gaduationproject.cre8.api.member.dto.ProfileWithUserInfoEditRequestDto;
+import com.gaduationproject.cre8.api.member.dto.ProfileWithUserInfoResponseDto;
+import com.gaduationproject.cre8.api.member.service.ProfileService;
+import com.gaduationproject.cre8.domain.member.entity.Member;
+import com.gaduationproject.cre8.domain.member.repository.MemberRepository;
+import com.gaduationproject.cre8.domain.member.type.Sex;
 import java.time.LocalDate;
 import java.util.Optional;
 import org.junit.jupiter.api.DisplayName;

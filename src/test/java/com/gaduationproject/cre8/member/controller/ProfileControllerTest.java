@@ -10,14 +10,15 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
+import com.gaduationproject.cre8.api.member.controller.ProfileController;
 import com.gaduationproject.cre8.common.LocalDateDeserializer;
 import com.gaduationproject.cre8.common.LocalDateSerializer;
 import com.gaduationproject.cre8.common.WithMockCustomUser;
 import com.gaduationproject.cre8.common.response.error.RestExceptionHandler;
-import com.gaduationproject.cre8.member.dto.ProfileWithUserInfoEditRequestDto;
-import com.gaduationproject.cre8.member.dto.ProfileWithUserInfoResponseDto;
-import com.gaduationproject.cre8.member.repository.MemberRepository;
-import com.gaduationproject.cre8.member.service.ProfileService;
+import com.gaduationproject.cre8.api.member.dto.ProfileWithUserInfoEditRequestDto;
+import com.gaduationproject.cre8.api.member.dto.ProfileWithUserInfoResponseDto;
+import com.gaduationproject.cre8.domain.member.repository.MemberRepository;
+import com.gaduationproject.cre8.api.member.service.ProfileService;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import java.time.LocalDate;
