@@ -1,4 +1,4 @@
-package com.gaduationproject.cre8.app.employmentpost.dto.request;
+package com.gaduationproject.cre8.domain.employmentpost.search;
 
 import java.util.ArrayList;
 import java.util.List;

@@ -1,7 +1,7 @@
 package com.gaduationproject.cre8.app.employmentpost.service;
 
 import com.gaduationproject.cre8.domain.employmentpost.entity.EmployerPost;
-import com.gaduationproject.cre8.app.employmentpost.dto.request.EmployerPostSearch;
+import com.gaduationproject.cre8.domain.employmentpost.search.EmployerPostSearch;
 import com.gaduationproject.cre8.app.employmentpost.dto.response.EmployerPostSearchResponseDto;
 import com.gaduationproject.cre8.app.employmentpost.dto.response.EmployerPostSearchWithCountResponseDto;
 import com.gaduationproject.cre8.domain.employmentpost.repository.EmployerPostRepository;

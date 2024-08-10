@@ -1,7 +1,7 @@
 package com.gaduationproject.cre8.app.employmentpost.controller;
 
 import com.gaduationproject.cre8.common.response.BaseResponse;
-import com.gaduationproject.cre8.app.employmentpost.dto.request.EmployerPostSearch;
+import com.gaduationproject.cre8.domain.employmentpost.search.EmployerPostSearch;
 import com.gaduationproject.cre8.app.employmentpost.dto.response.EmployerPostSearchWithCountResponseDto;
 import com.gaduationproject.cre8.app.employmentpost.service.EmployerPostSearchService;
 import io.swagger.v3.oas.annotations.Operation;
