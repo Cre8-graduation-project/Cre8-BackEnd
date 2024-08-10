@@ -1,12 +1,12 @@
-package com.gaduationproject.cre8.api.apitest.controller;
+package com.gaduationproject.cre8.app.apitest.controller;
 
 import com.gaduationproject.cre8.domain.apitest.entity.ApiTest;
 import com.gaduationproject.cre8.externalApi.redis.domain.RedisTest;
-import com.gaduationproject.cre8.api.apitest.dto.RedisTestRequestDto;
-import com.gaduationproject.cre8.api.apitest.dto.TestRequestDto;
+import com.gaduationproject.cre8.app.apitest.dto.RedisTestRequestDto;
+import com.gaduationproject.cre8.app.apitest.dto.TestRequestDto;
 import com.gaduationproject.cre8.externalApi.redis.repository.RedisTestRepository;
 import com.gaduationproject.cre8.domain.apitest.repository.TestRepository;
-import com.gaduationproject.cre8.security.interfaces.CurrentMember;
+import com.gaduationproject.cre8.app.auth.interfaces.CurrentMember;
 import com.gaduationproject.cre8.common.response.BaseResponse;
 import com.gaduationproject.cre8.domain.member.entity.Member;
 import io.swagger.v3.oas.annotations.Operation;

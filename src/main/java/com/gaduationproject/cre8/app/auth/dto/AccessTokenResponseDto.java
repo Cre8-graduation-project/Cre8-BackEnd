@@ -1,4 +1,4 @@
-package com.gaduationproject.cre8.api.auth.dto;
+package com.gaduationproject.cre8.app.auth.dto;
 
 import lombok.Builder;
 import lombok.Getter;

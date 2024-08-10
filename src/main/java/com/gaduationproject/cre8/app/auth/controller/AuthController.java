@@ -1,12 +1,12 @@
-package com.gaduationproject.cre8.api.auth.controller;
+package com.gaduationproject.cre8.app.auth.controller;
 
 
-import com.gaduationproject.cre8.api.auth.dto.AccessTokenResponseDto;
-import com.gaduationproject.cre8.api.auth.dto.MemberIdResponseDto;
-import com.gaduationproject.cre8.api.auth.dto.SignInRequestDto;
-import com.gaduationproject.cre8.api.auth.dto.TokenReIssueResponseDto;
-import com.gaduationproject.cre8.api.auth.dto.TokenResponseWithUserIdDto;
-import com.gaduationproject.cre8.api.auth.service.AuthService;
+import com.gaduationproject.cre8.app.auth.dto.AccessTokenResponseDto;
+import com.gaduationproject.cre8.app.auth.dto.MemberIdResponseDto;
+import com.gaduationproject.cre8.app.auth.dto.SignInRequestDto;
+import com.gaduationproject.cre8.app.auth.dto.TokenReIssueResponseDto;
+import com.gaduationproject.cre8.app.auth.dto.TokenResponseWithUserIdDto;
+import com.gaduationproject.cre8.app.auth.service.AuthService;
 import com.gaduationproject.cre8.common.response.BaseResponse;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
