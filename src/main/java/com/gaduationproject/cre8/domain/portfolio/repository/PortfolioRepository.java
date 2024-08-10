@@ -9,10 +9,11 @@ import org.springframework.data.repository.query.Param;
 
 public interface PortfolioRepository extends JpaRepository<Portfolio,Long> {
 
-    @Query("select p from Portfolio p left outer join fetch p.portfolioImageList where p.member.id=:memberId")
+    @Query("select p from Portfolio p left outer join fetch p.portfolioImageList pil where p.member.id=:memberId order by p.id,pil.id")
     List<Portfolio> findByMemberIdWithFetchPortfolioImage(@Param("memberId") Long memberId);
 
     @Query("select p from Portfolio p left outer join fetch p.portfolioImageList left outer join fetch p.workFieldTag where p.id=:portfolioId")
     Optional<Portfolio> findByPortfolioIdWithFetchImageAndWorkFieldTag(@Param("portfolioId") Long portfolioId);
+
 
 }
