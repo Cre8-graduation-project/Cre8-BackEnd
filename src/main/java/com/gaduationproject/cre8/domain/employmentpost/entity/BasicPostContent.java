@@ -54,7 +54,7 @@ public class BasicPostContent {
         this.contents = contents;
         this.contact = contact;
 
-        payment = Payment.builder()
+        this.payment = Payment.builder()
                 .paymentAmount(paymentAmount)
                 .paymentMethod(paymentMethod)
                 .build();
