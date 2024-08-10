@@ -1,14 +1,16 @@
-package com.gaduationproject.cre8.api.portfolio.service;
+package com.gaduationproject.cre8.app.portfolio.service;
 
+import com.gaduationproject.cre8.app.portfolio.dto.S3UploadPortfolioImageCommitEvent;
+import com.gaduationproject.cre8.app.portfolio.dto.S3UploadPortfolioImageRollbackEvent;
 import com.gaduationproject.cre8.common.response.error.ErrorCode;
 import com.gaduationproject.cre8.common.response.error.exception.BadRequestException;
 import com.gaduationproject.cre8.common.response.error.exception.NotFoundException;
 import com.gaduationproject.cre8.externalApi.s3.S3ImageService;
 import com.gaduationproject.cre8.domain.member.entity.Member;
 import com.gaduationproject.cre8.domain.member.repository.MemberRepository;
-import com.gaduationproject.cre8.api.portfolio.dto.request.PortfolioEditRequestDto;
-import com.gaduationproject.cre8.api.portfolio.dto.response.PortfolioResponseDto;
-import com.gaduationproject.cre8.api.portfolio.dto.response.PortfolioSimpleResponseDto;
+import com.gaduationproject.cre8.app.portfolio.dto.request.PortfolioEditRequestDto;
+import com.gaduationproject.cre8.app.portfolio.dto.response.PortfolioResponseDto;
+import com.gaduationproject.cre8.app.portfolio.dto.response.PortfolioSimpleResponseDto;
 import com.gaduationproject.cre8.domain.portfolio.entity.Portfolio;
 import com.gaduationproject.cre8.domain.portfolio.entity.PortfolioImage;
 import com.gaduationproject.cre8.domain.portfolio.entity.PortfolioWorkFieldChildTag;
@@ -23,6 +25,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
+import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
@@ -40,6 +43,7 @@ public class PortfolioService {
     private final PortfolioImageRepository portfolioImageRepository;
     private final S3ImageService s3ImageService;
     private final static String portFolioImage = "portfolio-images/";
+    private final ApplicationEventPublisher eventPublisher;
 
 
 
@@ -92,7 +96,8 @@ public class PortfolioService {
 
 
         //Image 변경
-        updatePortfolioImage(portfolioEditRequestDto.getMultipartFileList(),portfolio);
+        updatePortfolioImage(portfolioEditRequestDto.getMultipartFileList(),portfolio,portfolioEditRequestDto.getDeletePortfolioImageList());
+
 
     }
 
@@ -120,6 +125,7 @@ public class PortfolioService {
     public List<PortfolioSimpleResponseDto> showPortfolioList(final Long memberId){
 
         checkValidMemberId(memberId);
+
 
         return portfolioRepository.findByMemberIdWithFetchPortfolioImage(memberId).stream().map(PortfolioSimpleResponseDto::from).collect(
                 Collectors.toList());
@@ -163,6 +169,7 @@ public class PortfolioService {
 
             if(portfolioEditRequestDto.getWorkFieldId()==null ||
                     workFieldChildTag.getWorkFieldSubCategory().getWorkFieldTag().getId()!= portfolioEditRequestDto.getWorkFieldId()){
+
                 throw new BadRequestException(ErrorCode.NOT_CORRECT_PARENT_TAG);
             }
 
@@ -182,12 +189,23 @@ public class PortfolioService {
                 ErrorCode.CANT_FIND_WORK_FILED_TAG));
     }
 
-    private void updatePortfolioImage(final List<MultipartFile> multipartFileList,final Portfolio portfolio){
+    // 포트폴리오 이미지 update -> listener 사용
+    private void updatePortfolioImage(final List<MultipartFile> multipartFileList,final Portfolio portfolio,final List<Long> deletePortfolioImageId){
 
-        deletePortfolioImage(portfolio);
+
+        List<String> deleteAccessUrlList = new ArrayList<>();
+        List<String> newAccessUrlList = new ArrayList<>();
+
+
+        deletePortfolioImageId.forEach(portfolioImageId->{
+            deleteAccessUrlList.add(portfolioImageRepository.findById(portfolioImageId).orElseThrow(()->new NotFoundException(ErrorCode.CANT_FIND_PORTFOLIO_IMAGE_ID)).getAccessUrl());
+            portfolioImageRepository.deleteById(portfolioImageId);
+        });
 
         multipartFileList.stream().forEach(multipartFile -> {
+
             String accessUrl = s3ImageService.saveImage(multipartFile,portFolioImage,multipartFile.getOriginalFilename());
+            newAccessUrlList.add(accessUrl);
 
             PortfolioImage portfolioImage = PortfolioImage.builder()
                                             .originalName(multipartFile.getOriginalFilename())
@@ -199,15 +217,23 @@ public class PortfolioService {
 
         });
 
+        eventPublisher.publishEvent(S3UploadPortfolioImageRollbackEvent.builder().newAccessUrlList(newAccessUrlList).build());
+        eventPublisher.publishEvent(S3UploadPortfolioImageCommitEvent.builder().deleteAccessUrlList(deleteAccessUrlList).build());
+
     }
 
     private void deletePortfolioImage(final Portfolio portfolio){
 
+        List<String> deleteAccessUrl = new ArrayList<>();
+
         portfolioImageRepository.findByPortfolio(portfolio).forEach(portfolioImage -> {
-            s3ImageService.deleteImage(portfolioImage.getAccessUrl());
+            deleteAccessUrl.add(portfolioImage.getAccessUrl());
         });
 
+        eventPublisher.publishEvent(S3UploadPortfolioImageCommitEvent.builder().deleteAccessUrlList(deleteAccessUrl).build());
+
         portfolio.getPortfolioImageList().clear();
+
     }
 
 

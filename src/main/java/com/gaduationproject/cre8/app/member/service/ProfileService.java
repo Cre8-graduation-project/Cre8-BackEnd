@@ -1,15 +1,19 @@
-package com.gaduationproject.cre8.api.member.service;
+package com.gaduationproject.cre8.app.member.service;
 
+import com.gaduationproject.cre8.app.member.dto.S3UploadCommitEvent;
+import com.gaduationproject.cre8.app.member.dto.S3UploadRollbackEvent;
 import com.gaduationproject.cre8.common.response.error.ErrorCode;
 import com.gaduationproject.cre8.common.response.error.exception.BadRequestException;
 import com.gaduationproject.cre8.common.response.error.exception.NotFoundException;
+import com.gaduationproject.cre8.domain.member.editor.MemberEditor;
 import com.gaduationproject.cre8.externalApi.s3.S3ImageService;
-import com.gaduationproject.cre8.api.member.dto.ProfileWithUserInfoEditRequestDto;
+import com.gaduationproject.cre8.app.member.dto.ProfileWithUserInfoEditRequestDto;
 
-import com.gaduationproject.cre8.api.member.dto.ProfileWithUserInfoResponseDto;
+import com.gaduationproject.cre8.app.member.dto.ProfileWithUserInfoResponseDto;
 import com.gaduationproject.cre8.domain.member.entity.Member;
 import com.gaduationproject.cre8.domain.member.repository.MemberRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
@@ -23,6 +27,7 @@ public class ProfileService {
     private final S3ImageService s3ImageService;
     private final static String MEMBER_PROFILE_IMAGE="member-images/";
     private final static String DEFAULT_PROFILE_URL="";
+    private final ApplicationEventPublisher eventPublisher;
 
 
     //memberId 로 그 멤버의 profile 조회
@@ -45,28 +50,45 @@ public class ProfileService {
             throw new BadRequestException(ErrorCode.DUPLICATE_NICKNAME);
         }
 
-        member.changeProfile(profileWithUserInfoEditRequestDto.getYoutubeLink(),
-                profileWithUserInfoEditRequestDto.getPersonalLink(), profileWithUserInfoEditRequestDto.getTwitterLink(),
-                profileWithUserInfoEditRequestDto.getPersonalStatement(),
-                profileWithUserInfoEditRequestDto.getUserNickName());
+        //기존 member 의 기존 url
+        String beforeAccessUrl = member.getAccessUrl();
 
-        changeMemberImage(profileWithUserInfoEditRequestDto, member);
+        //multipart 파일이 비거나 null 인 경우 기존 memberURL 반환 , 그렇지 않으면 새로 생성 후 반환
+        String accessUrl = getAccessUrl(profileWithUserInfoEditRequestDto.getMultipartFile(), member);
 
-    }
+        MemberEditor.MemberEditorBuilder memberEditorBuilder = member.toEditor();
 
-    private void changeMemberImage(ProfileWithUserInfoEditRequestDto profileWithUserInfoEditRequestDto,
-            Member member) {
+        MemberEditor memberEditor = memberEditorBuilder.youtubeLink(profileWithUserInfoEditRequestDto.getYoutubeLink())
+                        .personalLink(profileWithUserInfoEditRequestDto.getPersonalLink())
+                                .twitterLink(profileWithUserInfoEditRequestDto.getTwitterLink())
+                                        .personalStatement(
+                                                profileWithUserInfoEditRequestDto.getPersonalStatement())
+                                                .nickName(
+                                                        profileWithUserInfoEditRequestDto.getUserNickName())
+                .accessUrl(accessUrl)
+                .build();
 
-        if(!checkDefaultProfileUrl(member.getAccessUrl()) && !checkInputMultiPartFileNull(
-                profileWithUserInfoEditRequestDto.getMultipartFile())){
-            s3ImageService.deleteImage(member.getAccessUrl());
+        member.edit(memberEditor);
+
+
+
+
+        //들어온 값이 빈값이 아닐 때
+        if(!accessUrl.equals(beforeAccessUrl)){
+
+            //성공적으로 커밋 시 -> S3 에서 기존 URL 삭제.
+            eventPublisher.publishEvent(S3UploadCommitEvent.builder().oldAccessUrl(beforeAccessUrl).build());
+
+            //롤백 시  -> S3 에서 새로 저장한 url 삭제
+            eventPublisher.publishEvent(S3UploadRollbackEvent.builder().newAccessUrl(accessUrl).build());
         }
 
-        String accessUrl = getAccessUrl(profileWithUserInfoEditRequestDto.getMultipartFile(),member);
 
-        member.changeAccessUrl(accessUrl);
+
     }
 
+
+    //멤버 프로필이 기본 url 인 "" 인지 판단.
     private boolean checkDefaultProfileUrl(String accessUrl){
         if(accessUrl.equals(DEFAULT_PROFILE_URL)){
             return true;
@@ -77,6 +99,7 @@ public class ProfileService {
 
     // dto 의 사진이 null 일 경우 기존의 url 반환 , 그렇지 않으면 새로 생성 후 저장
     private String getAccessUrl(MultipartFile multipartFile,Member member){
+
         if(checkInputMultiPartFileNull(multipartFile)){
             return member.getAccessUrl();
         }
@@ -86,6 +109,7 @@ public class ProfileService {
     }
 
 
+    //받은 Multipart 값이 null  혹은 empty 인지 판단. 아니라면 false
     private boolean checkInputMultiPartFileNull(MultipartFile multipartFile){
         if(multipartFile==null || multipartFile.isEmpty()){
             return true;
@@ -103,6 +127,8 @@ public class ProfileService {
                 ErrorCode.CANT_FIND_MEMBER
         ));
     }
+
+
 
 
     //유저 닉네임을 통해 pk 를 얻어 오기

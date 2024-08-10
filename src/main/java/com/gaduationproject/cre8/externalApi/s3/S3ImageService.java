@@ -4,10 +4,13 @@ import com.amazonaws.services.s3.AmazonS3Client;
 import com.amazonaws.services.s3.model.CannedAccessControlList;
 import com.amazonaws.services.s3.model.ObjectMetadata;
 import com.amazonaws.services.s3.model.PutObjectRequest;
+import com.gaduationproject.cre8.common.response.error.ErrorCode;
+import com.gaduationproject.cre8.common.response.error.exception.BadRequestException;
 import java.io.IOException;
 import java.util.Arrays;
 import java.util.UUID;
 import lombok.RequiredArgsConstructor;
+import org.apache.http.protocol.HTTP;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -20,6 +23,7 @@ import org.springframework.web.multipart.MultipartFile;
 public class S3ImageService {
     private final AmazonS3Client amazonS3Client;
     private final static String[] extensionArr={"jpg","jpeg","bmp","gif","png"};
+
 
 
     @Value("${cloud.aws.s3.bucketName}")
@@ -76,13 +80,17 @@ public class S3ImageService {
     //UUID 통한 accessUrl 생성 및 체크
     public String generateStoreName(String originalName){
         String extension=extractExtension(originalName);
-        if(!checkValidation(extension)) throw new RuntimeException(extension+" 은 지원하지 않는 확장자입니다");
+        if(!checkValidation(extension)) throw new BadRequestException(ErrorCode.NOT_ALLOWABLE_EXTENSION);
         return UUID.randomUUID()+"."+extension;
     }
+
+
     //이미지 파일의 확장자를 통하여 유효한 이미지 파일인지 확인하는 메서드
     public boolean checkValidation(String extension){
         return Arrays.stream(extensionArr).anyMatch(value->value.equals(extension));
     }
+
+
 
 
 
