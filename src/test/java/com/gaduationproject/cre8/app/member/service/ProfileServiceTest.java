@@ -1,12 +1,12 @@
-package com.gaduationproject.cre8.member.service;
+package com.gaduationproject.cre8.app.member.service;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;
 
-import com.gaduationproject.cre8.api.member.dto.ProfileWithUserInfoEditRequestDto;
-import com.gaduationproject.cre8.api.member.dto.ProfileWithUserInfoResponseDto;
-import com.gaduationproject.cre8.api.member.service.ProfileService;
+import com.gaduationproject.cre8.app.member.dto.ProfileWithUserInfoEditRequestDto;
+import com.gaduationproject.cre8.app.member.dto.ProfileWithUserInfoResponseDto;
+import com.gaduationproject.cre8.domain.member.editor.MemberEditor;
 import com.gaduationproject.cre8.domain.member.entity.Member;
 import com.gaduationproject.cre8.domain.member.repository.MemberRepository;
 import com.gaduationproject.cre8.domain.member.type.Sex;
@@ -38,12 +38,6 @@ class ProfileServiceTest {
                 .sex(Sex.M)
                 .nickName("dionisos198")
                 .birthDay(LocalDate.of(2023,1,1))
-                .profile(Profile.builder()
-                        .twitterLink(null)
-                        .youtubeLink(null)
-                        .personalStatement(null)
-                        .personalLink(null)
-                        .build())
                 .build();
 
         ReflectionTestUtils.setField(member,"id",1L);
@@ -60,15 +54,20 @@ class ProfileServiceTest {
                 .sex(Sex.M)
                 .nickName("dionisos198")
                 .birthDay(LocalDate.of(2023,1,1))
-                .profile(Profile.builder()
-                        .twitterLink("www.jinu.com")
-                        .youtubeLink(null)
-                        .personalStatement("나는 박살이다")
-                        .personalLink(null)
-                        .build())
                 .build();
 
         ReflectionTestUtils.setField(member,"id",1L);
+
+
+        MemberEditor.MemberEditorBuilder memberEditorBuilder = member.toEditor();
+        member.edit(memberEditorBuilder.nickName("dionisos198")
+                .personalStatement("나는 박살이다")
+                .personalLink("www.jinu.com")
+                .youtubeLink(null)
+                .twitterLink(null)
+                .build());
+
+
 
         return member;
     }
@@ -79,11 +78,11 @@ class ProfileServiceTest {
 
         //given
         Member member = getDefaultMember();
-        when(memberRepository.findMemberByLoginId(any(String.class))).thenReturn(Optional.of(member));
+        when(memberRepository.findById(any(Long.class))).thenReturn(Optional.of(member));
 
 
         //when
-        ProfileWithUserInfoResponseDto profileResponseDto = profileService.showMyProfile(member.getLoginId());
+        ProfileWithUserInfoResponseDto profileResponseDto = profileService.showProfile(member.getId());
 
         //then
         assertThat(profileResponseDto.getYoutubeLink()).isEqualTo(null);
@@ -100,11 +99,11 @@ class ProfileServiceTest {
         //given
         Member member = getDefaultMember();
         ProfileWithUserInfoEditRequestDto profileWithUserInfoEditRequestDto = ProfileWithUserInfoEditRequestDto.builder()
-                                                                            .youtubeLink("www.youtube.com")
-                                                                            .twitterLink("www.twitter.com")
-                                                                            .personalLink("www.personalLink.com")
-                                                                            .personalStatement("저는 진짜 편집의 신입니다")
-                                                                            .build();
+                .youtubeLink("www.youtube.com")
+                .twitterLink("www.twitter.com")
+                .personalLink("www.personalLink.com")
+                .personalStatement("저는 진짜 편집의 신입니다")
+                .build();
         when(memberRepository.findMemberByLoginId(any(String.class))).thenReturn(Optional.of(member));
 
 
@@ -112,10 +111,10 @@ class ProfileServiceTest {
         profileService.changeMemberProfile(member.getLoginId(), profileWithUserInfoEditRequestDto);
 
         //then
-        assertThat(member.getProfile().getYoutubeLink()).isEqualTo("www.youtube.com");
-        assertThat(member.getProfile().getTwitterLink()).isEqualTo("www.twitter.com");
-        assertThat(member.getProfile().getPersonalLink()).isEqualTo("www.personalLink.com");
-        assertThat(member.getProfile().getPersonalStatement()).isEqualTo("저는 진짜 편집의 신입니다");
+        assertThat(member.getYoutubeLink()).isEqualTo("www.youtube.com");
+        assertThat(member.getTwitterLink()).isEqualTo("www.twitter.com");
+        assertThat(member.getPersonalLink()).isEqualTo("www.personalLink.com");
+        assertThat(member.getPersonalStatement()).isEqualTo("저는 진짜 편집의 신입니다");
 
     }
 
@@ -125,15 +124,15 @@ class ProfileServiceTest {
 
         //given
         Member member = getChangedMember();
-        when(memberRepository.findMemberByLoginId(any(String.class))).thenReturn(Optional.of(member));
+        when(memberRepository.findById(any(Long.class))).thenReturn(Optional.of(member));
 
         //when
-        ProfileWithUserInfoResponseDto profileResponseDto = profileService.showMyProfile(member.getLoginId());
+        ProfileWithUserInfoResponseDto profileResponseDto = profileService.showProfile(member.getId());
 
         //then
         assertThat(profileResponseDto.getYoutubeLink()).isEqualTo(null);
-        assertThat(profileResponseDto.getTwitterLink()).isEqualTo("www.jinu.com");
-        assertThat(profileResponseDto.getPersonalLink()).isEqualTo(null);
+        assertThat(profileResponseDto.getTwitterLink()).isEqualTo(null);
+        assertThat(profileResponseDto.getPersonalLink()).isEqualTo("www.jinu.com");
         assertThat(profileResponseDto.getPersonalStatement()).isEqualTo("나는 박살이다");
 
     }

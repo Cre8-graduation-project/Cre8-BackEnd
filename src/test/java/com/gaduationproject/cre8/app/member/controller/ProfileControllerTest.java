@@ -1,4 +1,4 @@
-package com.gaduationproject.cre8.member.controller;
+package com.gaduationproject.cre8.app.member.controller;
 
 import static org.hamcrest.Matchers.nullValue;
 import static org.mockito.ArgumentMatchers.any;
@@ -10,15 +10,16 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-import com.gaduationproject.cre8.api.member.controller.ProfileController;
+import com.gaduationproject.cre8.app.member.dto.ProfileWithUserInfoEditRequestDto;
+import com.gaduationproject.cre8.app.member.dto.ProfileWithUserInfoResponseDto;
+import com.gaduationproject.cre8.app.member.service.ProfileService;
 import com.gaduationproject.cre8.common.LocalDateDeserializer;
 import com.gaduationproject.cre8.common.LocalDateSerializer;
 import com.gaduationproject.cre8.common.WithMockCustomUser;
 import com.gaduationproject.cre8.common.response.error.RestExceptionHandler;
-import com.gaduationproject.cre8.api.member.dto.ProfileWithUserInfoEditRequestDto;
-import com.gaduationproject.cre8.api.member.dto.ProfileWithUserInfoResponseDto;
+import com.gaduationproject.cre8.domain.member.entity.Member;
 import com.gaduationproject.cre8.domain.member.repository.MemberRepository;
-import com.gaduationproject.cre8.api.member.service.ProfileService;
+import com.gaduationproject.cre8.domain.member.type.Sex;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import java.time.LocalDate;
@@ -30,12 +31,15 @@ import org.mockito.Mock;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.http.MediaType;
 import org.springframework.security.web.method.annotation.AuthenticationPrincipalArgumentResolver;
+import org.springframework.test.util.ReflectionTestUtils;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.ResultActions;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 
-@WebMvcTest(ProfileControllerTest.class)
+
+@WebMvcTest(com.gaduationproject.cre8.app.member.controller.ProfileControllerTest.class)
+//@ExtendWith(MockitoExtension.class)
 class ProfileControllerTest {
 
 
@@ -71,46 +75,56 @@ class ProfileControllerTest {
 
     }
 
+    private Member makeDefaultMember(){
+
+        Member member =  Member.builder()
+                .nickName("지누")
+                .sex(Sex.M)
+                .email("dionisos198@naver.com")
+                .password("kkk")
+                .loginId("dionisos198")
+                .birthDay(LocalDate.now())
+                .name("이진우")
+                .build();
+
+        ReflectionTestUtils.setField(member,"id",1L);
+
+        return member;
+
+    }
+
     private ProfileWithUserInfoEditRequestDto profileEditRequestDto(final String youtubeLink,final String twitterLink,final String personalLink
-    ,final String personalStatement){
+            ,final String personalStatement,final String userNickName){
+
+
         return ProfileWithUserInfoEditRequestDto.builder()
                 .personalLink(personalLink)
                 .twitterLink(twitterLink)
                 .youtubeLink(youtubeLink)
                 .personalStatement(personalStatement)
+                .userNickName(userNickName)
                 .build();
 
     }
 
     private ProfileWithUserInfoResponseDto defaultProfile(){
-        return ProfileWithUserInfoResponseDto.builder()
-                .profile(Profile.builder().youtubeLink(null).twitterLink(null).personalLink(null).personalStatement(null).build())
-                .build();
-
-    }
-
-    private ProfileWithUserInfoResponseDto changedProfile(final String youtubeLink,final String twitterLink,final String personalLink
-            ,final String personalStatement){
-        return ProfileWithUserInfoResponseDto.builder()
-                .profile(Profile.builder().youtubeLink(youtubeLink).twitterLink(twitterLink).personalLink(personalLink).personalStatement(personalStatement).build())
-                .build();
+        return ProfileWithUserInfoResponseDto.of(makeDefaultMember());
 
     }
 
 
     @Test
-    @DisplayName("프로필 정상 조회 - 초기")
-    @WithMockCustomUser(loginId = "dionisos198", name = "이진우")
-    public void 멤버_프로필_초기_정상_조회() throws Exception {
+    @DisplayName("프로필 아이디 기반 조회")
+    public void 멤버_프로필_아이디_기반_조회() throws Exception {
         //given
 
         ProfileWithUserInfoResponseDto defaultProfileResposne = defaultProfile();
-        given(profileService.showMyProfile(eq("dionisos198"))).willReturn(defaultProfileResposne);
+        given(profileService.showProfile(eq(1L))).willReturn(defaultProfileResposne);
 
         //when
         final ResultActions resultActions = mockMvc.perform(
-                MockMvcRequestBuilders.get(PROFILE_URL)
-        )
+                        MockMvcRequestBuilders.get("/api/v1/{memberId}/profile",1L)
+                )
                 .andDo(print());
 
 
@@ -122,30 +136,7 @@ class ProfileControllerTest {
 
     }
 
-    @Test
-    @DisplayName("프로필 정상 조회 - 수정 후")
-    @WithMockCustomUser(loginId = "dionisos198", name = "이진우")
-    public void 멤버_프로필_수정후_정상_조회() throws Exception {
-        //given
 
-        ProfileWithUserInfoResponseDto changedProfileResposne = changedProfile("www.youbue.com",null,null,"사랑");
-        given(profileService.showMyProfile(eq("dionisos198"))).willReturn(changedProfileResposne);
-
-        //when
-        final ResultActions resultActions = mockMvc.perform(
-                        MockMvcRequestBuilders.get(PROFILE_URL)
-                )
-                .andDo(print());
-
-
-        //then
-        resultActions.andExpect(status().isOk())
-                .andExpect(content().contentType(MediaType.APPLICATION_JSON))
-                .andDo(print())
-                .andExpect(jsonPath("$.data.youtubeLink").value("www.youbue.com"))
-                .andExpect(jsonPath("$.data.personalStatement").value("사랑"));
-
-    }
 
     @Test
     @DisplayName("프로필 수정")
@@ -153,16 +144,23 @@ class ProfileControllerTest {
     public void 멤버_프로필_수정() throws Exception {
         //given
 
+        System.out.println();
         doNothing().when(profileService).changeMemberProfile(eq("dionisos198"), any(
                 ProfileWithUserInfoEditRequestDto.class));
+
+        ProfileWithUserInfoEditRequestDto profileWithUserInfoEditRequestDto = ProfileWithUserInfoEditRequestDto
+                .builder()
+                .userNickName("빠빠")
+                .youtubeLink("www.youtube.com")
+                .build();
 
 
         //when
         final ResultActions resultActions = mockMvc.perform(
                         MockMvcRequestBuilders.put(PROFILE_URL)
-                                .content(gson.toJson(profileEditRequestDto("www.youtube.com"
-                                ,null,null,"난 천재야")))
-                                .contentType(MediaType.APPLICATION_JSON)
+                           //     .content(gson.toJson(profileWithUserInfoEditRequestDto))
+                                .param("userNickName",profileWithUserInfoEditRequestDto.getUserNickName())
+                                .contentType(MediaType.MULTIPART_FORM_DATA)
                 )
                 .andDo(print());
 
