@@ -27,6 +27,8 @@ public enum ErrorCode {
     SUB_URL_CANT_ACCESS("접근할 수 있는 구독 아이디가 아닙니다"),
     PUB_URL_CANT_ACCESS("해당 채팅방 참가하지 않았기에 pub 를 할 수 없습니다"),
     CANT_ACCESS_CHAT_ROOM("자신의 채팅방의 채팅만 조회가능합니다"),
+    NOT_ALLOWABLE_EXTENSION("지원되지 않는 확장자입니다"),
+
 
 
     /**
@@ -53,6 +55,7 @@ public enum ErrorCode {
     CANT_FIND_PAYMENT_METHOD("해당 급여 지급 방식을 다시 확인해주세요"),
     CANT_FIND_ENROLL_DURATION_TYPE("해당 채용 방식을 다시 확인해주세요"),
     CANT_FIND_CHATTING_ROOM("채팅방을 찾을 수 없습니다"),
+    CANT_FIND_PORTFOLIO_IMAGE_ID("해당 포트폴리오 이미지 아이디 기반으로 포트폴리오 이미지를 찾을 수 없습니다"),
 
 
     /**
