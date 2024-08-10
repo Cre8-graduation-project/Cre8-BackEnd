@@ -21,7 +21,7 @@ public class EmployerPostResponseDto {
     private Integer paymentAmount;
     private Integer numberOfEmployee;
     private String enrollDurationType;
-    private LocalDate localDate;
+    private LocalDate deadLine;
     private Integer hopeCareerYear;
     private String contents;
     private String contact;

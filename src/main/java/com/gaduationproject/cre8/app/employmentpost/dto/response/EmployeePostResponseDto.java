@@ -40,9 +40,9 @@ public class EmployeePostResponseDto {
 
 
         return new EmployeePostResponseDto(employeePost.getBasicPostContent().getTitle(),
-                employeePost.getBasicPostContent().getMember().getName(),
-                employeePost.getBasicPostContent().getMember().getSex().getName(),
-                employeePost.getBasicPostContent().getMember().getBirthDay().getYear(),
+                writer.getName(),
+                writer.getSex().getName(),
+                writer.getBirthDay().getYear(),
                 TagPostResponseDto.of(workFieldName,subCategoryWithChildTagResponseDtoList),
                 portfolioSimpleResponseDtoList,
                 employeePost.getBasicPostContent().getPayment().getPaymentMethod().getName(),
