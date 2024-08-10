@@ -1,6 +1,6 @@
 package com.gaduationproject.cre8.common;
 
-import com.gaduationproject.cre8.security.CustomUserDetails;
+import com.gaduationproject.cre8.app.auth.service.CustomUserDetails;
 import com.gaduationproject.cre8.domain.member.entity.Authority;
 import com.gaduationproject.cre8.domain.member.entity.Member;
 import com.gaduationproject.cre8.domain.member.type.Sex;
@@ -30,8 +30,6 @@ public class WithMockCustomUserSecurityContextFactory implements WithSecurityCon
                 .password("password")
                 .loginId(user.loginId())
                 .birthDay(LocalDate.now())
-                .profile(Profile.builder().youtubeLink(null)
-                        .personalLink(null).personalStatement(null).twitterLink(null).build())
                 .build();
 
         CustomUserDetails customUserDetails = new CustomUserDetails(member.getLoginId(),"password",true,true,true,true,
