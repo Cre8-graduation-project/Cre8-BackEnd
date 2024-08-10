@@ -6,7 +6,7 @@ import static com.gaduationproject.cre8.domain.employmentpost.entity.QEmployerPo
 import static com.gaduationproject.cre8.domain.employmentpost.entity.QEmployerPostWorkFieldChildTag.employerPostWorkFieldChildTag;
 
 import com.gaduationproject.cre8.domain.employmentpost.entity.EmployerPost;
-import com.gaduationproject.cre8.api.employmentpost.dto.request.EmployerPostSearch;
+import com.gaduationproject.cre8.app.employmentpost.dto.request.EmployerPostSearch;
 import com.querydsl.core.types.Order;
 import com.querydsl.core.types.OrderSpecifier;
 import com.querydsl.core.types.dsl.BooleanExpression;
