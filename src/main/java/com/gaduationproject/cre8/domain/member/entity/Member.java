@@ -1,5 +1,6 @@
 package com.gaduationproject.cre8.domain.member.entity;
 
+import com.gaduationproject.cre8.domain.member.editor.MemberEditor;
 import com.gaduationproject.cre8.domain.member.type.Sex;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -81,23 +82,30 @@ public class Member {
         this.accessUrl = "";
     }
 
-    public void changeAccessUrl(String accessUrl){
-        if(accessUrl!=null){
-            this.accessUrl = accessUrl;
-        }
+    public MemberEditor.MemberEditorBuilder toEditor(){
+
+        return MemberEditor.builder()
+                .accessUrl(this.accessUrl)
+                .personalStatement(this.personalStatement)
+                .youtubeLink(this.youtubeLink)
+                .personalLink(this.personalLink)
+                .twitterLink(this.twitterLink)
+                .nickName(this.nickName);
+
     }
 
-    public void changeProfile(final String youtubeLink,final String personalLink,final String twitterLink,
-            final String personalStatement,final String nickName){
+    public void edit(final MemberEditor memberEditor){
 
-        this.personalStatement = personalStatement;
-        this.youtubeLink = youtubeLink;
-        this.personalLink = personalLink;
-        this.twitterLink = twitterLink;
+        this.accessUrl = memberEditor.getAccessUrl();
+        this.personalStatement = memberEditor.getPersonalStatement();
+        this.youtubeLink = memberEditor.getYoutubeLink();
+        this.personalLink = memberEditor.getPersonalLink();
+        this.twitterLink = memberEditor.getTwitterLink();
+        this.nickName = memberEditor.getNickName();
 
-        if(nickName!=null){
-            this.nickName = nickName;
-        }
     }
+
+
+
 
 }
