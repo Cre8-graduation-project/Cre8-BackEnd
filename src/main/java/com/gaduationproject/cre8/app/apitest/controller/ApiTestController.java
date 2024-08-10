@@ -19,11 +19,13 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 @RequiredArgsConstructor
 @Tag(name = "테스트 용도 컨트롤러", description = "배포가 잘 되었는지 테스트 합니다.")
+@RequestMapping(value = "/api/v1")
 public class ApiTestController {
 
     private final TestRepository testRepository;

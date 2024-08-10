@@ -22,7 +22,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/api/v1/employer-post/search")
+@RequestMapping("/api/v1/employer-posts/search")
 @Tag(name = "구인자 게시글 검색 컨트롤러")
 public class EmployerPostSearchController {
 
