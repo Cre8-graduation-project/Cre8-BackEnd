@@ -25,11 +25,13 @@ public class EmployeePostResponseDto {
     private Integer careerYear;
     private String contents;
     private String contact;
+    private Long memberId;
 
 
     public static EmployeePostResponseDto of(final List<SubCategoryWithChildTagResponseDto> subCategoryWithChildTagResponseDtoList,
                                              final EmployeePost employeePost,
-                                             final List<PortfolioSimpleResponseDto> portfolioSimpleResponseDtoList){
+                                             final List<PortfolioSimpleResponseDto> portfolioSimpleResponseDtoList,
+                                             final Long memberId){
 
         String workFieldName = employeePost.getBasicPostContent().getWorkFieldTag()==null?null:employeePost.getBasicPostContent().getWorkFieldTag().getName();
 
@@ -43,7 +45,8 @@ public class EmployeePostResponseDto {
                 employeePost.getBasicPostContent().getPayment().getPaymentAmount(),
                 employeePost.getCareerYear(),
                 employeePost.getBasicPostContent().getContents(),
-                employeePost.getBasicPostContent().getContact());
+                employeePost.getBasicPostContent().getContact(),
+                memberId);
 
     }
 

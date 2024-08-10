@@ -99,9 +99,12 @@ public class EmployeePostCRUDService {
             return SubCategoryWithChildTagResponseDto.of(subCategoryName,childTagMap.get(subCategoryName));
         }).collect(Collectors.toList());
 
+        Long ownerMemberId = employeePost.getBasicPostContent().getMember().getId();
+
         return EmployeePostResponseDto.of(subCategoryWithChildTagResponseDtoList
                                           ,employeePost
-                                          ,portfolioService.showPortfolioList(employeePost.getBasicPostContent().getMember().getId()));
+                                          ,portfolioService.showPortfolioList(ownerMemberId),
+                                           ownerMemberId);
 
     }
 
