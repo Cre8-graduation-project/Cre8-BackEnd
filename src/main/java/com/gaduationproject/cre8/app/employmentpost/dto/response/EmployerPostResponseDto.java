@@ -1,6 +1,7 @@
 package com.gaduationproject.cre8.app.employmentpost.dto.response;
 
 import com.gaduationproject.cre8.domain.employmentpost.entity.EmployerPost;
+import com.gaduationproject.cre8.domain.member.entity.Member;
 import java.time.LocalDate;
 import java.util.List;
 import lombok.AccessLevel;
@@ -24,11 +25,13 @@ public class EmployerPostResponseDto {
     private Integer hopeCareerYear;
     private String contents;
     private String contact;
-    private Long memberId;
+    private Long writerId;
+    private String writerAccessUrl;
 
     public static EmployerPostResponseDto of(final List<SubCategoryWithChildTagResponseDto> subCategoryWithChildTagResponseDtoList, final EmployerPost employerPost){
 
         String workFieldName = employerPost.getBasicPostContent().getWorkFieldTag()==null?null:employerPost.getBasicPostContent().getWorkFieldTag().getName();
+        Member writer = employerPost.getBasicPostContent().getMember();
 
         return new EmployerPostResponseDto(employerPost.getBasicPostContent().getTitle(),employerPost.getCompanyName(),
                 TagPostResponseDto.of(workFieldName,subCategoryWithChildTagResponseDtoList),
@@ -37,7 +40,8 @@ public class EmployerPostResponseDto {
                 employerPost.getDeadLine(),employerPost.getHopeCareerYear(),
                 employerPost.getBasicPostContent().getContents(),
                 employerPost.getBasicPostContent().getContact(),
-                employerPost.getBasicPostContent().getMember().getId()
+                writer.getId(),
+                writer.getAccessUrl()
         );
 
     }

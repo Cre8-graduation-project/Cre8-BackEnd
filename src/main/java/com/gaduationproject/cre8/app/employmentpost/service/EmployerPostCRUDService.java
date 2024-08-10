@@ -94,6 +94,16 @@ public class EmployerPostCRUDService {
                 .findByIdWithFetchWorkFieldTagAndEmployerPostChildTagListAndWorkFieldChildTag(employerPostId).orElseThrow(
                         ()-> new NotFoundException(ErrorCode.CANT_FIND_EMPLOYER_POST));
 
+        List<SubCategoryWithChildTagResponseDto> subCategoryWithChildTagResponseDtoList = getSubCategoryWithChildTagResponseDtoList(
+                employerPost);
+
+        return EmployerPostResponseDto.of(subCategoryWithChildTagResponseDtoList,employerPost);
+
+    }
+
+    private  List<SubCategoryWithChildTagResponseDto> getSubCategoryWithChildTagResponseDtoList(
+            EmployerPost employerPost) {
+
         Map<String,List<String>> childTagMap = new LinkedHashMap<>();
 
         employerPost.getEmployerPostWorkFieldChildTagList()
@@ -106,13 +116,12 @@ public class EmployerPostCRUDService {
 
         });
 
-        List<SubCategoryWithChildTagResponseDto> subCategoryWithChildTagResponseDtoList = childTagMap.keySet().stream().map(subCategoryName ->{
-            return SubCategoryWithChildTagResponseDto.of(subCategoryName,childTagMap.get(subCategoryName));
-        }).collect(Collectors.toList());
+        List<SubCategoryWithChildTagResponseDto> subCategoryWithChildTagResponseDtoList = childTagMap.keySet().stream().map(subCategoryName ->
+             SubCategoryWithChildTagResponseDto.of(subCategoryName,childTagMap.get(subCategoryName))
+        ).collect(Collectors.toList());
 
 
-        return EmployerPostResponseDto.of(subCategoryWithChildTagResponseDtoList,employerPost);
-
+        return subCategoryWithChildTagResponseDtoList;
     }
 
     @Transactional
