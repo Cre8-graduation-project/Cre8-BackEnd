@@ -46,10 +46,14 @@ public class EditEmployeePostRequestDto {
     @Schema(description = "구직자 게시물에 대한 내용을 입력합니다",example = "나는 진짜 능력이 있어요")
     private String contents;
 
+    @NotEmpty(message = "연락처를 입력해주세요(이메일,핸드폰)")
+    @Schema(description = "연락처를 입력합니다",example = "010-1111-1111")
+    private String contact;
+
     @Builder
     public EditEmployeePostRequestDto(final Long employeePostId,final String title, final Long workFieldId,
             final List<Long> workFieldChildTagId,
-            final String paymentMethod, final Integer paymentAmount, final Integer careerYear,final String contents) {
+            final String paymentMethod, final Integer paymentAmount, final Integer careerYear,final String contents,final String contact) {
 
         this.employeePostId = employeePostId;
         this.title = title;
@@ -59,6 +63,7 @@ public class EditEmployeePostRequestDto {
         this.paymentAmount = paymentAmount;
         this.careerYear = careerYear;
         this.contents = contents;
+        this.contact = contact;
     }
 
 }

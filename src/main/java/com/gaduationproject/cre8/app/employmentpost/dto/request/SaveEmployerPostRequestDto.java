@@ -55,11 +55,15 @@ public class SaveEmployerPostRequestDto {
     @Schema(description = "구인자 게시글 내용 입력",example = "0")
     private String contents;
 
+    @NotEmpty(message = "연락처를 입력해주세요(이메일,핸드폰)")
+    @Schema(description = "연락처를 입력합니다",example = "010-1111-1111")
+    private String contact;
+
 
     @Builder
     public SaveEmployerPostRequestDto(final Long workFieldId,final String title, final List<Long> workFieldChildTagId,
             final String paymentMethod,final String companyName, final Integer paymentAmount, final Integer numberOfEmployee,
-            final String enrollDurationType,final LocalDate deadLine, final Integer hopeCareerYear,final String contents) {
+            final String enrollDurationType,final LocalDate deadLine, final Integer hopeCareerYear,final String contents,final String contact) {
         this.workFieldId = workFieldId;
         this.title = title;
         this.workFieldChildTagId = workFieldChildTagId;
@@ -71,6 +75,7 @@ public class SaveEmployerPostRequestDto {
         this.deadLine = deadLine;
         this.hopeCareerYear = hopeCareerYear;
         this.contents = contents;
+        this.contact = contact;
     }
 
 

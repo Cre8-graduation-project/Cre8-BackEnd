@@ -24,6 +24,7 @@ public class EmployeePostResponseDto {
     private Integer paymentAmount;
     private Integer careerYear;
     private String contents;
+    private String contact;
 
 
     public static EmployeePostResponseDto of(final List<SubCategoryWithChildTagResponseDto> subCategoryWithChildTagResponseDtoList,
@@ -41,7 +42,8 @@ public class EmployeePostResponseDto {
                 employeePost.getBasicPostContent().getPayment().getPaymentMethod().getName(),
                 employeePost.getBasicPostContent().getPayment().getPaymentAmount(),
                 employeePost.getCareerYear(),
-                employeePost.getBasicPostContent().getContents());
+                employeePost.getBasicPostContent().getContents(),
+                employeePost.getBasicPostContent().getContact());
 
     }
 

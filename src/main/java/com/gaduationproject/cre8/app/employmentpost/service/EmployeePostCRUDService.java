@@ -58,6 +58,7 @@ public class EmployeePostCRUDService {
                 .paymentAmount(saveEmployeePostRequestDto.getPaymentAmount())
                 .careerYear(saveEmployeePostRequestDto.getCareerYear())
                 .contents(saveEmployeePostRequestDto.getContents())
+                .contact(saveEmployeePostRequestDto.getContact())
                 .build();
 
         employeePostRepository.save(employeePost);
@@ -130,7 +131,7 @@ public class EmployeePostCRUDService {
 
         employeePost.changeAllExceptMemberAndId(editEmployeePostRequestDto.getTitle(), workFieldTag,PaymentMethod.toPaymentMethodEnum(editEmployeePostRequestDto.getPaymentMethod()),
                 editEmployeePostRequestDto.getPaymentAmount(),
-                editEmployeePostRequestDto.getCareerYear(), editEmployeePostRequestDto.getContents());
+                editEmployeePostRequestDto.getCareerYear(), editEmployeePostRequestDto.getContents(),editEmployeePostRequestDto.getContact());
 
     }
 
