@@ -1,10 +1,11 @@
-package com.gaduationproject.cre8.security;
+package com.gaduationproject.cre8.app.auth.config;
 
-import com.gaduationproject.cre8.security.handler.JwtAccessDeniedHandler;
-import com.gaduationproject.cre8.security.handler.JwtAuthenticationEntryPointHandler;
-import com.gaduationproject.cre8.security.jwt.JwtFilter;
-import com.gaduationproject.cre8.security.jwt.TokenProvider;
+import com.gaduationproject.cre8.app.auth.handler.JwtAccessDeniedHandler;
+import com.gaduationproject.cre8.app.auth.handler.JwtAuthenticationEntryPointHandler;
+import com.gaduationproject.cre8.app.auth.jwt.JwtFilter;
+import com.gaduationproject.cre8.app.auth.jwt.TokenProvider;
 import com.gaduationproject.cre8.domain.member.entity.Authority;
+import com.gaduationproject.cre8.externalApi.redis.service.RedisUtil;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -26,7 +27,7 @@ public class SecurityConfig {
     private final JwtAuthenticationEntryPointHandler authenticationEntryPointHandler;
     private final JwtAccessDeniedHandler accessDeniedHandler;
     private final TokenProvider tokenProvider;
-    private final RedisTemplate<String, String> redisTemplate;
+    private final RedisUtil redisUtil;
 
 
     @Bean
@@ -47,13 +48,17 @@ public class SecurityConfig {
 
                 .authorizeHttpRequests((requests) ->
                         requests.
-                                requestMatchers(HttpMethod.GET,"/post/*").permitAll()
-                                .requestMatchers("/test/login").hasAuthority(Authority.NORMAL.toString())
-                                .requestMatchers("/api/v1/profiles").hasAuthority(Authority.NORMAL.toString())
+                                requestMatchers(HttpMethod.GET,"/post/*","/api/v1/portfolios/*").permitAll()
+                                .requestMatchers("/api/v1/auth/login","/api/v1/mail/*","/api/v1/members/*","/api/v1/*/profile",
+                                        "/api/v1/members/pk").permitAll()
+                                .requestMatchers("/api/v1/auth/logout","/api/v1/auth/reissue","/api/v1/profiles","/test/login",
+                                        "/api/v1/chats/*","/api/v1/portfolios").authenticated()
+                                .requestMatchers(HttpMethod.POST,"/api/v1/tags/*","/api/v1/tags").authenticated()
+                                .requestMatchers(HttpMethod.DELETE,"/api/v1/tags/*","/api/v1/portfolios/*").authenticated()
                                // .requestMatchers("/post/*").hasAuthority("GENERAL")
                                 .anyRequest().permitAll())
 
-                .addFilterBefore(new JwtFilter(tokenProvider,redisTemplate),
+                .addFilterBefore(new JwtFilter(tokenProvider,redisUtil),
                         UsernamePasswordAuthenticationFilter.class);
 
 
