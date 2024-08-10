@@ -89,12 +89,12 @@ public class EmployeePostCRUDService {
                 employeePost);
 
 
-        Long ownerMemberId = employeePost.getBasicPostContent().getMember().getId();
+        Long writerId = employeePost.getBasicPostContent().getMember().getId();
 
 
         return EmployeePostResponseDto.of(subCategoryWithChildTagResponseDtoList
                                           ,employeePost
-                                          ,portfolioService.showPortfolioList(ownerMemberId));
+                                          ,portfolioService.showPortfolioList(writerId));
 
     }
 
