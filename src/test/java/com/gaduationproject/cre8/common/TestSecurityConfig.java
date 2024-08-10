@@ -35,15 +35,13 @@ public class TestSecurityConfig {
 
                 .authorizeHttpRequests((requests) ->
                         requests.
-                                requestMatchers(HttpMethod.GET,"/post/*","/api/v1/portfolios/*").permitAll()
-                                .requestMatchers("/api/v1/auth/login","/api/v1/mail/*","/api/v1/members/*","/api/v1/*/profile",
-                                        "/api/v1/members/pk").permitAll()
-                                .requestMatchers("/api/v1/auth/logout","/api/v1/auth/reissue","/api/v1/profiles","/test/login",
-                                        "/api/v1/chats/*","/api/v1/portfolios").authenticated()
-                                .requestMatchers(HttpMethod.POST,"/api/v1/tags/*","/api/v1/tags").authenticated()
-                                .requestMatchers(HttpMethod.DELETE,"/api/v1/tags/*","/api/v1/portfolios/*").authenticated()
-                                // .requestMatchers("/post/*").hasAuthority("GENERAL")
-                                .anyRequest().permitAll());
+                                requestMatchers(HttpMethod.GET,"/api/v1/test","/api/v1/redis/test","/api/v1/employee/posts/*"
+                                        ,"/api/v1/employee-posts/search","/api/v1/employer/posts/*","/api/v1/employer-posts/search","/api/v1/members/check",
+                                        "/api/v1/*/profile","/api/v1/members/pk","/api/v1/portfolios/*","/api/v1/portfolios/member/*","/api/v1/tags",
+                                        "/api/v1/tags/subcategory/*","/api/v1/tags/child/*").permitAll()
+                                .requestMatchers(HttpMethod.POST,"/api/v1/test","/api/v1/redis/test","/api/v1/auth/login","/api/v1/mail",
+                                        "/api/v1/mail/check","/api/v1/members").permitAll()
+                                .anyRequest().authenticated());
 
         return http.build();
 
