@@ -25,7 +25,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/employee/posts")
+@RequestMapping("/api/v1/employee/posts")
 @Tag(name = "구직자 게시글 관련 컨트롤러", description = "구직자 게시글을 단건 조회, 수정, 삭제 ,생성합니다 ")
 public class EmployeePostController {
 
