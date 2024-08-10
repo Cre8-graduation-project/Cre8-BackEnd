@@ -1,16 +1,18 @@
-package com.gaduationproject.cre8.api.member.service;
+package com.gaduationproject.cre8.app.member.service;
 
 import com.gaduationproject.cre8.common.response.error.ErrorCode;
 import com.gaduationproject.cre8.common.response.error.exception.BadRequestException;
 import com.gaduationproject.cre8.common.response.error.exception.DuplicateException;
 import com.gaduationproject.cre8.common.response.error.exception.InternalServerErrorException;
-import com.gaduationproject.cre8.api.member.dto.EmailCheckAuthNumRequestDto;
-import com.gaduationproject.cre8.api.member.dto.EmailCheckAuthNumResponseDto;
-import com.gaduationproject.cre8.api.member.dto.EmailRequestDto;
+import com.gaduationproject.cre8.app.member.dto.EmailCheckAuthNumRequestDto;
+import com.gaduationproject.cre8.app.member.dto.EmailCheckAuthNumResponseDto;
+import com.gaduationproject.cre8.app.member.dto.EmailRequestDto;
 import com.gaduationproject.cre8.domain.member.repository.MemberRepository;
+import com.gaduationproject.cre8.externalApi.mail.MailService;
+import com.gaduationproject.cre8.externalApi.redis.service.RedisUtil;
 import java.time.Duration;
+import java.util.concurrent.TimeUnit;
 import lombok.RequiredArgsConstructor;
-import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.mail.javamail.MimeMessageHelper;
 import org.springframework.stereotype.Service;
@@ -21,18 +23,14 @@ import java.util.Random;
 
 @Service
 @RequiredArgsConstructor
-public class MailSendService {
-    private final JavaMailSender javaMailSender;
-    private final RedisTemplate<String,String> redisTemplate;
-    private final MemberRepository memberRepository;
+public class MemberMailSendService {
 
-    private static final String mailSendFrom = "dionisos198@naver.com";
+    private final MailService mailService;
+    private final RedisUtil redisUtil;
+    private final MemberRepository memberRepository;
     private static final String mailTitle = "안녕하세요. cre8입니다";
     private static final String mailContentsAuthNumberBefore = "cre8에 오신 것을 환영합니다.<br><br> 인증번호는 ";
     private static final String mailContentsAuthNumberAfter = " 입니다. <br>인증번호를 입력해주세요!";
-
-    private static final String encodingType = "utf-8";
-
     private static long CAN_INPUT_TIME_AFTER_SEND_EMAIL=60*5L;
 
 
@@ -46,18 +44,11 @@ public class MailSendService {
         }
 
         String authNumber = makeRandomNumber();
-
-        try{
-            MimeMessage message = javaMailSender.createMimeMessage();
-            setMiMeMessageHelperForMailFormat(message, emailRequestDto.getEmail(), authNumber);
-            javaMailSender.send(message);
-        }
-        catch (Exception e){
-            throw new InternalServerErrorException(ErrorCode.MAIL_SERVER_ERROR);
-        }
+        mailService.sendMail(emailRequestDto.getEmail(),mailTitle,mailContentsAuthNumberBefore+authNumber+mailContentsAuthNumberAfter);
 
 
-        redisTemplate.opsForValue().set(emailRequestDto.getEmail(),authNumber,Duration.ofSeconds(CAN_INPUT_TIME_AFTER_SEND_EMAIL));
+        redisUtil.saveAtRedis(emailRequestDto.getEmail(), authNumber,CAN_INPUT_TIME_AFTER_SEND_EMAIL,
+                TimeUnit.SECONDS);
 
     }
 
@@ -73,27 +64,16 @@ public class MailSendService {
         return randomNumber;
     }
 
-    public void setMiMeMessageHelperForMailFormat(final MimeMessage message,final String email,final String authNumber)
-            throws MessagingException {
-
-        MimeMessageHelper helper = new MimeMessageHelper(message,true,encodingType);
-        helper.setFrom(mailSendFrom);
-        helper.setTo(email);
-        helper.setSubject(mailTitle);
-        helper.setText(mailContentsAuthNumberBefore+authNumber+mailContentsAuthNumberAfter,true);
-        
-    }
-
     public EmailCheckAuthNumResponseDto checkAuthNum(final EmailCheckAuthNumRequestDto emailCheckAuthNumRequestDto){
 
 
-        if(redisTemplate.opsForValue().get(emailCheckAuthNumRequestDto.getEmail())==null||
-                !redisTemplate.opsForValue().get(emailCheckAuthNumRequestDto.getEmail()).equals(
+        if(redisUtil.getValueByKey(emailCheckAuthNumRequestDto.getEmail())==null||
+                !redisUtil.getValueByKey(emailCheckAuthNumRequestDto.getEmail()).equals(
                 emailCheckAuthNumRequestDto.getAuthNum())){
             throw new BadRequestException(ErrorCode.NOT_VALIDATE_EMAIL_AUTH_NUMBER);
         }
 
-        redisTemplate.delete(emailCheckAuthNumRequestDto.getEmail());
+        redisUtil.deleteAtRedis(emailCheckAuthNumRequestDto.getEmail());
 
         return EmailCheckAuthNumResponseDto.builder().emailChecked(true).build();
     }

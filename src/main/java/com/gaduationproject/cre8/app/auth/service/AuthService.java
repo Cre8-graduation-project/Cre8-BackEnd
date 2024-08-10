@@ -1,17 +1,17 @@
-package com.gaduationproject.cre8.api.auth.service;
+package com.gaduationproject.cre8.app.auth.service;
 
-import com.gaduationproject.cre8.api.auth.dto.SignInRequestDto;
-import com.gaduationproject.cre8.api.auth.dto.TokenDto;
-import com.gaduationproject.cre8.api.auth.dto.TokenReIssueResponseDto;
-import com.gaduationproject.cre8.api.auth.dto.TokenResponseWithUserIdDto;
-import com.gaduationproject.cre8.security.jwt.TokenProvider;
+import com.gaduationproject.cre8.app.auth.dto.SignInRequestDto;
+import com.gaduationproject.cre8.app.auth.dto.TokenDto;
+import com.gaduationproject.cre8.app.auth.dto.TokenReIssueResponseDto;
+import com.gaduationproject.cre8.app.auth.dto.TokenResponseWithUserIdDto;
+import com.gaduationproject.cre8.app.auth.jwt.TokenProvider;
 import com.gaduationproject.cre8.common.response.error.ErrorCode;
 import com.gaduationproject.cre8.common.response.error.exception.BadRequestException;
 import com.gaduationproject.cre8.domain.member.entity.Member;
 import com.gaduationproject.cre8.domain.member.repository.MemberRepository;
+import com.gaduationproject.cre8.externalApi.redis.service.RedisUtil;
 import java.util.concurrent.TimeUnit;
 import lombok.RequiredArgsConstructor;
-import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.http.ResponseCookie;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
@@ -28,7 +28,7 @@ public class AuthService {
     private final BCryptPasswordEncoder passwordEncoder;
     private final TokenProvider tokenProvider;
     private final AuthenticationManagerBuilder authenticationManagerBuilder;
-    private final RedisTemplate<String,String> redisTemplate;
+    private final RedisUtil redisUtil;
 
 
 
@@ -49,7 +49,7 @@ public class AuthService {
         Authentication authentication= authenticationManagerBuilder.getObject().authenticate(authenticationToken);
         TokenDto tokenDto=tokenProvider.createToken(authentication);
 
-        saveLoginProcessAtRedis(authentication.getName(),tokenDto);
+        redisUtil.saveAtRedis(authentication.getName(),tokenDto.getRefreshToken(),tokenDto.getRefreshTokenValidationTime(),TimeUnit.MILLISECONDS);
 
         return new TokenResponseWithUserIdDto(tokenDto.getType(),tokenDto.getAccessToken(),
                 makeResponseCookie(tokenDto.getRefreshToken(),tokenDto.getRefreshTokenValidationTime()),
@@ -63,12 +63,12 @@ public class AuthService {
 
         Authentication authentication= tokenProvider.getAuthentication(accessToken);
 
-        if(!redisTemplate.opsForValue().get(authentication.getName()).equals(refreshToken)){
+        if(!redisUtil.getValueByKey(authentication.getName()).equals(refreshToken)){
             throw new BadRequestException(ErrorCode.REFRESH_TOKEN_NOT_MATCH);
         }
 
         TokenDto tokenDto=tokenProvider.createToken(authentication);
-        saveLoginProcessAtRedis(authentication.getName(),tokenDto);
+        redisUtil.saveAtRedis(authentication.getName(),tokenDto.getRefreshToken(),tokenDto.getRefreshTokenValidationTime(),TimeUnit.MILLISECONDS);
 
         return new TokenReIssueResponseDto(tokenDto.getType(),tokenDto.getAccessToken(),
                 makeResponseCookie(tokenDto.getRefreshToken(),tokenDto.getRefreshTokenValidationTime()),tokenDto.getAccessTokenValidationTime());
@@ -83,14 +83,13 @@ public class AuthService {
 
         Authentication authentication = tokenProvider.getAuthentication(accessToken);
 
-        if (redisTemplate.opsForValue().get(authentication.getName())!=null){
-            redisTemplate.delete(authentication.getName());
+        if (redisUtil.getValueByKey(authentication.getName())!=null){
+            redisUtil.deleteAtRedis(authentication.getName());
         }
 
 
         Long expiration = tokenProvider.getExpiration(accessToken);
-        redisTemplate.opsForValue().set(accessToken,"logout",expiration,TimeUnit.MILLISECONDS);
-
+        redisUtil.saveAtRedis(accessToken,"logout",expiration,TimeUnit.MILLISECONDS);
 
     }
 
@@ -104,9 +103,6 @@ public class AuthService {
                 .build();
     }
 
-    private void saveLoginProcessAtRedis(String key, TokenDto tokenDto){
-        redisTemplate.opsForValue().set(key,tokenDto.getRefreshToken(),tokenDto.getRefreshTokenValidationTime(),TimeUnit.MILLISECONDS);
-    }
 
 }
 
