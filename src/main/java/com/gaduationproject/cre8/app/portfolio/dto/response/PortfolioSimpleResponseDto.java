@@ -1,4 +1,4 @@
-package com.gaduationproject.cre8.api.portfolio.dto.response;
+package com.gaduationproject.cre8.app.portfolio.dto.response;
 
 import com.gaduationproject.cre8.domain.portfolio.entity.Portfolio;
 import lombok.AccessLevel;
