@@ -1,14 +1,12 @@
-package com.gaduationproject.cre8.externalApi.chat;
+package com.gaduationproject.cre8.app.chat.handler;
 
 
-import com.gaduationproject.cre8.api.chat.dto.request.ChatDto;
-import com.gaduationproject.cre8.externalApi.chat.StompErrorHandler;
+import com.gaduationproject.cre8.app.chat.dto.request.ChatDto;
 import com.gaduationproject.cre8.common.response.error.exception.BadRequestException;
 import com.gaduationproject.cre8.common.response.error.exception.NotFoundException;
 import java.security.Principal;
 import lombok.RequiredArgsConstructor;
 import org.springframework.messaging.handler.annotation.MessageExceptionHandler;
-import org.springframework.messaging.simp.SimpMessageSendingOperations;
 import org.springframework.messaging.simp.annotation.SendToUser;
 import org.springframework.messaging.simp.stomp.StompHeaderAccessor;
 import org.springframework.validation.FieldError;
@@ -18,8 +16,8 @@ import org.springframework.web.bind.annotation.ControllerAdvice;
 @RequiredArgsConstructor
 public class MessagingExceptionHandler {
 
-    private final SimpMessageSendingOperations simpMessageSendingOperations;
-    private final StompErrorHandler stompErrorHandler;
+//    private final SimpMessageSendingOperations simpMessageSendingOperations;
+//    private final StompErrorHandler stompErrorHandler;
 
 
     @MessageExceptionHandler
