@@ -45,6 +45,7 @@ public class EmployeePostCRUDService {
     public void saveEmployeePost(final String loginId,final SaveEmployeePostRequestDto saveEmployeePostRequestDto){
 
         Member member = getLoginMember(loginId);
+
         WorkFieldTag workFieldTag = getWorkFieldTag(saveEmployeePostRequestDto.getWorkFieldId());
         List<WorkFieldChildTag> workFieldChildTagList = getWorkFieldChildTag(
                 saveEmployeePostRequestDto.getWorkFieldChildTagId(),
@@ -83,6 +84,24 @@ public class EmployeePostCRUDService {
                 .findByIdWithFetchMemberAndWorkFieldTagAndEmployeePostChildTagListAndWorkFieldChildTag(employeePostId).orElseThrow(
                         ()-> new NotFoundException(ErrorCode.CANT_FIND_EMPLOYEE_POST));
 
+
+        List<SubCategoryWithChildTagResponseDto> subCategoryWithChildTagResponseDtoList = getSubCategoryWithChildTagResponseDtoList(
+                employeePost);
+
+
+        Long ownerMemberId = employeePost.getBasicPostContent().getMember().getId();
+
+
+        return EmployeePostResponseDto.of(subCategoryWithChildTagResponseDtoList
+                                          ,employeePost
+                                          ,portfolioService.showPortfolioList(ownerMemberId));
+
+    }
+
+    // SubCategory 와 ChildTag 함께 반환
+    private List<SubCategoryWithChildTagResponseDto> getSubCategoryWithChildTagResponseDtoList(
+            EmployeePost employeePost) {
+
         Map<String,List<String>> childTagMap = new LinkedHashMap<>();
 
         employeePost.getEmployeePostWorkFieldChildTagList()
@@ -95,17 +114,12 @@ public class EmployeePostCRUDService {
 
                 });
 
-        List<SubCategoryWithChildTagResponseDto> subCategoryWithChildTagResponseDtoList = childTagMap.keySet().stream().map(subCategoryName ->{
-            return SubCategoryWithChildTagResponseDto.of(subCategoryName,childTagMap.get(subCategoryName));
-        }).collect(Collectors.toList());
+        List<SubCategoryWithChildTagResponseDto> subCategoryWithChildTagResponseDtoList = childTagMap.keySet().stream().map(subCategoryName ->
+             SubCategoryWithChildTagResponseDto.of(subCategoryName,childTagMap.get(subCategoryName))
+        ).collect(Collectors.toList());
 
-        Long ownerMemberId = employeePost.getBasicPostContent().getMember().getId();
 
-        return EmployeePostResponseDto.of(subCategoryWithChildTagResponseDtoList
-                                          ,employeePost
-                                          ,portfolioService.showPortfolioList(ownerMemberId),
-                                           ownerMemberId);
-
+        return subCategoryWithChildTagResponseDtoList;
     }
 
     @Transactional
@@ -113,7 +127,9 @@ public class EmployeePostCRUDService {
 
 
         EmployeePost employeePost = findEmployeePostById(editEmployeePostRequestDto.getEmployeePostId());
+
         checkAccessMember(loginId,employeePost);
+
         WorkFieldTag workFieldTag = getWorkFieldTag(editEmployeePostRequestDto.getWorkFieldId());
         List<WorkFieldChildTag> workFieldChildTagList = getWorkFieldChildTag(editEmployeePostRequestDto.getWorkFieldChildTagId(),
                 editEmployeePostRequestDto.getWorkFieldId());

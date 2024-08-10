@@ -2,6 +2,7 @@ package com.gaduationproject.cre8.app.employmentpost.dto.response;
 
 import com.gaduationproject.cre8.domain.employmentpost.entity.EmployeePost;
 import com.gaduationproject.cre8.app.portfolio.dto.response.PortfolioSimpleResponseDto;
+import com.gaduationproject.cre8.domain.member.entity.Member;
 import java.util.ArrayList;
 import java.util.List;
 import lombok.AccessLevel;
@@ -25,15 +26,18 @@ public class EmployeePostResponseDto {
     private Integer careerYear;
     private String contents;
     private String contact;
-    private Long memberId;
+    private Long writerId;
+    private String writerAccessUrl;
 
 
     public static EmployeePostResponseDto of(final List<SubCategoryWithChildTagResponseDto> subCategoryWithChildTagResponseDtoList,
                                              final EmployeePost employeePost,
-                                             final List<PortfolioSimpleResponseDto> portfolioSimpleResponseDtoList,
-                                             final Long memberId){
+                                             final List<PortfolioSimpleResponseDto> portfolioSimpleResponseDtoList){
+
 
         String workFieldName = employeePost.getBasicPostContent().getWorkFieldTag()==null?null:employeePost.getBasicPostContent().getWorkFieldTag().getName();
+        Member writer = employeePost.getBasicPostContent().getMember();
+
 
         return new EmployeePostResponseDto(employeePost.getBasicPostContent().getTitle(),
                 employeePost.getBasicPostContent().getMember().getName(),
@@ -46,7 +50,8 @@ public class EmployeePostResponseDto {
                 employeePost.getCareerYear(),
                 employeePost.getBasicPostContent().getContents(),
                 employeePost.getBasicPostContent().getContact(),
-                memberId);
+                writer.getId(),
+                writer.getAccessUrl());
 
     }
 
