@@ -1,6 +1,6 @@
 package com.gaduationproject.cre8.app.member.controller;
 
-import com.gaduationproject.cre8.common.response.BaseResponse;
+import com.gaduationproject.cre8.app.response.BaseResponse;
 import com.gaduationproject.cre8.app.member.dto.LoginIdCheckResponseDto;
 import com.gaduationproject.cre8.app.member.dto.MemberSignUpRequestDto;
 import com.gaduationproject.cre8.app.member.service.MemberSignUpService;

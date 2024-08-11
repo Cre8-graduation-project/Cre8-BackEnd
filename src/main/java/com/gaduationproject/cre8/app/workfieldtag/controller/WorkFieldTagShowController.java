@@ -1,6 +1,6 @@
 package com.gaduationproject.cre8.app.workfieldtag.controller;
 
-import com.gaduationproject.cre8.common.response.BaseResponse;
+import com.gaduationproject.cre8.app.response.BaseResponse;
 import com.gaduationproject.cre8.app.workfieldtag.dto.response.WorkFieldChildTagWithSubCategoryNameResponseDto;
 import com.gaduationproject.cre8.app.workfieldtag.dto.response.WorkFieldSubCategoryResponseDto;
 import com.gaduationproject.cre8.app.workfieldtag.dto.response.WorkFieldTagResponseDto;

@@ -1,7 +1,7 @@
 package com.gaduationproject.cre8.app.portfolio.controller;
 
 import com.gaduationproject.cre8.app.auth.interfaces.CurrentMemberLoginId;
-import com.gaduationproject.cre8.common.response.BaseResponse;
+import com.gaduationproject.cre8.app.response.BaseResponse;
 import com.gaduationproject.cre8.app.portfolio.dto.request.PortfolioEditRequestDto;
 import com.gaduationproject.cre8.app.portfolio.dto.response.PortfolioResponseDto;
 import com.gaduationproject.cre8.app.portfolio.dto.response.PortfolioSimpleResponseDto;

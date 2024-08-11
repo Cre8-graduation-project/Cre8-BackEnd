@@ -1,7 +1,7 @@
 package com.gaduationproject.cre8.app.employmentpost.controller;
 
 import com.gaduationproject.cre8.app.auth.interfaces.CurrentMemberLoginId;
-import com.gaduationproject.cre8.common.response.BaseResponse;
+import com.gaduationproject.cre8.app.response.BaseResponse;
 import com.gaduationproject.cre8.app.employmentpost.dto.request.EditEmployerPostRequestDto;
 import com.gaduationproject.cre8.app.employmentpost.dto.request.SaveEmployerPostRequestDto;
 import com.gaduationproject.cre8.app.employmentpost.dto.response.EmployerPostResponseDto;

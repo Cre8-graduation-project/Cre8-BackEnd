@@ -1,4 +1,4 @@
-package com.gaduationproject.cre8.common.response;
+package com.gaduationproject.cre8.app.response;
 
 import lombok.AccessLevel;
 import lombok.Getter;

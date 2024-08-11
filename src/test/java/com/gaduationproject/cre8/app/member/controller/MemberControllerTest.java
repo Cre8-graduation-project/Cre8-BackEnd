@@ -11,7 +11,7 @@ import com.gaduationproject.cre8.app.member.dto.MemberSignUpRequestDto;
 import com.gaduationproject.cre8.app.member.service.MemberSignUpService;
 import com.gaduationproject.cre8.common.LocalDateDeserializer;
 import com.gaduationproject.cre8.common.LocalDateSerializer;
-import com.gaduationproject.cre8.common.response.error.RestExceptionHandler;
+import com.gaduationproject.cre8.app.response.RestExceptionHandler;
 import com.gaduationproject.cre8.domain.member.type.Sex;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;

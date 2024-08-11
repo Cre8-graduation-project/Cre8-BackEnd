@@ -7,7 +7,7 @@ import com.gaduationproject.cre8.app.apitest.dto.TestRequestDto;
 import com.gaduationproject.cre8.externalApi.redis.repository.RedisTestRepository;
 import com.gaduationproject.cre8.domain.apitest.repository.TestRepository;
 import com.gaduationproject.cre8.app.auth.interfaces.CurrentMember;
-import com.gaduationproject.cre8.common.response.BaseResponse;
+import com.gaduationproject.cre8.app.response.BaseResponse;
 import com.gaduationproject.cre8.domain.member.entity.Member;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;

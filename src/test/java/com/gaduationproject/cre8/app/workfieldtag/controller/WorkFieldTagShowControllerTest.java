@@ -1,7 +1,6 @@
 package com.gaduationproject.cre8.app.workfieldtag.controller;
 
 import static org.hamcrest.Matchers.nullValue;
-import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
@@ -9,9 +8,6 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-import com.gaduationproject.cre8.app.member.controller.MemberController;
-import com.gaduationproject.cre8.app.member.dto.MemberSignUpRequestDto;
-import com.gaduationproject.cre8.app.member.service.MemberSignUpService;
 import com.gaduationproject.cre8.app.workfieldtag.dto.response.WorkFieldChildTagResponseDto;
 import com.gaduationproject.cre8.app.workfieldtag.dto.response.WorkFieldChildTagWithSubCategoryNameResponseDto;
 import com.gaduationproject.cre8.app.workfieldtag.dto.response.WorkFieldSubCategoryResponseDto;
@@ -19,8 +15,7 @@ import com.gaduationproject.cre8.app.workfieldtag.dto.response.WorkFieldTagRespo
 import com.gaduationproject.cre8.app.workfieldtag.service.WorkFieldTagShowService;
 import com.gaduationproject.cre8.common.LocalDateDeserializer;
 import com.gaduationproject.cre8.common.LocalDateSerializer;
-import com.gaduationproject.cre8.common.response.error.RestExceptionHandler;
-import com.gaduationproject.cre8.domain.member.type.Sex;
+import com.gaduationproject.cre8.app.response.RestExceptionHandler;
 import com.gaduationproject.cre8.domain.workfieldtag.entity.WorkFieldChildTag;
 import com.gaduationproject.cre8.domain.workfieldtag.entity.WorkFieldSubCategory;
 import com.gaduationproject.cre8.domain.workfieldtag.entity.WorkFieldTag;
@@ -28,7 +23,6 @@ import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import java.time.LocalDate;
 import java.util.List;
-import org.hibernate.jdbc.Work;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
