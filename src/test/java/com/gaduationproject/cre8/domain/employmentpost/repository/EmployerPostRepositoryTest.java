@@ -327,7 +327,7 @@ class EmployerPostRepositoryTest {
     }
 
     @Test
-    @DisplayName("EmployeePost - 동적쿼리 검색")
+    @DisplayName("EmployerPost - 동적쿼리 검색")
     public void 구인게시글_태그_특성_기반_검색(){
 
         //given
