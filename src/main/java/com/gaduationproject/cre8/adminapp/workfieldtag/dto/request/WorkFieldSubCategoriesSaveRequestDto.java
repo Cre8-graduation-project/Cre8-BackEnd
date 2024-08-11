@@ -1,4 +1,4 @@
-package com.gaduationproject.cre8.app.workfieldtag.dto.request;
+package com.gaduationproject.cre8.adminapp.workfieldtag.dto.request;
 
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.constraints.NotNull;

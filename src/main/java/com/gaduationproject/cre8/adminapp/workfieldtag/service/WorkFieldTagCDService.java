@@ -1,9 +1,9 @@
-package com.gaduationproject.cre8.app.workfieldtag.service;
+package com.gaduationproject.cre8.adminapp.workfieldtag.service;
 
 import com.gaduationproject.cre8.common.response.error.ErrorCode;
 import com.gaduationproject.cre8.common.response.error.exception.DuplicateException;
 import com.gaduationproject.cre8.common.response.error.exception.NotFoundException;
-import com.gaduationproject.cre8.app.workfieldtag.dto.request.WorkFieldTagSaveRequestDto;
+import com.gaduationproject.cre8.adminapp.workfieldtag.dto.request.WorkFieldTagSaveRequestDto;
 import com.gaduationproject.cre8.domain.workfieldtag.entity.WorkFieldTag;
 import com.gaduationproject.cre8.domain.workfieldtag.repository.WorkFieldTagRepository;
 import lombok.RequiredArgsConstructor;

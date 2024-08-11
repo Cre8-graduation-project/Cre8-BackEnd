@@ -1,13 +1,13 @@
-package com.gaduationproject.cre8.app.workfieldtag.controller;
+package com.gaduationproject.cre8.adminapp.workfieldtag.controller;
 
-import com.gaduationproject.cre8.app.workfieldtag.dto.request.WorkFieldChildTagSaveRequestDto;
-import com.gaduationproject.cre8.app.workfieldtag.dto.request.WorkFieldChildTagsSaveRequestDto;
-import com.gaduationproject.cre8.app.workfieldtag.dto.request.WorkFieldSubCategoriesSaveRequestDto;
-import com.gaduationproject.cre8.app.workfieldtag.dto.request.WorkFieldSubCategorySaveRequestDto;
-import com.gaduationproject.cre8.app.workfieldtag.dto.request.WorkFieldTagSaveRequestDto;
-import com.gaduationproject.cre8.app.workfieldtag.service.WorkFieldChildTagCDService;
-import com.gaduationproject.cre8.app.workfieldtag.service.WorkFieldSubCategoryCDService;
-import com.gaduationproject.cre8.app.workfieldtag.service.WorkFieldTagCDService;
+import com.gaduationproject.cre8.adminapp.workfieldtag.dto.request.WorkFieldChildTagSaveRequestDto;
+import com.gaduationproject.cre8.adminapp.workfieldtag.dto.request.WorkFieldChildTagsSaveRequestDto;
+import com.gaduationproject.cre8.adminapp.workfieldtag.dto.request.WorkFieldSubCategoriesSaveRequestDto;
+import com.gaduationproject.cre8.adminapp.workfieldtag.dto.request.WorkFieldSubCategorySaveRequestDto;
+import com.gaduationproject.cre8.adminapp.workfieldtag.dto.request.WorkFieldTagSaveRequestDto;
+import com.gaduationproject.cre8.adminapp.workfieldtag.service.WorkFieldChildTagCDService;
+import com.gaduationproject.cre8.adminapp.workfieldtag.service.WorkFieldSubCategoryCDService;
+import com.gaduationproject.cre8.adminapp.workfieldtag.service.WorkFieldTagCDService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
