@@ -46,6 +46,7 @@ public class Member {
     @Column(nullable = false)
     private String accessUrl;
 
+    @Column(nullable = false)
     @Enumerated(EnumType.STRING)
     private Sex sex;
 
