@@ -55,8 +55,9 @@ public class SecurityConfig {
                                         "/api/v1/tags/subcategory/*","/api/v1/tags/child/*").permitAll()
                                 .requestMatchers(HttpMethod.POST,"/api/v1/test","/api/v1/redis/test","/api/v1/auth/login","/api/v1/mail",
                                         "/api/v1/mail/check","/api/v1/members").permitAll()
-                                .requestMatchers("/api/v1/auth/*").permitAll()
+                                .requestMatchers("/ws-stomp").permitAll()
                                 .anyRequest().authenticated())
+
 
                 .addFilterBefore(new JwtFilter(tokenProvider,redisUtil),
                         UsernamePasswordAuthenticationFilter.class);
