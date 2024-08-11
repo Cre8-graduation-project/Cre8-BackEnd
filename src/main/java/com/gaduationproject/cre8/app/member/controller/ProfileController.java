@@ -1,7 +1,7 @@
 package com.gaduationproject.cre8.app.member.controller;
 
 import com.gaduationproject.cre8.app.auth.interfaces.CurrentMemberLoginId;
-import com.gaduationproject.cre8.common.response.BaseResponse;
+import com.gaduationproject.cre8.app.response.BaseResponse;
 import com.gaduationproject.cre8.app.member.dto.ProfileWithUserInfoEditRequestDto;
 import com.gaduationproject.cre8.app.member.dto.ProfileWithUserInfoResponseDto;
 import com.gaduationproject.cre8.app.member.service.ProfileService;

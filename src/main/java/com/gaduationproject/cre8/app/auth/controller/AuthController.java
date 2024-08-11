@@ -7,7 +7,7 @@ import com.gaduationproject.cre8.app.auth.dto.SignInRequestDto;
 import com.gaduationproject.cre8.app.auth.dto.TokenReIssueResponseDto;
 import com.gaduationproject.cre8.app.auth.dto.TokenResponseWithUserIdDto;
 import com.gaduationproject.cre8.app.auth.service.AuthService;
-import com.gaduationproject.cre8.common.response.BaseResponse;
+import com.gaduationproject.cre8.app.response.BaseResponse;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;

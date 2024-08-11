@@ -1,6 +1,5 @@
-package com.gaduationproject.cre8.common.response.error;
+package com.gaduationproject.cre8.app.response;
 
-import com.gaduationproject.cre8.common.response.BaseResponse;
 import com.gaduationproject.cre8.common.response.error.exception.BadRequestException;
 import com.gaduationproject.cre8.common.response.error.exception.DuplicateException;
 import com.gaduationproject.cre8.common.response.error.exception.ForbiddenException;
@@ -9,20 +8,15 @@ import com.gaduationproject.cre8.common.response.error.exception.NoSuchElementEx
 import com.gaduationproject.cre8.common.response.error.exception.NotFoundException;
 import com.gaduationproject.cre8.common.response.error.exception.UnauthorizedException;
 import jakarta.servlet.http.HttpServletRequest;
-import java.io.PrintWriter;
-import java.io.StringWriter;
 import java.time.format.DateTimeParseException;
-import javax.mail.MessagingException;
 import lombok.extern.slf4j.Slf4j;
 import org.slf4j.MDC;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.http.converter.HttpMessageNotReadableException;
 import org.springframework.validation.BindException;
 import org.springframework.validation.FieldError;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
-import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
 @Slf4j

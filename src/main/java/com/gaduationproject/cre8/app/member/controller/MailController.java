@@ -1,6 +1,6 @@
 package com.gaduationproject.cre8.app.member.controller;
 
-import com.gaduationproject.cre8.common.response.BaseResponse;
+import com.gaduationproject.cre8.app.response.BaseResponse;
 import com.gaduationproject.cre8.app.member.dto.EmailCheckAuthNumRequestDto;
 import com.gaduationproject.cre8.app.member.dto.EmailCheckAuthNumResponseDto;
 import com.gaduationproject.cre8.app.member.dto.EmailRequestDto;

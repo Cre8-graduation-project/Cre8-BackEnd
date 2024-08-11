@@ -6,7 +6,7 @@ import com.gaduationproject.cre8.app.chat.dto.response.ChattingRoomResponseDto;
 import com.gaduationproject.cre8.app.chat.dto.response.MessageResponseDto;
 import com.gaduationproject.cre8.app.chat.service.ChattingRoomService;
 import com.gaduationproject.cre8.app.chat.service.ChattingService;
-import com.gaduationproject.cre8.common.response.BaseResponse;
+import com.gaduationproject.cre8.app.response.BaseResponse;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;

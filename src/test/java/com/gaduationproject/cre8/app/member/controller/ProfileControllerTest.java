@@ -16,7 +16,7 @@ import com.gaduationproject.cre8.app.member.service.ProfileService;
 import com.gaduationproject.cre8.common.LocalDateDeserializer;
 import com.gaduationproject.cre8.common.LocalDateSerializer;
 import com.gaduationproject.cre8.common.WithMockCustomUser;
-import com.gaduationproject.cre8.common.response.error.RestExceptionHandler;
+import com.gaduationproject.cre8.app.response.RestExceptionHandler;
 import com.gaduationproject.cre8.domain.member.entity.Member;
 import com.gaduationproject.cre8.domain.member.repository.MemberRepository;
 import com.gaduationproject.cre8.domain.member.type.Sex;

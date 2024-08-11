@@ -1,7 +1,7 @@
 package com.gaduationproject.cre8.app.auth.handler;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.gaduationproject.cre8.common.response.BaseResponse;
+import com.gaduationproject.cre8.app.response.BaseResponse;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;

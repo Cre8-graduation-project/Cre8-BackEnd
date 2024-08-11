@@ -1,10 +1,10 @@
-package com.gaduationproject.cre8.app.workfieldtag.service;
+package com.gaduationproject.cre8.adminapp.workfieldtag.service;
 
 import com.gaduationproject.cre8.common.response.error.ErrorCode;
 import com.gaduationproject.cre8.common.response.error.exception.DuplicateException;
 import com.gaduationproject.cre8.common.response.error.exception.NotFoundException;
-import com.gaduationproject.cre8.app.workfieldtag.dto.request.WorkFieldSubCategoriesSaveRequestDto;
-import com.gaduationproject.cre8.app.workfieldtag.dto.request.WorkFieldSubCategorySaveRequestDto;
+import com.gaduationproject.cre8.adminapp.workfieldtag.dto.request.WorkFieldSubCategoriesSaveRequestDto;
+import com.gaduationproject.cre8.adminapp.workfieldtag.dto.request.WorkFieldSubCategorySaveRequestDto;
 import com.gaduationproject.cre8.domain.workfieldtag.entity.WorkFieldSubCategory;
 import com.gaduationproject.cre8.domain.workfieldtag.entity.WorkFieldTag;
 import com.gaduationproject.cre8.domain.workfieldtag.repository.WorkFieldSubCategoryRepository;
