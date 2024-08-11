@@ -162,6 +162,10 @@ public class PortfolioService {
     //ChildTag 와 Tag
     private List<WorkFieldChildTag> getWorkFieldChildTag(final PortfolioEditRequestDto portfolioEditRequestDto){
 
+        if(portfolioEditRequestDto.getWorkFieldChildTagId()==null){
+            return List.of();
+        }
+
         return portfolioEditRequestDto.getWorkFieldChildTagId().stream().map(childId->{
 
             WorkFieldChildTag workFieldChildTag = workFieldChildTagRepository.findById(childId)
@@ -197,25 +201,34 @@ public class PortfolioService {
         List<String> newAccessUrlList = new ArrayList<>();
 
 
-        deletePortfolioImageId.forEach(portfolioImageId->{
-            deleteAccessUrlList.add(portfolioImageRepository.findById(portfolioImageId).orElseThrow(()->new NotFoundException(ErrorCode.CANT_FIND_PORTFOLIO_IMAGE_ID)).getAccessUrl());
-            portfolioImageRepository.deleteById(portfolioImageId);
-        });
+        if(deletePortfolioImageId!=null){
 
-        multipartFileList.stream().forEach(multipartFile -> {
+            deletePortfolioImageId.forEach(portfolioImageId->{
+                deleteAccessUrlList.add(portfolioImageRepository.findById(portfolioImageId).orElseThrow(()->new NotFoundException(ErrorCode.CANT_FIND_PORTFOLIO_IMAGE_ID)).getAccessUrl());
+                portfolioImageRepository.deleteById(portfolioImageId);
+            });
 
-            String accessUrl = s3ImageService.saveImage(multipartFile,portFolioImage,multipartFile.getOriginalFilename());
-            newAccessUrlList.add(accessUrl);
+        }
 
-            PortfolioImage portfolioImage = PortfolioImage.builder()
-                                            .originalName(multipartFile.getOriginalFilename())
-                                            .portfolio(portfolio)
-                                            .accessUrl(accessUrl)
-                                            .build();
 
-            portfolio.getPortfolioImageList().add(portfolioImage);
+        if(multipartFileList!=null){
 
-        });
+            multipartFileList.stream().forEach(multipartFile -> {
+
+                String accessUrl = s3ImageService.saveImage(multipartFile,portFolioImage,multipartFile.getOriginalFilename());
+                newAccessUrlList.add(accessUrl);
+
+                PortfolioImage portfolioImage = PortfolioImage.builder()
+                        .originalName(multipartFile.getOriginalFilename())
+                        .portfolio(portfolio)
+                        .accessUrl(accessUrl)
+                        .build();
+
+                portfolio.getPortfolioImageList().add(portfolioImage);
+
+            });
+        }
+
 
         eventPublisher.publishEvent(S3UploadPortfolioImageRollbackEvent.builder().newAccessUrlList(newAccessUrlList).build());
         eventPublisher.publishEvent(S3UploadPortfolioImageCommitEvent.builder().deleteAccessUrlList(deleteAccessUrlList).build());
