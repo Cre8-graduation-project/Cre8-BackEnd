@@ -35,11 +35,13 @@ public class EmployerPost extends BaseEntity {
     @Embedded
     private BasicPostContent basicPostContent;
 
+    @Column(nullable = false)
     private String companyName;
 
     private Integer numberOfEmployee;
 
     @Enumerated(EnumType.STRING)
+    @Column(nullable = false)
     private EnrollDurationType enrollDurationType;
 
     private Integer hopeCareerYear;

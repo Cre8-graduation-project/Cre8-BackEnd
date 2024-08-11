@@ -25,11 +25,11 @@ public class EmployeePostWorkFieldChildTag {
     private Long id;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "employee_post_id")
+    @JoinColumn(name = "employee_post_id",nullable = false)
     private EmployeePost employeePost;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "work_field_child_tag_id")
+    @JoinColumn(name = "work_field_child_tag_id",nullable = false)
     private WorkFieldChildTag workFieldChildTag;
 
 

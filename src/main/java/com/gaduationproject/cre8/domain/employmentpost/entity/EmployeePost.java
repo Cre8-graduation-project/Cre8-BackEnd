@@ -27,8 +27,10 @@ public class EmployeePost extends BaseEntity {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "employee_post_id")
     private Long id;
+
     @Embedded
     private BasicPostContent basicPostContent;
+
     private Integer careerYear;
 
     @OneToMany(mappedBy = "employeePost")

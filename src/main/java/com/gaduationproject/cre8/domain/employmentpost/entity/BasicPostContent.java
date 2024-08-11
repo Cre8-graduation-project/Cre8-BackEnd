@@ -25,12 +25,12 @@ public class BasicPostContent {
     @JoinColumn(name = "member_id",nullable = false)
     private Member member;
 
-    @Column(nullable = false)
-    private String title;
-
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "work_field_tag_id")
     private WorkFieldTag workFieldTag;
+
+    @Column(nullable = false)
+    private String title;
 
     @Embedded
     private Payment payment;

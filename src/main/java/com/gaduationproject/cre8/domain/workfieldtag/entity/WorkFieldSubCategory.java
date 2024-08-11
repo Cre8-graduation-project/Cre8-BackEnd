@@ -27,6 +27,7 @@ public class WorkFieldSubCategory {
     @Column(name = "work_field_sub_category_id")
     private Long id;
 
+    @Column(nullable = false)
     private String name;
 
     @ManyToOne(fetch = FetchType.LAZY)
