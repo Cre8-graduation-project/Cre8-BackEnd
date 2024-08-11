@@ -1,5 +1,6 @@
 package com.gaduationproject.cre8.domain.employmentpost.type;
 
+import jakarta.persistence.Column;
 import jakarta.persistence.Embeddable;
 import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
@@ -14,6 +15,7 @@ import lombok.NoArgsConstructor;
 public class Payment {
 
     @Enumerated(EnumType.STRING)
+    @Column(nullable = false)
     private PaymentMethod paymentMethod;
 
     private Integer paymentAmount;
