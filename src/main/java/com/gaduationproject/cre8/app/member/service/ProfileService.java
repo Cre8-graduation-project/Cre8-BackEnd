@@ -46,7 +46,8 @@ public class ProfileService {
 
         Member member = getLoginMember(loginId);
 
-        if(memberRepository.existsByNickName(profileWithUserInfoEditRequestDto.getUserNickName())){
+        if(memberRepository.existsByNickName(profileWithUserInfoEditRequestDto.getUserNickName())
+                && !member.getNickName().equals(profileWithUserInfoEditRequestDto.getUserNickName())){
             throw new BadRequestException(ErrorCode.DUPLICATE_NICKNAME);
         }
 
