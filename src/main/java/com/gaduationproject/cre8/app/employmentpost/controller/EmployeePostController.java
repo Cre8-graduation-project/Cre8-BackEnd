@@ -13,9 +13,11 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
@@ -31,7 +33,7 @@ public class EmployeePostController {
 
     private final EmployeePostCRUDService employeePostCRUDService;
 
-    @PostMapping
+    @PostMapping(consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     @Operation(summary = "구직자 게시글 생성",description = "구직자가 게시글을 생성합니다")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "201",description = "구직자 게시글 성공적 생성"),
@@ -39,7 +41,7 @@ public class EmployeePostController {
             @ApiResponse(responseCode = "400",description = "하위 태그와 부모 태그가 같지 않을 때")
 
     })
-    public ResponseEntity<Void> saveEmployeePost(@CurrentMemberLoginId final String loginId, @RequestBody @Valid final SaveEmployeePostRequestDto saveEmployeePostRequestDto){
+    public ResponseEntity<Void> saveEmployeePost(@CurrentMemberLoginId final String loginId, @ModelAttribute @Valid final SaveEmployeePostRequestDto saveEmployeePostRequestDto){
 
         employeePostCRUDService.saveEmployeePost(loginId, saveEmployeePostRequestDto);
 
@@ -60,7 +62,7 @@ public class EmployeePostController {
 
     }
 
-    @PutMapping
+    @PutMapping(consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     @Operation(summary = "구직자 게시글 수정",description = "구직자가 게시글을 Id 기반으로 수정합니다 ")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200",description = "구직자 게시글 성공적 수정"),
@@ -69,7 +71,7 @@ public class EmployeePostController {
 
     })
     public ResponseEntity<Void> editEmployeePost(@CurrentMemberLoginId final String longinId,
-            @RequestBody @Valid EditEmployeePostRequestDto editEmployeePostRequestDto){
+            @ModelAttribute @Valid EditEmployeePostRequestDto editEmployeePostRequestDto){
 
         employeePostCRUDService.updateEmployeePost(longinId,editEmployeePostRequestDto);
 

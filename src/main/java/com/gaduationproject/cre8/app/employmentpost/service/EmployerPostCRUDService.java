@@ -1,6 +1,8 @@
 package com.gaduationproject.cre8.app.employmentpost.service;
 
 
+import com.gaduationproject.cre8.app.member.dto.S3UploadCommitEvent;
+import com.gaduationproject.cre8.app.member.dto.S3UploadRollbackEvent;
 import com.gaduationproject.cre8.common.response.error.ErrorCode;
 import com.gaduationproject.cre8.common.response.error.exception.BadRequestException;
 import com.gaduationproject.cre8.common.response.error.exception.NotFoundException;
@@ -20,6 +22,7 @@ import com.gaduationproject.cre8.domain.workfieldtag.entity.WorkFieldChildTag;
 import com.gaduationproject.cre8.domain.workfieldtag.entity.WorkFieldTag;
 import com.gaduationproject.cre8.domain.workfieldtag.repository.WorkFieldChildTagRepository;
 import com.gaduationproject.cre8.domain.workfieldtag.repository.WorkFieldTagRepository;
+import com.gaduationproject.cre8.externalApi.s3.S3ImageService;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
@@ -27,8 +30,10 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
+import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.multipart.MultipartFile;
 
 @Service
 @RequiredArgsConstructor
@@ -40,6 +45,10 @@ public class EmployerPostCRUDService {
     private final WorkFieldTagRepository workFieldTagRepository;
     private final WorkFieldChildTagRepository workFieldChildTagRepository;
     private final EmployerPostWorkFieldChildTagRepository employerPostWorkFieldChildTagRepository;
+    private final S3ImageService s3ImageService;
+    private final ApplicationEventPublisher eventPublisher;
+    private final static String EMPLOYER_POST_IMAGE="employerPost-images/";
+
 
 
     //Employer Post 저장
@@ -55,6 +64,8 @@ public class EmployerPostCRUDService {
                 saveEmployerPostRequestDto.getWorkFieldChildTagId(),
                 saveEmployerPostRequestDto.getWorkFieldId());
 
+        String accessUrl = getAccessUrl(saveEmployerPostRequestDto.getMultipartFile());
+
         EmployerPost employerPost = EmployerPost.builder()
                 .member(member)
                 .title(saveEmployerPostRequestDto.getTitle())
@@ -69,6 +80,7 @@ public class EmployerPostCRUDService {
                 .hopeCareerYear(saveEmployerPostRequestDto.getHopeCareerYear())
                 .contents(saveEmployerPostRequestDto.getContents())
                 .contact(saveEmployerPostRequestDto.getContact())
+                .accessUrl(accessUrl)
                 .build();
 
         employerPostRepository.save(employerPost);
@@ -84,7 +96,7 @@ public class EmployerPostCRUDService {
 
         });
 
-
+        eventPublisher.publishEvent(S3UploadRollbackEvent.builder().newAccessUrl(accessUrl).build());
     }
 
     //Employer Post 단건 조회
@@ -149,6 +161,9 @@ public class EmployerPostCRUDService {
 
         });
 
+        String beforeUrl = employerPost.getBasicPostContent().getAccessUrl();
+        String accessUrl = getAccessUrl(editEmployerPostRequestDto.getMultipartFile());
+
 
         employerPost.changeAllExceptMemberAndId(editEmployerPostRequestDto.getTitle(), workFieldTag,PaymentMethod.toPaymentMethodEnum(editEmployerPostRequestDto.getPaymentMethod()),
                 editEmployerPostRequestDto.getPaymentAmount(),editEmployerPostRequestDto.getCompanyName(),
@@ -156,8 +171,13 @@ public class EmployerPostCRUDService {
                 EnrollDurationType.toEnrollDurationTypeEnum(editEmployerPostRequestDto.getEnrollDurationType()),
                         editEmployerPostRequestDto.getDeadLine(),
                         editEmployerPostRequestDto.getHopeCareerYear(),editEmployerPostRequestDto.getContents(),
-                editEmployerPostRequestDto.getContact()
+                editEmployerPostRequestDto.getContact(),accessUrl
                         );
+
+        if(beforeUrl!=null){
+            eventPublisher.publishEvent(S3UploadCommitEvent.builder().oldAccessUrl(beforeUrl).build());
+        }
+        eventPublisher.publishEvent(S3UploadRollbackEvent.builder().newAccessUrl(accessUrl).build());
 
     }
 
@@ -166,10 +186,12 @@ public class EmployerPostCRUDService {
 
         EmployerPost employerPost = findEmployerPostById(employerPostId);
         checkAccessMember(loginId,employerPost);
+        String oldAccessUrl = employerPost.getBasicPostContent().getAccessUrl();
 
         employerPostWorkFieldChildTagRepository.deleteByEmployerPost(employerPost);
 
         employerPostRepository.deleteById(employerPostId);
+        eventPublisher.publishEvent(S3UploadCommitEvent.builder().oldAccessUrl(oldAccessUrl).build());
 
     }
 
@@ -235,6 +257,26 @@ public class EmployerPostCRUDService {
         }
 
 
+    }
+
+    private String getAccessUrl(MultipartFile multipartFile){
+
+        if(checkInputMultiPartFileNull(multipartFile)){
+            return null;
+        }
+
+        return s3ImageService.saveImage(multipartFile,EMPLOYER_POST_IMAGE,
+                multipartFile.getOriginalFilename());
+    }
+
+
+    //받은 Multipart 값이 null  혹은 empty 인지 판단. 아니라면 false
+    private boolean checkInputMultiPartFileNull(MultipartFile multipartFile){
+        if(multipartFile==null || multipartFile.isEmpty()){
+            return true;
+        }
+
+        return false;
     }
 
 

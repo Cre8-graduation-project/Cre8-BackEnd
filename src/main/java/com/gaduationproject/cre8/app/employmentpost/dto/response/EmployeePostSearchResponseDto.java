@@ -19,6 +19,7 @@ public class EmployeePostSearchResponseDto {
     private String sex;
     private int year;
     private List<String> tagNameList = new ArrayList<>();
+    private String accessUrl;
 
 
     public static EmployeePostSearchResponseDto of(final EmployeePost employeePost,final List<String> tagNameList){
@@ -27,7 +28,8 @@ public class EmployeePostSearchResponseDto {
                 employeePost.getBasicPostContent().getMember().getName(),
                 employeePost.getBasicPostContent().getMember().getSex().getName(),
                 employeePost.getBasicPostContent().getMember().getBirthDay().getYear(),
-                tagNameList);
+                tagNameList,
+                employeePost.getBasicPostContent().getAccessUrl());
     }
 
 }

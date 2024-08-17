@@ -41,18 +41,21 @@ public class BasicPostContent {
     @Column(nullable = false)
     private String contact;
 
+    private String accessUrl;
+
 
 
 
     @Builder
     public BasicPostContent(final Member member,final String title, final WorkFieldTag workFieldTag, final PaymentMethod paymentMethod,
-            final Integer paymentAmount,final String contents,final String contact) {
+            final Integer paymentAmount,final String contents,final String contact,final String accessUrl) {
 
         this.member = member;
         this.title = title;
         this.workFieldTag = workFieldTag;
         this.contents = contents;
         this.contact = contact;
+        this.accessUrl = accessUrl;
 
         this.payment = Payment.builder()
                 .paymentAmount(paymentAmount)
@@ -63,12 +66,13 @@ public class BasicPostContent {
     }
 
     public void changeExceptMember(final String title, final WorkFieldTag workFieldTag,final PaymentMethod paymentMethod,final Integer paymentAmount,
-    final String contents,final String contact){
+    final String contents,final String contact,final String accessUrl){
 
         this.title = title;
         this.workFieldTag = workFieldTag;
         payment.changePaymentMethodAndPaymentAmount(paymentMethod,paymentAmount);
         this.contact = contact;
         this.contents = contents;
+        this.accessUrl = accessUrl;
     }
 }

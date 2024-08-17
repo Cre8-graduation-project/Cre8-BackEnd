@@ -38,7 +38,8 @@ public class EmployeePost extends BaseEntity {
 
     @Builder
     public EmployeePost(final Member member,final String title,final WorkFieldTag workFieldTag,final
-    PaymentMethod paymentMethod,final Integer paymentAmount, final Integer careerYear,final String contents,final String contact) {
+    PaymentMethod paymentMethod,final Integer paymentAmount, final Integer careerYear,
+            final String contents,final String contact,final String accessUrl) {
 
         this.basicPostContent = BasicPostContent.builder()
                 .member(member)
@@ -48,14 +49,16 @@ public class EmployeePost extends BaseEntity {
                 .paymentAmount(paymentAmount)
                 .contents(contents)
                 .contact(contact)
+                .accessUrl(accessUrl)
                 .build();
+
         this.careerYear = careerYear;
     }
 
     public void changeAllExceptMemberAndId(final String title, final WorkFieldTag workFieldTag,final PaymentMethod paymentMethod,final Integer paymentAmount,
-            final Integer careerYear,final String contents,final String contact){
+            final Integer careerYear,final String contents,final String contact,final String accessUrl){
 
-        basicPostContent.changeExceptMember(title, workFieldTag,paymentMethod,paymentAmount,contents,contact);
+        basicPostContent.changeExceptMember(title, workFieldTag,paymentMethod,paymentAmount,contents,contact,accessUrl);
         this.careerYear = careerYear;
 
     }

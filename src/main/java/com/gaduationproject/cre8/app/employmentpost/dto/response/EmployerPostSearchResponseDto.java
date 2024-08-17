@@ -18,11 +18,16 @@ public class EmployerPostSearchResponseDto {
     private String companyName;
     private String  enrollDurationType;
     private List<String> tagNameList = new ArrayList<>();
+    private String accessUrl;
 
     public static EmployerPostSearchResponseDto of(final EmployerPost employerPost,final List<String> tagNameList){
 
-        return new EmployerPostSearchResponseDto(employerPost.getId(),employerPost.getBasicPostContent().getTitle(),
-                employerPost.getCompanyName(), employerPost.getEnrollDurationType().getName(),tagNameList);
+        return new EmployerPostSearchResponseDto(employerPost.getId(),
+                employerPost.getBasicPostContent().getTitle(),
+                employerPost.getCompanyName(),
+                employerPost.getEnrollDurationType().getName(),
+                tagNameList,
+                employerPost.getBasicPostContent().getAccessUrl());
     }
 
 }
