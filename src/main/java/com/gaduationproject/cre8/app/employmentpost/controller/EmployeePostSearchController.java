@@ -1,5 +1,6 @@
 package com.gaduationproject.cre8.app.employmentpost.controller;
 
+import com.gaduationproject.cre8.app.employmentpost.dto.response.EmployeePostSearchWithSliceResponseDto;
 import com.gaduationproject.cre8.app.response.BaseResponse;
 import com.gaduationproject.cre8.domain.employmentpost.search.EmployeePostSearch;
 import com.gaduationproject.cre8.app.employmentpost.dto.response.EmployeePostSearchWithCountResponseDto;
@@ -18,6 +19,7 @@ import org.springframework.data.web.PageableDefault;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
@@ -49,6 +51,24 @@ public class EmployeePostSearchController {
             @PageableDefault(size = 10,sort = "createdAt",direction = Direction.DESC,page = 0) final Pageable pageable){
 
         return ResponseEntity.ok(BaseResponse.createSuccess(employeePostSearchService.searchEmployeePost(employeePostSearch,pageable)));
+    }
+
+    @GetMapping("/keyword")
+    @Operation(summary = "구직자 게시글 keyword 기반 검색", description = "구직자 게시글을 keyword 기반으로 검색")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200",description = "구직자 게시글 성공적 검색")
+    })
+    @Parameters({
+            @Parameter(name = "keyword",description = "키워드",in = ParameterIn.QUERY),
+            @Parameter(name = "page", description = "페이지 번호(0부터 시작)", in = ParameterIn.QUERY),
+            @Parameter(name = "direction", description = "내림차순과 오름차순(desc,asc)", in = ParameterIn.QUERY),
+            @Parameter(name = "sort", description = "정렬기준(createdAt,careerYear)", in = ParameterIn.QUERY),
+            @Parameter(name = "size", description = "페이지당 아이템 갯수", in = ParameterIn.QUERY)
+    })
+    public ResponseEntity<BaseResponse<EmployeePostSearchWithSliceResponseDto>> employeePostSearchByKeywordResponse(
+            @RequestParam(value = "keyword",required = false) final String keyword,@PageableDefault(size = 10,sort = "createdAt",direction = Direction.DESC,page = 0) final Pageable pageable){
+
+        return ResponseEntity.ok(BaseResponse.createSuccess(employeePostSearchService.searchEmployeeByKeyword(keyword,pageable)));
     }
 
 }
