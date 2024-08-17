@@ -10,6 +10,7 @@ import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import org.springframework.web.multipart.MultipartFile;
 
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
@@ -45,10 +46,14 @@ public class SaveEmployeePostRequestDto {
     @Schema(description = "연락처를 입력합니다",example = "010-1111-1111")
     private String contact;
 
+    @Schema(description = "이미지 데이터")
+    private MultipartFile multipartFile;
+
     @Builder
     public SaveEmployeePostRequestDto(final String title, final Long workFieldId,
             final List<Long> workFieldChildTagId,
-            final String paymentMethod, final Integer paymentAmount, final Integer careerYear,final String contents,final String contact) {
+            final String paymentMethod, final Integer paymentAmount, final Integer careerYear,final String contents,final String contact,
+            final MultipartFile multipartFile) {
 
         this.title = title;
         this.workFieldId = workFieldId;
@@ -58,5 +63,6 @@ public class SaveEmployeePostRequestDto {
         this.careerYear = careerYear;
         this.contents = contents;
         this.contact = contact;
+        this.multipartFile = multipartFile;
     }
 }
