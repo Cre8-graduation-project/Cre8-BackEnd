@@ -27,6 +27,7 @@ public class EmployeePostResponseDto {
     private String contents;
     private String contact;
     private Long writerId;
+    private String writerNickName;
     private String writerAccessUrl;
 
 
@@ -51,6 +52,7 @@ public class EmployeePostResponseDto {
                 employeePost.getBasicPostContent().getContents(),
                 employeePost.getBasicPostContent().getContact(),
                 writer.getId(),
+                writer.getNickName(),
                 writer.getAccessUrl());
 
     }

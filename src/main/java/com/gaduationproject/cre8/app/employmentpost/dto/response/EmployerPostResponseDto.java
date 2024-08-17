@@ -26,6 +26,7 @@ public class EmployerPostResponseDto {
     private String contents;
     private String contact;
     private Long writerId;
+    private String writerNickName;
     private String writerAccessUrl;
 
     public static EmployerPostResponseDto of(final List<SubCategoryWithChildTagResponseDto> subCategoryWithChildTagResponseDtoList, final EmployerPost employerPost){
@@ -41,6 +42,7 @@ public class EmployerPostResponseDto {
                 employerPost.getBasicPostContent().getContents(),
                 employerPost.getBasicPostContent().getContact(),
                 writer.getId(),
+                writer.getNickName(),
                 writer.getAccessUrl()
         );
 
