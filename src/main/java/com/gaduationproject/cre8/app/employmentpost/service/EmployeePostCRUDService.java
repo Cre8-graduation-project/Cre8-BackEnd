@@ -7,6 +7,7 @@ import com.gaduationproject.cre8.common.response.error.exception.BadRequestExcep
 import com.gaduationproject.cre8.common.response.error.exception.NotFoundException;
 import com.gaduationproject.cre8.domain.employmentpost.entity.EmployeePost;
 import com.gaduationproject.cre8.domain.employmentpost.entity.EmployeePostWorkFieldChildTag;
+import com.gaduationproject.cre8.domain.employmentpost.repository.BookMarkEmployeePostRepository;
 import com.gaduationproject.cre8.domain.employmentpost.type.PaymentMethod;
 import com.gaduationproject.cre8.app.employmentpost.dto.request.EditEmployeePostRequestDto;
 import com.gaduationproject.cre8.app.employmentpost.dto.request.SaveEmployeePostRequestDto;
@@ -29,6 +30,7 @@ import java.util.Map;
 import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.ApplicationEventPublisher;
+import org.springframework.security.core.parameters.P;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
@@ -47,6 +49,7 @@ public class EmployeePostCRUDService {
     private final S3ImageService s3ImageService;
     private final ApplicationEventPublisher eventPublisher;
     private final static String EMPLOYEE_POST_IMAGE="employeePost-images/";
+    private final BookMarkEmployeePostRepository bookMarkEmployeePostRepository;
 
 
     @Transactional
@@ -92,7 +95,7 @@ public class EmployeePostCRUDService {
 
     }
 
-    public EmployeePostResponseDto showEmployeePost(final Long employeePostId){
+    public EmployeePostResponseDto showEmployeePost(final Long employeePostId,final String loginId){
 
         EmployeePost employeePost = employeePostRepository
                 .findByIdWithFetchMemberAndWorkFieldTagAndEmployeePostChildTagListAndWorkFieldChildTag(employeePostId).orElseThrow(
@@ -108,7 +111,8 @@ public class EmployeePostCRUDService {
 
         return EmployeePostResponseDto.of(subCategoryWithChildTagResponseDtoList
                                           ,employeePost
-                                          ,portfolioService.showPortfolioList(writerId));
+                                          ,portfolioService.showPortfolioList(writerId)
+                                          ,isBookMarkedEmployeePost(loginId, employeePostId));
 
     }
 
@@ -185,14 +189,19 @@ public class EmployeePostCRUDService {
 
         EmployeePost employeePost = findEmployeePostById(employeePostId);
 
-                checkAccessMember(loginId,employeePost);
+
+        checkAccessMember(loginId,employeePost);
         String oldAccessUrl = employeePost.getBasicPostContent().getAccessUrl();
 
         employeePostWorkFieldChildTagRepository.deleteByEmployeePost(employeePost);
 
+        bookMarkEmployeePostRepository.deleteByEmployeePostId(employeePostId);
         employeePostRepository.deleteById(employeePostId);
 
-        eventPublisher.publishEvent(S3UploadCommitEvent.builder().oldAccessUrl(oldAccessUrl).build());
+        if(oldAccessUrl!=null){
+            eventPublisher.publishEvent(S3UploadCommitEvent.builder().oldAccessUrl(oldAccessUrl).build());
+        }
+
 
     }
 
@@ -200,6 +209,18 @@ public class EmployeePostCRUDService {
 
         return memberRepository.findMemberByLoginId(loginId).orElseThrow(()->new NotFoundException(
                 ErrorCode.LOGIN_ID_NOT_MATCH));
+    }
+
+    private boolean isBookMarkedEmployeePost(final String loginId,final Long employeePostId){
+
+        if(loginId ==null){
+            return false;
+        }
+
+        Member member = getLoginMember(loginId);
+
+        return bookMarkEmployeePostRepository.existsByMemberIdAndEmployeePostId(member.getId(),employeePostId);
+
     }
 
     private WorkFieldTag getWorkFieldTag(final Long workFieldTagId){

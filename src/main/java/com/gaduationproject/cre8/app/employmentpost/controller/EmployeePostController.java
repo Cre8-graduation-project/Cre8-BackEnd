@@ -56,9 +56,10 @@ public class EmployeePostController {
             @ApiResponse(responseCode = "404",description = "ID로 구직자 게시글을 찾지 못했을 때")
 
     })
-    public ResponseEntity<BaseResponse<EmployeePostResponseDto>> showEmployeePost(@PathVariable("postId") final Long postId){
+    public ResponseEntity<BaseResponse<EmployeePostResponseDto>> showEmployeePost(@PathVariable("postId") final Long postId,
+                                                                                  @CurrentMemberLoginId final String loginId){
 
-        return ResponseEntity.ok(BaseResponse.createSuccess(employeePostCRUDService.showEmployeePost(postId)));
+        return ResponseEntity.ok(BaseResponse.createSuccess(employeePostCRUDService.showEmployeePost(postId,loginId)));
 
     }
 
