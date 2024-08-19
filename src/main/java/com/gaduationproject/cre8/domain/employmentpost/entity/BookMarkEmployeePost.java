@@ -1,5 +1,6 @@
 package com.gaduationproject.cre8.domain.employmentpost.entity;
 
+import com.gaduationproject.cre8.domain.baseentity.BaseEntity;
 import com.gaduationproject.cre8.domain.member.entity.Member;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -17,7 +18,7 @@ import lombok.NoArgsConstructor;
 @Entity
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Getter
-public class BookMarkEmployeePost {
+public class BookMarkEmployeePost extends BaseEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

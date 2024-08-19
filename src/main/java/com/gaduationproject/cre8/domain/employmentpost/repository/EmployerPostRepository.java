@@ -19,4 +19,11 @@ public interface EmployerPostRepository extends JpaRepository<EmployerPost,Long>
     @Query("select ep from EmployerPost ep join fetch ep.basicPostContent.member left join fetch ep.basicPostContent.workFieldTag"
             + " where ep.basicPostContent.title like %:keyword% or ep.companyName like %:keyword%")
     Slice<EmployerPost> findEmployerPostWithFetchMemberAndWorkFieldTagAndChildTagListWithSlice(@Param("keyword")final String keyword,final Pageable pageable);
+
+    @Query("select ep from EmployerPost ep join fetch ep.basicPostContent.member m left join fetch ep.basicPostContent.workFieldTag "
+            + "where m.id=:memberId")
+    Slice<EmployerPost> findEmployerPostByMemberId(final Long memberId,final Pageable pageable);
+
+
+
 }
