@@ -61,7 +61,7 @@ public class BookMarkEmployerPostService {
 
     private EmployerPost findEmployerPostById(final Long employerPostId){
         return employerPostRepository.findById(employerPostId).orElseThrow(()->new NotFoundException(
-                ErrorCode.CANT_FIND_EMPLOYEE_POST));
+                ErrorCode.CANT_FIND_EMPLOYER_POST));
     }
 
     private Member getLoginMember(final String loginId){
