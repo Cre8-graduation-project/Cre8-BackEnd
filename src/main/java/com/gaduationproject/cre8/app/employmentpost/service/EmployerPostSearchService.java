@@ -7,6 +7,7 @@ import com.gaduationproject.cre8.common.response.error.ErrorCode;
 import com.gaduationproject.cre8.common.response.error.exception.NotFoundException;
 import com.gaduationproject.cre8.domain.employmentpost.entity.EmployeePost;
 import com.gaduationproject.cre8.domain.employmentpost.entity.EmployerPost;
+import com.gaduationproject.cre8.domain.employmentpost.repository.BookMarkEmployerPostRepository;
 import com.gaduationproject.cre8.domain.employmentpost.search.EmployerPostSearch;
 import com.gaduationproject.cre8.app.employmentpost.dto.response.EmployerPostSearchResponseDto;
 import com.gaduationproject.cre8.app.employmentpost.dto.response.EmployerPostSearchWithCountResponseDto;
@@ -30,6 +31,7 @@ public class EmployerPostSearchService {
 
     private final EmployerPostRepository employerPostRepository;
     private final MemberRepository memberRepository;
+    private final BookMarkEmployerPostRepository bookMarkEmployerPostRepository;
 
 
 
@@ -81,6 +83,21 @@ public class EmployerPostSearchService {
 
             return EmployerPostSearchResponseDto.of(employerPost,tagNameList);
         }).collect(Collectors.toList()), employerPostSlice.hasNext());
+    }
+
+    public EmployerPostSearchWithSliceResponseDto searchMyBookMarkEmployerPost(final String loginId,final Pageable pageable){
+
+        Member member = getLoginMember(loginId);
+
+        Slice<EmployerPost> bookMarkEmployerPostSlice =
+                bookMarkEmployerPostRepository.showMyBookMarkEmployerPost(member.getId(),pageable).map(bookMarkEmployerPost -> bookMarkEmployerPost.getEmployerPost());
+
+        return EmployerPostSearchWithSliceResponseDto.of(bookMarkEmployerPostSlice.getContent().stream().map(employerPost -> {
+
+            List<String> tagNameList = getTagList(employerPost);
+
+            return EmployerPostSearchResponseDto.of(employerPost,tagNameList);
+        }).collect(Collectors.toList()), bookMarkEmployerPostSlice.hasNext());
     }
 
 

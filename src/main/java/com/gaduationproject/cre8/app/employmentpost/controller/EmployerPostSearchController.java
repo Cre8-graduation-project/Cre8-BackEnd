@@ -95,4 +95,25 @@ public class EmployerPostSearchController {
         return ResponseEntity.ok(BaseResponse.createSuccess(employerPostSearchService.searchMyEmployerPost(loginId,pageable)));
     }
 
+    @GetMapping("/my-bookmark")
+    @Operation(summary = "내가 즐겨찾기한 구인글 조회",description = "내가 즐겨찾기한 구인글을 조회합니다")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200",description = "내가 즐겨찾기한 구인글 게시글 성공적 단건 조회"),
+    })
+    @Parameters({
+            @Parameter(name = "keyword",description = "키워드",in = ParameterIn.QUERY),
+            @Parameter(name = "page", description = "페이지 번호(0부터 시작)", in = ParameterIn.QUERY),
+            @Parameter(name = "direction", description = "내림차순과 오름차순(desc,asc)", in = ParameterIn.QUERY),
+            @Parameter(name = "sort", description = "정렬기준(createdAt)", in = ParameterIn.QUERY),
+            @Parameter(name = "size", description = "페이지당 아이템 갯수", in = ParameterIn.QUERY)
+    })
+    public ResponseEntity<BaseResponse<EmployerPostSearchWithSliceResponseDto>> showMyBookMarkEmployerPost
+            (@CurrentMemberLoginId final String loginId,
+             @PageableDefault(size = 10,sort = "createdAt",direction = Direction.DESC,page = 0) final Pageable pageable
+            ){
+
+
+        return ResponseEntity.ok(BaseResponse.createSuccess(employerPostSearchService.searchMyBookMarkEmployerPost(loginId,pageable)));
+    }
+
 }

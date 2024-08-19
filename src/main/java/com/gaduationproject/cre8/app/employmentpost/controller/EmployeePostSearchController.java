@@ -103,7 +103,7 @@ public class EmployeePostSearchController {
             @Parameter(name = "keyword",description = "키워드",in = ParameterIn.QUERY),
             @Parameter(name = "page", description = "페이지 번호(0부터 시작)", in = ParameterIn.QUERY),
             @Parameter(name = "direction", description = "내림차순과 오름차순(desc,asc)", in = ParameterIn.QUERY),
-            @Parameter(name = "sort", description = "정렬기준(createdAt,careerYear)", in = ParameterIn.QUERY),
+            @Parameter(name = "sort", description = "정렬기준(createdAt)", in = ParameterIn.QUERY),
             @Parameter(name = "size", description = "페이지당 아이템 갯수", in = ParameterIn.QUERY)
     })
     public ResponseEntity<BaseResponse<EmployeePostSearchWithSliceResponseDto>> showMyBookMarkEmployeePost
