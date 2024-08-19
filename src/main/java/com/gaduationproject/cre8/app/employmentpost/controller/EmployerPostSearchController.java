@@ -1,5 +1,6 @@
 package com.gaduationproject.cre8.app.employmentpost.controller;
 
+import com.gaduationproject.cre8.app.auth.interfaces.CurrentMemberLoginId;
 import com.gaduationproject.cre8.app.employmentpost.dto.response.EmployeePostSearchWithSliceResponseDto;
 import com.gaduationproject.cre8.app.employmentpost.dto.response.EmployerPostSearchWithSliceResponseDto;
 import com.gaduationproject.cre8.app.response.BaseResponse;
@@ -71,6 +72,27 @@ public class EmployerPostSearchController {
             @RequestParam(value = "keyword",required = false) final String keyword,@PageableDefault(size = 10,sort = "createdAt",direction = Direction.DESC,page = 0) final Pageable pageable){
 
         return ResponseEntity.ok(BaseResponse.createSuccess(employerPostSearchService.searchEmployerPostByKeyWord(keyword,pageable)));
+    }
+
+    @GetMapping("/my-posts")
+    @Operation(summary = "내가 작성한 구인글 조회",description = "내가 작성한 구인글을 조회합니다")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200",description = "구인자 게시글 성공적 단건 조회"),
+    })
+    @Parameters({
+            @Parameter(name = "keyword",description = "키워드",in = ParameterIn.QUERY),
+            @Parameter(name = "page", description = "페이지 번호(0부터 시작)", in = ParameterIn.QUERY),
+            @Parameter(name = "direction", description = "내림차순과 오름차순(desc,asc)", in = ParameterIn.QUERY),
+            @Parameter(name = "sort", description = "정렬기준(createdAt,careerYear)", in = ParameterIn.QUERY),
+            @Parameter(name = "size", description = "페이지당 아이템 갯수", in = ParameterIn.QUERY)
+    })
+    public ResponseEntity<BaseResponse<EmployerPostSearchWithSliceResponseDto>> showMyEmployerPost
+            (@CurrentMemberLoginId final String loginId,
+             @PageableDefault(size = 10,sort = "createdAt",direction = Direction.DESC,page = 0) final Pageable pageable
+            ){
+
+
+        return ResponseEntity.ok(BaseResponse.createSuccess(employerPostSearchService.searchMyEmployerPost(loginId,pageable)));
     }
 
 }
