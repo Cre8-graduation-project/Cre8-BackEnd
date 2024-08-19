@@ -145,6 +145,15 @@ public class RestExceptionHandler {
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(BaseResponse.createError(DATE_TIME_FORMAT));
     }
 
+    @ExceptionHandler(Exception.class)
+    public ResponseEntity<BaseResponse<?>> superException(Exception exception,HttpServletRequest request){
+
+        logInfo(request,exception.getMessage());
+
+        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                .body(BaseResponse.createError("이게 발생하면 꼭꼭 저한테 문의해주세요"));
+    }
+
 
     private void logInfo(HttpServletRequest request, String message) {
         log.info("{} {} : {} (traceId: {})",
