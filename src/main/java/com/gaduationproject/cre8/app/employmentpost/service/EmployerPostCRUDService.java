@@ -8,6 +8,7 @@ import com.gaduationproject.cre8.common.response.error.exception.BadRequestExcep
 import com.gaduationproject.cre8.common.response.error.exception.NotFoundException;
 import com.gaduationproject.cre8.domain.employmentpost.entity.EmployerPost;
 import com.gaduationproject.cre8.domain.employmentpost.entity.EmployerPostWorkFieldChildTag;
+import com.gaduationproject.cre8.domain.employmentpost.repository.BookMarkEmployerPostRepository;
 import com.gaduationproject.cre8.domain.employmentpost.type.EnrollDurationType;
 import com.gaduationproject.cre8.domain.employmentpost.type.PaymentMethod;
 import com.gaduationproject.cre8.app.employmentpost.dto.request.EditEmployerPostRequestDto;
@@ -48,6 +49,7 @@ public class EmployerPostCRUDService {
     private final S3ImageService s3ImageService;
     private final ApplicationEventPublisher eventPublisher;
     private final static String EMPLOYER_POST_IMAGE="employerPost-images/";
+    private final BookMarkEmployerPostRepository bookMarkEmployerPostRepository;
 
 
 
@@ -100,7 +102,7 @@ public class EmployerPostCRUDService {
     }
 
     //Employer Post 단건 조회
-    public EmployerPostResponseDto showEmployerPost(final Long employerPostId){
+    public EmployerPostResponseDto showEmployerPost(final Long employerPostId,final String loginId){
 
         EmployerPost employerPost = employerPostRepository
                 .findByIdWithFetchWorkFieldTagAndEmployerPostChildTagListAndWorkFieldChildTag(employerPostId).orElseThrow(
@@ -109,7 +111,9 @@ public class EmployerPostCRUDService {
         List<SubCategoryWithChildTagResponseDto> subCategoryWithChildTagResponseDtoList = getSubCategoryWithChildTagResponseDtoList(
                 employerPost);
 
-        return EmployerPostResponseDto.of(subCategoryWithChildTagResponseDtoList,employerPost);
+
+
+        return EmployerPostResponseDto.of(subCategoryWithChildTagResponseDtoList,employerPost,isBookMarkedEmployerPost(loginId,employerPostId));
 
     }
 
@@ -190,8 +194,12 @@ public class EmployerPostCRUDService {
 
         employerPostWorkFieldChildTagRepository.deleteByEmployerPost(employerPost);
 
+        bookMarkEmployerPostRepository.deleteByEmployerPostId(employerPostId);
         employerPostRepository.deleteById(employerPostId);
-        eventPublisher.publishEvent(S3UploadCommitEvent.builder().oldAccessUrl(oldAccessUrl).build());
+
+        if(oldAccessUrl!=null){
+            eventPublisher.publishEvent(S3UploadCommitEvent.builder().oldAccessUrl(oldAccessUrl).build());
+        }
 
     }
 
@@ -203,6 +211,18 @@ public class EmployerPostCRUDService {
 
         return memberRepository.findMemberByLoginId(loginId).orElseThrow(()->new NotFoundException(
                 ErrorCode.LOGIN_ID_NOT_MATCH));
+    }
+
+    private boolean isBookMarkedEmployerPost(final String loginId,final Long employerPostId){
+
+        if(loginId ==null){
+            return false;
+        }
+
+        Member member = getLoginMember(loginId);
+
+        return bookMarkEmployerPostRepository.existsByMemberIdAndEmployerPostId(member.getId(),employerPostId);
+
     }
 
     private EmployerPost findEmployerPostById(final Long employerPostId){

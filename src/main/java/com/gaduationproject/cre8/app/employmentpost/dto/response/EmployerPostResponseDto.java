@@ -14,6 +14,7 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor(access = AccessLevel.PROTECTED)
 public class EmployerPostResponseDto {
 
+    private Long employerPostId;
     private String title;
     private String companyName;
     private TagPostResponseDto tagPostResponseDto;
@@ -28,13 +29,20 @@ public class EmployerPostResponseDto {
     private Long writerId;
     private String writerNickName;
     private String writerAccessUrl;
+    private boolean isBookMarked;
 
-    public static EmployerPostResponseDto of(final List<SubCategoryWithChildTagResponseDto> subCategoryWithChildTagResponseDtoList, final EmployerPost employerPost){
+
+    public static EmployerPostResponseDto of(final List<SubCategoryWithChildTagResponseDto> subCategoryWithChildTagResponseDtoList,
+                                             final EmployerPost employerPost,
+                                             final boolean isBookMarked){
 
         String workFieldName = employerPost.getBasicPostContent().getWorkFieldTag()==null?null:employerPost.getBasicPostContent().getWorkFieldTag().getName();
         Member writer = employerPost.getBasicPostContent().getMember();
 
-        return new EmployerPostResponseDto(employerPost.getBasicPostContent().getTitle(),employerPost.getCompanyName(),
+        return new EmployerPostResponseDto(
+                employerPost.getId(),
+                employerPost.getBasicPostContent().getTitle(),
+                employerPost.getCompanyName(),
                 TagPostResponseDto.of(workFieldName,subCategoryWithChildTagResponseDtoList),
                 employerPost.getBasicPostContent().getPayment().getPaymentMethod().getName(),
                 employerPost.getBasicPostContent().getPayment().getPaymentAmount(),employerPost.getNumberOfEmployee(),employerPost.getEnrollDurationType().getName(),
@@ -43,7 +51,8 @@ public class EmployerPostResponseDto {
                 employerPost.getBasicPostContent().getContact(),
                 writer.getId(),
                 writer.getNickName(),
-                writer.getAccessUrl()
+                writer.getAccessUrl(),
+                isBookMarked
         );
 
     }
