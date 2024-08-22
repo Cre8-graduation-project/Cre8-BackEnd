@@ -62,4 +62,8 @@ public class EmployeePost extends BaseEntity {
         this.careerYear = careerYear;
 
     }
+
+    public void setId(Long id){
+        this.id = id;
+    }
 }

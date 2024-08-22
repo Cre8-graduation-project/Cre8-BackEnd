@@ -88,4 +88,8 @@ public class EmployerPost extends BaseEntity {
         this.deadLine = deadLine;
 
     }
+
+    public void setId(Long id){
+        this.id = id;
+    }
 }
