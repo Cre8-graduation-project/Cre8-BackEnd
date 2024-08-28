@@ -1,7 +1,7 @@
 package com.gaduationproject.cre8.app.member.service;
 
-import com.gaduationproject.cre8.app.member.dto.S3UploadCommitEvent;
-import com.gaduationproject.cre8.app.member.dto.S3UploadRollbackEvent;
+import com.gaduationproject.cre8.app.event.s3.S3UploadImageCommitEvent;
+import com.gaduationproject.cre8.app.event.s3.S3UploadImageRollbackEvent;
 import com.gaduationproject.cre8.common.response.error.ErrorCode;
 import com.gaduationproject.cre8.common.response.error.exception.BadRequestException;
 import com.gaduationproject.cre8.common.response.error.exception.NotFoundException;
@@ -52,11 +52,9 @@ public class ProfileService {
             throw new BadRequestException(ErrorCode.DUPLICATE_NICKNAME);
         }
 
-        //기존 member 의 기존 url
-        String beforeAccessUrl = member.getAccessUrl();
 
         //multipart 파일이 비거나 null 인 경우 기존 memberURL 반환 , 그렇지 않으면 새로 생성 후 반환
-        String accessUrl = getAccessUrl(profileWithUserInfoEditRequestDto.getMultipartFile(), member);
+        String accessUrl = getAccessUrlWithSettingEvent(profileWithUserInfoEditRequestDto.getMultipartFile(), member);
 
         MemberEditor.MemberEditorBuilder memberEditorBuilder = member.toEditor();
 
@@ -73,20 +71,6 @@ public class ProfileService {
         member.edit(memberEditor);
 
 
-
-
-        //들어온 값이 빈값이 아닐 때
-        if(!accessUrl.equals(beforeAccessUrl)){
-
-            //성공적으로 커밋 시 -> S3 에서 기존 URL 삭제.
-            eventPublisher.publishEvent(S3UploadCommitEvent.builder().oldAccessUrl(beforeAccessUrl).build());
-
-            //롤백 시  -> S3 에서 새로 저장한 url 삭제
-            eventPublisher.publishEvent(S3UploadRollbackEvent.builder().newAccessUrl(accessUrl).build());
-        }
-
-
-
     }
 
 
@@ -100,14 +84,22 @@ public class ProfileService {
     }
 
     // dto 의 사진이 null 일 경우 기존의 url 반환 , 그렇지 않으면 새로 생성 후 저장
-    private String getAccessUrl(MultipartFile multipartFile,Member member){
+    private String getAccessUrlWithSettingEvent(MultipartFile multipartFile,Member member){
 
         if(checkInputMultiPartFileNull(multipartFile)){
             return member.getAccessUrl();
         }
 
-        return s3ImageService.saveImage(multipartFile,MEMBER_PROFILE_IMAGE,
+        String newImageAccessUrl = s3ImageService.saveImage(multipartFile,MEMBER_PROFILE_IMAGE,
                 multipartFile.getOriginalFilename());
+
+        //성공적으로 커밋 시 -> S3 에서 기존 URL 삭제.
+        eventPublisher.publishEvent(S3UploadImageCommitEvent.builder().oldAccessImageUrl(member.getAccessUrl()).build());
+
+        //롤백 시  -> S3 에서 새로 저장한 url 삭제
+        eventPublisher.publishEvent(S3UploadImageRollbackEvent.builder().newAccessImageUrl(newImageAccessUrl).build());
+
+        return newImageAccessUrl;
     }
 
 

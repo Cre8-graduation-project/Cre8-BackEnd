@@ -1,8 +1,8 @@
 package com.gaduationproject.cre8.app.employmentpost.service;
 
 
-import com.gaduationproject.cre8.app.member.dto.S3UploadCommitEvent;
-import com.gaduationproject.cre8.app.member.dto.S3UploadRollbackEvent;
+import com.gaduationproject.cre8.app.event.s3.S3UploadImageCommitEvent;
+import com.gaduationproject.cre8.app.event.s3.S3UploadImageRollbackEvent;
 import com.gaduationproject.cre8.common.response.error.ErrorCode;
 import com.gaduationproject.cre8.common.response.error.exception.BadRequestException;
 import com.gaduationproject.cre8.common.response.error.exception.NotFoundException;
@@ -57,16 +57,20 @@ public class EmployerPostCRUDService {
     @Transactional
     public void saveEmployerPost(final String loginId,final SaveEmployerPostRequestDto saveEmployerPostRequestDto){
 
+        //DeadLine 인 경우 날짜가 입력되는지 확인
         checkDeadLineOnlyOnDeadLine(saveEmployerPostRequestDto.getDeadLine(),EnrollDurationType.toEnrollDurationTypeEnum(
                 saveEmployerPostRequestDto.getEnrollDurationType()));
 
         Member member = getLoginMember(loginId);
+
+        //작업 필드 체크 및 리스트 가져오기
         WorkFieldTag workFieldTag = getWorkFieldTag(saveEmployerPostRequestDto.getWorkFieldId());
         List<WorkFieldChildTag> workFieldChildTagList = getWorkFieldChildTag(
                 saveEmployerPostRequestDto.getWorkFieldChildTagId(),
                 saveEmployerPostRequestDto.getWorkFieldId());
 
-        String accessUrl = getAccessUrl(saveEmployerPostRequestDto.getMultipartFile());
+        //이벤트 생성 및 이미지 생성
+        String accessImageUrl = getAccessUrlWithSettingS3RollBackEvent(saveEmployerPostRequestDto.getMultipartFile());
 
         EmployerPost employerPost = EmployerPost.builder()
                 .member(member)
@@ -76,13 +80,12 @@ public class EmployerPostCRUDService {
                 .paymentAmount(saveEmployerPostRequestDto.getPaymentAmount())
                 .companyName(saveEmployerPostRequestDto.getCompanyName())
                 .numberOfEmployee(saveEmployerPostRequestDto.getNumberOfEmployee())
-                .enrollDurationType(EnrollDurationType.toEnrollDurationTypeEnum(
-                        saveEmployerPostRequestDto.getEnrollDurationType()))
+                .enrollDurationType(EnrollDurationType.toEnrollDurationTypeEnum(saveEmployerPostRequestDto.getEnrollDurationType()))
                 .deadLine(saveEmployerPostRequestDto.getDeadLine())
                 .hopeCareerYear(saveEmployerPostRequestDto.getHopeCareerYear())
                 .contents(saveEmployerPostRequestDto.getContents())
                 .contact(saveEmployerPostRequestDto.getContact())
-                .accessUrl(accessUrl)
+                .accessUrl(accessImageUrl)
                 .build();
 
         employerPostRepository.save(employerPost);
@@ -98,7 +101,7 @@ public class EmployerPostCRUDService {
 
         });
 
-        eventPublisher.publishEvent(S3UploadRollbackEvent.builder().newAccessUrl(accessUrl).build());
+
     }
 
     //Employer Post 단건 조회
@@ -143,16 +146,19 @@ public class EmployerPostCRUDService {
     @Transactional
     public void updateEmployerPost(final String loginId, final EditEmployerPostRequestDto editEmployerPostRequestDto){
 
+        //데드라인인 경우만 날짜가 입력되는지 확인
         checkDeadLineOnlyOnDeadLine(editEmployerPostRequestDto.getDeadLine(),EnrollDurationType.toEnrollDurationTypeEnum(
                 editEmployerPostRequestDto.getEnrollDurationType()));
 
         EmployerPost employerPost = findEmployerPostById(editEmployerPostRequestDto.getEmployerPostId());
         checkAccessMember(loginId,employerPost);
+
+        //작업태그 확인 및 리스트 가져오기
         WorkFieldTag workFieldTag = getWorkFieldTag(editEmployerPostRequestDto.getWorkFieldId());
         List<WorkFieldChildTag> workFieldChildTagList = getWorkFieldChildTag(editEmployerPostRequestDto.getWorkFieldChildTagId(),
                 editEmployerPostRequestDto.getWorkFieldId());
 
-
+        //작업 태그 업데이트
         employerPostWorkFieldChildTagRepository.deleteByEmployerPost(employerPost);
         workFieldChildTagList.forEach(workFieldChildTag -> {
 
@@ -165,8 +171,9 @@ public class EmployerPostCRUDService {
 
         });
 
-        String beforeUrl = employerPost.getBasicPostContent().getAccessUrl();
-        String accessUrl = getAccessUrl(editEmployerPostRequestDto.getMultipartFile());
+        //기존의 Image 이벤트 세팅(성공정 commit 시) 및 새로운 이미지, 이벤트 생성(RollBack 시)
+        settingS3CommitEventOnOldAccessUrl(employerPost.getBasicPostContent().getAccessUrl());
+        String newImageUrl = getAccessUrlWithSettingS3RollBackEvent(editEmployerPostRequestDto.getMultipartFile());
 
 
         employerPost.changeAllExceptMemberAndId(editEmployerPostRequestDto.getTitle(), workFieldTag,PaymentMethod.toPaymentMethodEnum(editEmployerPostRequestDto.getPaymentMethod()),
@@ -175,13 +182,8 @@ public class EmployerPostCRUDService {
                 EnrollDurationType.toEnrollDurationTypeEnum(editEmployerPostRequestDto.getEnrollDurationType()),
                         editEmployerPostRequestDto.getDeadLine(),
                         editEmployerPostRequestDto.getHopeCareerYear(),editEmployerPostRequestDto.getContents(),
-                editEmployerPostRequestDto.getContact(),accessUrl
-                        );
+                editEmployerPostRequestDto.getContact(),newImageUrl);
 
-        if(beforeUrl!=null){
-            eventPublisher.publishEvent(S3UploadCommitEvent.builder().oldAccessUrl(beforeUrl).build());
-        }
-        eventPublisher.publishEvent(S3UploadRollbackEvent.builder().newAccessUrl(accessUrl).build());
 
     }
 
@@ -189,17 +191,16 @@ public class EmployerPostCRUDService {
     public void deleteEmployerPost(final String loginId,final Long employerPostId){
 
         EmployerPost employerPost = findEmployerPostById(employerPostId);
+
         checkAccessMember(loginId,employerPost);
-        String oldAccessUrl = employerPost.getBasicPostContent().getAccessUrl();
+        settingS3CommitEventOnOldAccessUrl(employerPost.getBasicPostContent().getAccessUrl());
 
         employerPostWorkFieldChildTagRepository.deleteByEmployerPost(employerPost);
 
         bookMarkEmployerPostRepository.deleteByEmployerPostId(employerPostId);
+
         employerPostRepository.deleteById(employerPostId);
 
-        if(oldAccessUrl!=null){
-            eventPublisher.publishEvent(S3UploadCommitEvent.builder().oldAccessUrl(oldAccessUrl).build());
-        }
 
     }
 
@@ -279,14 +280,26 @@ public class EmployerPostCRUDService {
 
     }
 
-    private String getAccessUrl(MultipartFile multipartFile){
+    // dto 의 사진이 null 일 경우 기존의 url 반환 , 그렇지 않으면 새로 생성 후 저장
+    private String getAccessUrlWithSettingS3RollBackEvent(MultipartFile multipartFile){
 
         if(checkInputMultiPartFileNull(multipartFile)){
             return null;
         }
 
-        return s3ImageService.saveImage(multipartFile,EMPLOYER_POST_IMAGE,
-                multipartFile.getOriginalFilename());
+        String newImageAccessUrl = s3ImageService.saveImage(multipartFile,EMPLOYER_POST_IMAGE,multipartFile.getOriginalFilename());
+        eventPublisher.publishEvent(S3UploadImageRollbackEvent.builder().newAccessImageUrl(newImageAccessUrl).build());
+
+        return newImageAccessUrl;
+    }
+
+    //트랜잭션 커밋시 원활 히 삭제 될 수 있도록 event 를 세팅한다.
+    private void settingS3CommitEventOnOldAccessUrl(final String oldAccessImageUrl){
+
+        if(oldAccessImageUrl!=null){
+            eventPublisher.publishEvent(S3UploadImageCommitEvent.builder().oldAccessImageUrl(oldAccessImageUrl).build());
+        }
+
     }
 
 
