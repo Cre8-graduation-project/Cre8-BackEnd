@@ -1,11 +1,9 @@
 package com.gaduationproject.cre8.app.portfolio.service;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.jupiter.api.Assertions.*;
 
-import com.gaduationproject.cre8.app.member.service.ProfileService;
-import com.gaduationproject.cre8.app.portfolio.dto.S3UploadPortfolioImageCommitEvent;
-import com.gaduationproject.cre8.app.portfolio.dto.S3UploadPortfolioImageRollbackEvent;
+import com.gaduationproject.cre8.app.event.s3.S3UploadImageListCommitEvent;
+import com.gaduationproject.cre8.app.event.s3.S3UploadImageListRollbackEvent;
 import com.gaduationproject.cre8.app.portfolio.dto.request.PortfolioEditRequestDto;
 import com.gaduationproject.cre8.app.portfolio.dto.response.PortfolioResponseDto;
 import com.gaduationproject.cre8.app.portfolio.dto.response.PortfolioSimpleResponseDto;
@@ -27,7 +25,6 @@ import com.gaduationproject.cre8.domain.workfieldtag.repository.WorkFieldTagRepo
 import java.time.LocalDate;
 import java.util.List;
 import java.util.Optional;
-import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -38,10 +35,8 @@ import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.test.util.ReflectionTestUtils;
 
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.BDDMockito.given;
-import static org.mockito.BDDMockito.willDoNothing;
 import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
@@ -148,9 +143,9 @@ class PortfolioServiceTest {
         given(workFieldChildTagRepository.findById(eq(3L))).willReturn(Optional.of(workFieldChildTag3));
         doNothing().when(portfolioWorkFieldChildTagRepository).deleteByPortfolio(any());
         doNothing().when(applicationEventPublisher).publishEvent(any(
-                S3UploadPortfolioImageRollbackEvent.class));
+                S3UploadImageListRollbackEvent.class));
         doNothing().when(applicationEventPublisher).publishEvent(any(
-                S3UploadPortfolioImageCommitEvent.class));
+                S3UploadImageListCommitEvent.class));
 
 
 
@@ -184,7 +179,7 @@ class PortfolioServiceTest {
         ReflectionTestUtils.setField(portfolio,"id",1L);
         given(portfolioRepository.findById(eq(1L))).willReturn(Optional.of(portfolio));
         given(portfolioImageRepository.findByPortfolio(portfolio)).willReturn(List.of());
-        doNothing().when(applicationEventPublisher).publishEvent(any(S3UploadPortfolioImageCommitEvent.class));
+        doNothing().when(applicationEventPublisher).publishEvent(any(S3UploadImageListCommitEvent.class));
 
 
 

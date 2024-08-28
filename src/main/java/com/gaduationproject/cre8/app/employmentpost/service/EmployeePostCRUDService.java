@@ -1,7 +1,7 @@
 package com.gaduationproject.cre8.app.employmentpost.service;
 
-import com.gaduationproject.cre8.app.member.dto.S3UploadCommitEvent;
-import com.gaduationproject.cre8.app.member.dto.S3UploadRollbackEvent;
+import com.gaduationproject.cre8.app.event.s3.S3UploadImageCommitEvent;
+import com.gaduationproject.cre8.app.event.s3.S3UploadImageRollbackEvent;
 import com.gaduationproject.cre8.common.response.error.ErrorCode;
 import com.gaduationproject.cre8.common.response.error.exception.BadRequestException;
 import com.gaduationproject.cre8.common.response.error.exception.NotFoundException;
@@ -30,7 +30,6 @@ import java.util.Map;
 import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.ApplicationEventPublisher;
-import org.springframework.security.core.parameters.P;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
@@ -57,14 +56,18 @@ public class EmployeePostCRUDService {
 
         Member member = getLoginMember(loginId);
 
+        //작업 태그 관련 체크 및 List 생성
         WorkFieldTag workFieldTag = getWorkFieldTag(saveEmployeePostRequestDto.getWorkFieldId());
 
         List<WorkFieldChildTag> workFieldChildTagList = getWorkFieldChildTag(
                 saveEmployeePostRequestDto.getWorkFieldChildTagId(),
                 saveEmployeePostRequestDto.getWorkFieldId());
 
-        String accessUrl = getAccessUrl(saveEmployeePostRequestDto.getMultipartFile());
+        //post 배경 이미지 생성 및 추후 RollBack 을 위한 TransactionEvent 세팅
+        String accessUrl = getAccessUrlWithSettingS3RollBackEvent(saveEmployeePostRequestDto.getMultipartFile());
 
+
+        // EmployeePost 저장
         EmployeePost employeePost = EmployeePost.builder()
                 .member(member)
                 .title(saveEmployeePostRequestDto.getTitle())
@@ -79,6 +82,8 @@ public class EmployeePostCRUDService {
 
         employeePostRepository.save(employeePost);
 
+
+        // EmployeePost 관련 작업 태그 저장.
         workFieldChildTagList.forEach(workFieldChildTag -> {
 
             EmployeePostWorkFieldChildTag employeePostWorkFieldChildTag = EmployeePostWorkFieldChildTag.builder()
@@ -91,7 +96,6 @@ public class EmployeePostCRUDService {
         });
 
 
-        eventPublisher.publishEvent(S3UploadRollbackEvent.builder().newAccessUrl(accessUrl).build());
 
     }
 
@@ -146,13 +150,16 @@ public class EmployeePostCRUDService {
 
         EmployeePost employeePost = findEmployeePostById(editEmployeePostRequestDto.getEmployeePostId());
 
+        //자신 소유의 EmployeePost 인지 확인
         checkAccessMember(loginId,employeePost);
 
+        //작업 태그 확인 및 리스트 가져오기
         WorkFieldTag workFieldTag = getWorkFieldTag(editEmployeePostRequestDto.getWorkFieldId());
         List<WorkFieldChildTag> workFieldChildTagList = getWorkFieldChildTag(editEmployeePostRequestDto.getWorkFieldChildTagId(),
                 editEmployeePostRequestDto.getWorkFieldId());
 
 
+        //작업 태그 삭제 후 저장.
         employeePostWorkFieldChildTagRepository.deleteByEmployeePost(employeePost);
         workFieldChildTagList.forEach(workFieldChildTag -> {
 
@@ -165,21 +172,16 @@ public class EmployeePostCRUDService {
 
         });
 
-        String beforeUrl =employeePost.getBasicPostContent().getAccessUrl();
-        String accessUrl = getAccessUrl(editEmployeePostRequestDto.getMultipartFile());
+
+        //기존의 Image 이벤트 세팅(성공정 commit 시) 및 새로운 이미지, 이벤트 생성(RollBack 시)
+        settingS3CommitEventOnOldAccessUrl(employeePost.getBasicPostContent().getAccessUrl());
+        String newImageUrl = getAccessUrlWithSettingS3RollBackEvent(editEmployeePostRequestDto.getMultipartFile());
 
 
         employeePost.changeAllExceptMemberAndId(editEmployeePostRequestDto.getTitle(), workFieldTag,PaymentMethod.toPaymentMethodEnum(editEmployeePostRequestDto.getPaymentMethod()),
                 editEmployeePostRequestDto.getPaymentAmount(),
                 editEmployeePostRequestDto.getCareerYear(), editEmployeePostRequestDto.getContents(),editEmployeePostRequestDto.getContact()
-                ,accessUrl);
-
-
-        if(beforeUrl!=null){
-            eventPublisher.publishEvent(S3UploadCommitEvent.builder().oldAccessUrl(beforeUrl).build());
-        }
-        eventPublisher.publishEvent(S3UploadRollbackEvent.builder().newAccessUrl(accessUrl).build());
-
+                ,newImageUrl);
 
 
     }
@@ -191,16 +193,19 @@ public class EmployeePostCRUDService {
 
 
         checkAccessMember(loginId,employeePost);
-        String oldAccessUrl = employeePost.getBasicPostContent().getAccessUrl();
 
+        //기존의 Image 이벤트 세팅(성공적 commit 시)
+        settingS3CommitEventOnOldAccessUrl(employeePost.getBasicPostContent().getAccessUrl());
+
+
+        //관련 작업 태그 삭제
         employeePostWorkFieldChildTagRepository.deleteByEmployeePost(employeePost);
 
+        //BookMark 삭제
         bookMarkEmployeePostRepository.deleteByEmployeePostId(employeePostId);
-        employeePostRepository.deleteById(employeePostId);
 
-        if(oldAccessUrl!=null){
-            eventPublisher.publishEvent(S3UploadCommitEvent.builder().oldAccessUrl(oldAccessUrl).build());
-        }
+        //post 자체 삭제
+        employeePostRepository.deleteById(employeePostId);
 
 
     }
@@ -263,14 +268,26 @@ public class EmployeePostCRUDService {
     }
 
     // dto 의 사진이 null 일 경우 기존의 url 반환 , 그렇지 않으면 새로 생성 후 저장
-    private String getAccessUrl(MultipartFile multipartFile){
+    private String getAccessUrlWithSettingS3RollBackEvent(MultipartFile multipartFile){
 
         if(checkInputMultiPartFileNull(multipartFile)){
             return null;
         }
 
-        return s3ImageService.saveImage(multipartFile,EMPLOYEE_POST_IMAGE,
-                multipartFile.getOriginalFilename());
+        String newImageAccessUrl = s3ImageService.saveImage(multipartFile,EMPLOYEE_POST_IMAGE,multipartFile.getOriginalFilename());
+        eventPublisher.publishEvent(S3UploadImageRollbackEvent.builder().newAccessImageUrl(newImageAccessUrl).build());
+
+        return newImageAccessUrl;
+    }
+
+
+    //트랜잭션 커밋시 원활 히 삭제 될 수 있도록 event 를 세팅한다.
+    private void settingS3CommitEventOnOldAccessUrl(final String oldAccessImageUrl){
+
+        if(oldAccessImageUrl!=null){
+            eventPublisher.publishEvent(S3UploadImageCommitEvent.builder().oldAccessImageUrl(oldAccessImageUrl).build());
+        }
+
     }
 
 

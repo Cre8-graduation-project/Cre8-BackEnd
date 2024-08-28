@@ -1,7 +1,7 @@
 package com.gaduationproject.cre8.app.portfolio.service;
 
-import com.gaduationproject.cre8.app.portfolio.dto.S3UploadPortfolioImageCommitEvent;
-import com.gaduationproject.cre8.app.portfolio.dto.S3UploadPortfolioImageRollbackEvent;
+import com.gaduationproject.cre8.app.event.s3.S3UploadImageListCommitEvent;
+import com.gaduationproject.cre8.app.event.s3.S3UploadImageListRollbackEvent;
 import com.gaduationproject.cre8.common.response.error.ErrorCode;
 import com.gaduationproject.cre8.common.response.error.exception.BadRequestException;
 import com.gaduationproject.cre8.common.response.error.exception.NotFoundException;
@@ -230,8 +230,8 @@ public class PortfolioService {
         }
 
 
-        eventPublisher.publishEvent(S3UploadPortfolioImageRollbackEvent.builder().newAccessUrlList(newAccessUrlList).build());
-        eventPublisher.publishEvent(S3UploadPortfolioImageCommitEvent.builder().deleteAccessUrlList(deleteAccessUrlList).build());
+        eventPublisher.publishEvent(S3UploadImageListRollbackEvent.builder().newAccessImageUrlList(newAccessUrlList).build());
+        eventPublisher.publishEvent(S3UploadImageListCommitEvent.builder().deleteAccessImageUrlList(deleteAccessUrlList).build());
 
     }
 
@@ -243,7 +243,7 @@ public class PortfolioService {
             deleteAccessUrl.add(portfolioImage.getAccessUrl());
         });
 
-        eventPublisher.publishEvent(S3UploadPortfolioImageCommitEvent.builder().deleteAccessUrlList(deleteAccessUrl).build());
+        eventPublisher.publishEvent(S3UploadImageListCommitEvent.builder().deleteAccessImageUrlList(deleteAccessUrl).build());
 
         portfolio.getPortfolioImageList().clear();
 
