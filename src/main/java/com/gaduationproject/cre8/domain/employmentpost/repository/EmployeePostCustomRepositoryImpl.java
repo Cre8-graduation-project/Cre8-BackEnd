@@ -183,7 +183,6 @@ public class EmployeePostCustomRepositoryImpl implements EmployeePostCustomRepos
                         employeePost.basicPostContent.member.name,employeePost.basicPostContent.member.sex,
                         employeePost.basicPostContent.member.birthDay))
                 .from(employeePost)
-                .leftJoin(employeePost.basicPostContent.workFieldTag)
                 .join(employeePost.basicPostContent.member)
                 .where(checkChildIdByEmployeePostId(employeePostTmpList,employeePostSearch.getWorkFieldChildTagId())
                         ,greaterThanMinCareer(employeePostSearch.getMinCareer()),lowerThanMaxCareer(employeePostSearch.getMaxCareer())
