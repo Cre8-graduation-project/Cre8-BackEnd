@@ -1,5 +1,6 @@
 package com.gaduationproject.cre8.domain.config;
 
+import com.querydsl.jpa.JPQLTemplates;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import jakarta.persistence.EntityManager;
 import lombok.RequiredArgsConstructor;
@@ -15,7 +16,7 @@ public class QueryDSLConfig {
 
     @Bean
     public JPAQueryFactory jpaQueryFactory(EntityManager em){
-        return new JPAQueryFactory(em);
+        return new JPAQueryFactory(JPQLTemplates.DEFAULT,em);
     }
 }
 
