@@ -212,9 +212,16 @@ public class EmployeePostSearchService {
             tagNameList.add(employeePost.getBasicPostContent().getWorkFieldTag().getName());
         }
 
+        /*
         employeePost.getEmployeePostWorkFieldChildTagList().forEach(employeePostWorkFieldChildTag-> {
             tagNameList.add(employeePostWorkFieldChildTag.getWorkFieldChildTag().getName());
         });
+        */
+        employeePostWorkFieldChildTagRepository.findByEmployeePost_IdWithFetchWorkFieldChildTag(employeePost.getId()).
+                forEach(employeePostWorkFieldChildTag -> {
+                            tagNameList.add(employeePostWorkFieldChildTag.getWorkFieldChildTag().getName());
+                        }
+                );
 
         return tagNameList;
     }
