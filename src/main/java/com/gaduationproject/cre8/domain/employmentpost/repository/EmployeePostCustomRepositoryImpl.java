@@ -49,7 +49,7 @@ public class EmployeePostCustomRepositoryImpl implements EmployeePostCustomRepos
         List<EmployeePost> content = queryFactory
                 .selectFrom(employeePost)
                 .leftJoin(employeePost.basicPostContent.workFieldTag).fetchJoin()
-                .join(employeePost.basicPostContent.member).fetchJoin()
+                .join(employeePost.basicPostContent.member)
                 .where(checkChildIdByEmployeePostId(employeePostTmpList,employeePostSearch.getWorkFieldChildTagId())
                         ,greaterThanMinCareer(employeePostSearch.getMinCareer()),lowerThanMaxCareer(employeePostSearch.getMaxCareer())
                         ,workFieldIdEqWithEmployeePostTmpList(employeePostSearch.getWorkFieldId()))
