@@ -48,12 +48,12 @@ public class TestEmployeePostSearchResponseDto {
 
     public static TestEmployeePostSearchResponseDto of3(final EmployeeSearchResponseDto3 employeePost,final List<String> tagNameList){
 
-        return new TestEmployeePostSearchResponseDto(employeePost.getEmployeePost().getId(),
-                employeePost.getEmployeePost().getBasicPostContent().getTitle(),
+        return new TestEmployeePostSearchResponseDto(employeePost.getEmployeePostId(),
+                employeePost.getTitle(),
                 employeePost.getMemberName(),
                 employeePost.getSex().getName(),
                 employeePost.getBirthDay().getYear(),
                 tagNameList,
-                employeePost.getEmployeePost().getBasicPostContent().getAccessUrl());
+                employeePost.getAccessUrl());
     }
 }

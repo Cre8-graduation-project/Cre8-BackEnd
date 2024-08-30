@@ -47,6 +47,7 @@ public class EmployeePostCustomRepositoryImpl implements EmployeePostCustomRepos
                 .having(employeePostWorkFieldChildTag.workFieldChildTag.id.count().eq((long) employeePostSearch.getWorkFieldChildTagId().size()))
                 .fetch();
 
+        //문제 1: select 절에 너무 많다. 문제 2: employeePost 와 Member 의 join 이 문제이다. 문제 3: select 절에 employeePost 의 긴 것과 member 의 긴것이 들어가서 문제이다.
         List<EmployeePost> content = queryFactory
                 .selectFrom(employeePost)
                // .leftJoin(employeePost.basicPostContent.workFieldTag).fetchJoin()
@@ -173,6 +174,8 @@ public class EmployeePostCustomRepositoryImpl implements EmployeePostCustomRepos
                         ,list(Projections.constructor(
                                 EmployeePostWorkFieldChildTagSearchResponseDto.class,
                                 employeePostWorkFieldChildTag.id,employeePostWorkFieldChildTag.workFieldChildTag.name))
+                        ,employeePost.basicPostContent.member.personalStatement
+                        ,employeePost.basicPostContent.contents
                 )));
 
         Long count = queryFactory
@@ -201,6 +204,10 @@ public class EmployeePostCustomRepositoryImpl implements EmployeePostCustomRepos
 
 
 
+        //성능이 빠른 것 임
+        // 문제 1: 제한된 select 절 o , 문제 2: join 이 문제이다. X ->왜냐 하면 join 이 되어 있는데도 성능이 괜찮았기 떄문
+        // 문제 3: 같이 있는게 문제이다. 신빙성 상승 employeePost 의 contents 를 넣었을 때 에러 발생
+        // 문제 4: join 과 employeePost 의 content 를 둘다 넣으면 문제가 된다
 
         List<EmployeeSearchResponseDto2> content = queryFactory
                 .select(Projections.constructor(EmployeeSearchResponseDto2.class,employeePost.id,employeePost.basicPostContent.title,
@@ -247,11 +254,22 @@ public class EmployeePostCustomRepositoryImpl implements EmployeePostCustomRepos
 
 
         List<EmployeeSearchResponseDto3> content = queryFactory
-                .select(Projections.constructor(EmployeeSearchResponseDto3.class,employeePost,
+                .select(Projections.constructor(EmployeeSearchResponseDto3.class,employeePost.id,
+                        employeePost.basicPostContent.accessUrl,
+                        employeePost.basicPostContent.contact,
+                        employeePost.basicPostContent.member,
+                        employeePost.basicPostContent.payment.paymentAmount,
+                        employeePost.basicPostContent.payment.paymentMethod,
+                        employeePost.basicPostContent.title,
+                        employeePost.basicPostContent.workFieldTag,
+                        employeePost.careerYear,
+                        employeePost.createdAt,
+                        employeePost.modifiedAt,
                         employeePost.basicPostContent.member.name,employeePost.basicPostContent.member.sex,
                         employeePost.basicPostContent.member.birthDay))
                 .from(employeePost)
                 .join(employeePost.basicPostContent.member)
+                .leftJoin(employeePost.basicPostContent.workFieldTag)
                 .where(checkChildIdByEmployeePostId(employeePostTmpList,employeePostSearch.getWorkFieldChildTagId())
                         ,greaterThanMinCareer(employeePostSearch.getMinCareer()),lowerThanMaxCareer(employeePostSearch.getMaxCareer())
                         ,workFieldIdEqWithEmployeePostTmpList(employeePostSearch.getWorkFieldId()))

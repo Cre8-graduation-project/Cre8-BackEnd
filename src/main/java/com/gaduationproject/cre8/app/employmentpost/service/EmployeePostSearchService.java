@@ -213,10 +213,10 @@ public class EmployeePostSearchService {
     private List<String> testGetTagList3(final EmployeeSearchResponseDto3 employeeSearchResponseDto){
 
         List<String> tagNameList = new ArrayList<>();
-        EmployeePost employeePost = employeeSearchResponseDto.getEmployeePost();
 
-        if(employeePost.getBasicPostContent().getWorkFieldTag()!=null){
-            tagNameList.add(employeePost.getBasicPostContent().getWorkFieldTag().getName());
+
+        if(employeeSearchResponseDto.getWorkFieldTag()!=null){
+            tagNameList.add(employeeSearchResponseDto.getWorkFieldTag().getName());
         }
 
         /*
@@ -224,7 +224,7 @@ public class EmployeePostSearchService {
             tagNameList.add(employeePostWorkFieldChildTag.getWorkFieldChildTag().getName());
         });
         */
-        employeePostWorkFieldChildTagRepository.findByEmployeePost_IdWithFetchWorkFieldChildTag(employeePost.getId()).
+        employeePostWorkFieldChildTagRepository.findByEmployeePost_IdWithFetchWorkFieldChildTag(employeeSearchResponseDto.getEmployeePostId()).
                 forEach(employeePostWorkFieldChildTag -> {
                             tagNameList.add(employeePostWorkFieldChildTag.getWorkFieldChildTag().getName());
                         }
