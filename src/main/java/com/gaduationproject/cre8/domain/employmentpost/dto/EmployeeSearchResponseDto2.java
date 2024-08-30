@@ -17,11 +17,12 @@ public class EmployeeSearchResponseDto2 {
     private String memberName;
     private Sex sex;
     private LocalDate birthDay;
+    private String contents;
 
 
     public EmployeeSearchResponseDto2(Long employeePostId, String title, WorkFieldTag workFieldTag,
             String memberName,
-            String accessUrl, Sex sex,LocalDate birthDay
+            String accessUrl, Sex sex,LocalDate birthDay,String contents
     ) {
         this.employeePostId = employeePostId;
         this.title = title;
@@ -30,6 +31,7 @@ public class EmployeeSearchResponseDto2 {
         this.accessUrl = accessUrl;
         this.sex = sex;
         this.birthDay =birthDay;
+        this.contents = contents;
     }
 
 }
