@@ -49,8 +49,8 @@ public class EmployeePostCustomRepositoryImpl implements EmployeePostCustomRepos
 
         List<EmployeePost> content = queryFactory
                 .selectFrom(employeePost)
-                .leftJoin(employeePost.basicPostContent.workFieldTag).fetchJoin()
-             //   .join(employeePost.basicPostContent.member).fetchJoin()
+               // .leftJoin(employeePost.basicPostContent.workFieldTag).fetchJoin()
+                .join(employeePost.basicPostContent.member).fetchJoin()
                 .where(checkChildIdByEmployeePostId(employeePostTmpList,employeePostSearch.getWorkFieldChildTagId())
                         ,greaterThanMinCareer(employeePostSearch.getMinCareer()),lowerThanMaxCareer(employeePostSearch.getMaxCareer())
                         ,workFieldIdEqWithEmployeePostTmpList(employeePostSearch.getWorkFieldId()))
@@ -206,7 +206,7 @@ public class EmployeePostCustomRepositoryImpl implements EmployeePostCustomRepos
                 .select(Projections.constructor(EmployeeSearchResponseDto2.class,employeePost.id,employeePost.basicPostContent.title,
                         employeePost.basicPostContent.workFieldTag,
                         employeePost.basicPostContent.member.name,employeePost.basicPostContent.accessUrl,employeePost.basicPostContent.member.sex,employeePost.basicPostContent.member
-                                .birthDay,employeePost.basicPostContent.contents))
+                                .birthDay))
                 .from(employeePost)
                 .leftJoin(employeePost.basicPostContent.workFieldTag)
                 .join(employeePost.basicPostContent.member)
