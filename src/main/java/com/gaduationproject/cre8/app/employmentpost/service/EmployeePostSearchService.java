@@ -181,6 +181,13 @@ public class EmployeePostSearchService {
         employeeSearchResponseDto.getEmployeePostWorkFieldChildTagSearchResponseDtoList().forEach(employeePostWorkFieldChildTagSearchResponseDto -> {
             tagNameList.add(employeePostWorkFieldChildTagSearchResponseDto.getChildTagName());
         });
+
+//        employeePostWorkFieldChildTagRepository.findByEmployeePost_IdWithFetchWorkFieldChildTag(employeeSearchResponseDto.getEmployeePostId()).
+//                forEach(employeePostWorkFieldChildTag -> {
+//                            tagNameList.add(employeePostWorkFieldChildTag.getWorkFieldChildTag().getName());
+//                        }
+//                );
+
         return tagNameList;
     }
 

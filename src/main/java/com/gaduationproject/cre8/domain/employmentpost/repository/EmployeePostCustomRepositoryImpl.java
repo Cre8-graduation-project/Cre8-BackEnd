@@ -9,6 +9,7 @@ import static com.querydsl.core.group.GroupBy.groupBy;
 import static com.querydsl.core.group.GroupBy.list;
 import static com.querydsl.core.group.GroupBy.set;
 
+import com.gaduationproject.cre8.app.employmentpost.dto.response.EmployeePostSearchResponseDto;
 import com.gaduationproject.cre8.domain.employmentpost.dto.EmployeePostWorkFieldChildTagSearchResponseDto;
 import com.gaduationproject.cre8.domain.employmentpost.dto.EmployeeSearchResponseDto;
 import com.gaduationproject.cre8.domain.employmentpost.dto.EmployeeSearchResponseDto2;
@@ -58,6 +59,8 @@ public class EmployeePostCustomRepositoryImpl implements EmployeePostCustomRepos
                 .orderBy(employeePostSort(pageable))
                 .fetch();
 
+
+
         Long count = queryFactory
                 .select(employeePost.count())
                 .from(employeePost)
@@ -75,6 +78,50 @@ public class EmployeePostCustomRepositoryImpl implements EmployeePostCustomRepos
     @Override
     public Page<EmployeeSearchResponseDto> testShowEmployeePostListWithPage(final EmployeePostSearch employeePostSearch,final Pageable pageable){
 
+//        List<Long> employeePostTmpList = queryFactory
+//                .select(employeePostWorkFieldChildTag.employeePost.id)
+//                .from(employeePostWorkFieldChildTag)
+//                .where(employeePostWorkFieldChildTag.workFieldChildTag.id.in(employeePostSearch.getWorkFieldChildTagId()))
+//                .groupBy(employeePostWorkFieldChildTag.employeePost.id)
+//                .having(employeePostWorkFieldChildTag.workFieldChildTag.id.count().eq((long) employeePostSearch.getWorkFieldChildTagId().size()))
+//                .fetch();
+//
+//        List<EmployeeSearchResponseDto> content = queryFactory
+//                .selectFrom(employeePost)
+//                .leftJoin(employeePost.basicPostContent.workFieldTag)
+//                .join(employeePost.basicPostContent.member)
+//                .leftJoin(employeePost.employeePostWorkFieldChildTagList,employeePostWorkFieldChildTag)
+//                .where(checkChildIdByEmployeePostId(employeePostTmpList,employeePostSearch.getWorkFieldChildTagId())
+//                        ,greaterThanMinCareer(employeePostSearch.getMinCareer()),lowerThanMaxCareer(employeePostSearch.getMaxCareer())
+//                        ,workFieldIdEqWithEmployeePostTmpList(employeePostSearch.getWorkFieldId()))
+//                .offset(pageable.getOffset())
+//                .limit(pageable.getPageSize())
+//                .orderBy(employeePostSort(pageable))
+//                .transform(groupBy(employeePost.id).list(Projections.constructor(EmployeeSearchResponseDto.class,
+//                        employeePost.id,employeePost.basicPostContent.title,
+//                        employeePost.basicPostContent.workFieldTag
+//                        ,employeePost.basicPostContent.member.name
+//                        ,employeePost.basicPostContent.accessUrl
+//                        ,employeePost.basicPostContent.member.sex
+//                        ,employeePost.basicPostContent.member.birthDay
+//                        ,list(Projections.constructor(
+//                                EmployeePostWorkFieldChildTagSearchResponseDto.class,
+//                                employeePostWorkFieldChildTag.id,employeePostWorkFieldChildTag.workFieldChildTag.name))
+//                        ,employeePost.createdAt
+//                )));
+//
+//        Long count = queryFactory
+//                .select(employeePost.count())
+//                .from(employeePost)
+//                .where(checkChildIdByEmployeePostId(employeePostTmpList,employeePostSearch.getWorkFieldChildTagId())
+//                        ,greaterThanMinCareer(employeePostSearch.getMinCareer()),lowerThanMaxCareer(employeePostSearch.getMaxCareer())
+//                        ,workFieldIdEqWithEmployeePostTmpList(employeePostSearch.getWorkFieldId()))
+//                .fetchOne();
+//
+//
+//        return new PageImpl<>(content,pageable,count);
+
+
         List<Long> employeePostTmpList = queryFactory
                 .select(employeePostWorkFieldChildTag.employeePost.id)
                 .from(employeePostWorkFieldChildTag)
@@ -83,17 +130,39 @@ public class EmployeePostCustomRepositoryImpl implements EmployeePostCustomRepos
                 .having(employeePostWorkFieldChildTag.workFieldChildTag.id.count().eq((long) employeePostSearch.getWorkFieldChildTagId().size()))
                 .fetch();
 
-        List<EmployeeSearchResponseDto> content = queryFactory
-                .selectFrom(employeePost)
-                .leftJoin(employeePost.basicPostContent.workFieldTag)
-                .join(employeePost.basicPostContent.member)
-                .leftJoin(employeePost.employeePostWorkFieldChildTagList,employeePostWorkFieldChildTag)
+        List<Long> employeePostTmpTmpList = queryFactory
+                .select(employeePost.id)
+                .from(employeePost)
+               // .leftJoin(employeePost.basicPostContent.workFieldTag).fetchJoin()
+                //   .join(employeePost.basicPostContent.member).fetchJoin()
+              //  .leftJoin(employeePost.basicPostContent.workFieldTag)
                 .where(checkChildIdByEmployeePostId(employeePostTmpList,employeePostSearch.getWorkFieldChildTagId())
                         ,greaterThanMinCareer(employeePostSearch.getMinCareer()),lowerThanMaxCareer(employeePostSearch.getMaxCareer())
                         ,workFieldIdEqWithEmployeePostTmpList(employeePostSearch.getWorkFieldId()))
                 .offset(pageable.getOffset())
                 .limit(pageable.getPageSize())
                 .orderBy(employeePostSort(pageable))
+                .fetch();
+
+//        List<EmployeeSearchResponseDto> content = queryFactory
+//                .select(Projections.constructor(EmployeeSearchResponseDto.class,employeePost.id,employeePost.basicPostContent.title,
+//                        employeePost.basicPostContent.workFieldTag,employeePost.basicPostContent.member.name,
+//                        employeePost.basicPostContent.accessUrl,
+//                        employeePost.basicPostContent.member.sex,
+//                        employeePost.basicPostContent.member.birthDay))
+//                .from(employeePost)
+//             //   .leftJoin(employeePost.basicPostContent.workFieldTag)
+//                .join(employeePost.basicPostContent.member)
+//                .where(employeePost.id.in(employeePostTmpTmpList))
+//                .fetch();
+
+
+                List<EmployeeSearchResponseDto> content2 = queryFactory
+                .selectFrom(employeePost)
+//                .leftJoin(employeePost.basicPostContent.workFieldTag)
+//                .join(employeePost.basicPostContent.member)
+                .leftJoin(employeePost.employeePostWorkFieldChildTagList,employeePostWorkFieldChildTag)
+                        .where(employeePost.id.in(employeePostTmpTmpList))
                 .transform(groupBy(employeePost.id).list(Projections.constructor(EmployeeSearchResponseDto.class,
                         employeePost.id,employeePost.basicPostContent.title,
                         employeePost.basicPostContent.workFieldTag
@@ -104,7 +173,6 @@ public class EmployeePostCustomRepositoryImpl implements EmployeePostCustomRepos
                         ,list(Projections.constructor(
                                 EmployeePostWorkFieldChildTagSearchResponseDto.class,
                                 employeePostWorkFieldChildTag.id,employeePostWorkFieldChildTag.workFieldChildTag.name))
-                        ,employeePost.createdAt
                 )));
 
         Long count = queryFactory
@@ -116,8 +184,7 @@ public class EmployeePostCustomRepositoryImpl implements EmployeePostCustomRepos
                 .fetchOne();
 
 
-        return new PageImpl<>(content,pageable,count);
-
+        return new PageImpl<>(content2,pageable,count);
 
     }
 
@@ -139,7 +206,7 @@ public class EmployeePostCustomRepositoryImpl implements EmployeePostCustomRepos
                 .select(Projections.constructor(EmployeeSearchResponseDto2.class,employeePost.id,employeePost.basicPostContent.title,
                         employeePost.basicPostContent.workFieldTag,
                         employeePost.basicPostContent.member.name,employeePost.basicPostContent.accessUrl,employeePost.basicPostContent.member.sex,employeePost.basicPostContent.member
-                                .birthDay))
+                                .birthDay,employeePost.basicPostContent.contents))
                 .from(employeePost)
                 .leftJoin(employeePost.basicPostContent.workFieldTag)
                 .join(employeePost.basicPostContent.member)

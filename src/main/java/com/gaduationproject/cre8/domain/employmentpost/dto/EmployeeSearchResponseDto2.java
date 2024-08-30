@@ -1,5 +1,6 @@
 package com.gaduationproject.cre8.domain.employmentpost.dto;
 
+import com.gaduationproject.cre8.domain.employmentpost.entity.EmployeePost;
 import com.gaduationproject.cre8.domain.member.type.Sex;
 import com.gaduationproject.cre8.domain.workfieldtag.entity.WorkFieldTag;
 import java.time.LocalDate;
@@ -16,10 +17,11 @@ public class EmployeeSearchResponseDto2 {
     private String memberName;
     private Sex sex;
     private LocalDate birthDay;
+    private String writing;
 
     public EmployeeSearchResponseDto2(Long employeePostId, String title, WorkFieldTag workFieldTag,
             String memberName,
-            String accessUrl, Sex sex,LocalDate birthDay
+            String accessUrl, Sex sex,LocalDate birthDay,String writing
     ) {
         this.employeePostId = employeePostId;
         this.title = title;
@@ -28,6 +30,7 @@ public class EmployeeSearchResponseDto2 {
         this.accessUrl = accessUrl;
         this.sex = sex;
         this.birthDay =birthDay;
+        this.writing = writing;
     }
 
 }

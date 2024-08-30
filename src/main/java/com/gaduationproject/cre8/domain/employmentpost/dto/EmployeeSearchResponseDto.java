@@ -19,23 +19,20 @@ public class EmployeeSearchResponseDto {
     private Sex sex;
     private LocalDate birthDay;
     private List<EmployeePostWorkFieldChildTagSearchResponseDto> employeePostWorkFieldChildTagSearchResponseDtoList;
-    private LocalDateTime createdAt;
 
 
     public EmployeeSearchResponseDto(Long employeePostId, String title, WorkFieldTag workFieldTag,
             String memberName,
-            String accessUrl, Sex sex,LocalDate birthDay,
-            List<EmployeePostWorkFieldChildTagSearchResponseDto> employeePostWorkFieldChildTagSearchResponseDtoList,
-            LocalDateTime createdAt
+            String accessUrl, Sex sex,LocalDate birthDay,List<EmployeePostWorkFieldChildTagSearchResponseDto> employeePostWorkFieldChildTagSearchResponseDtoList
+
     ) {
         this.employeePostId = employeePostId;
         this.title = title;
         this.workFieldTag = workFieldTag;
         this.memberName = memberName;
-        this.employeePostWorkFieldChildTagSearchResponseDtoList = employeePostWorkFieldChildTagSearchResponseDtoList;
         this.accessUrl = accessUrl;
         this.sex = sex;
         this.birthDay =birthDay;
-        this.createdAt = createdAt;
+        this.employeePostWorkFieldChildTagSearchResponseDtoList =employeePostWorkFieldChildTagSearchResponseDtoList;
     }
 }
