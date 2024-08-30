@@ -50,8 +50,8 @@ public class EmployeePostCustomRepositoryImpl implements EmployeePostCustomRepos
         //문제 1: select 절에 너무 많다. 문제 2: employeePost 와 Member 의 join 이 문제이다. 문제 3: select 절에 employeePost 의 긴 것과 member 의 긴것이 들어가서 문제이다.
         List<EmployeePost> content = queryFactory
                 .selectFrom(employeePost)
-               // .leftJoin(employeePost.basicPostContent.workFieldTag).fetchJoin()
-                .join(employeePost.basicPostContent.member).fetchJoin()
+                .leftJoin(employeePost.basicPostContent.workFieldTag).fetchJoin()
+                //.join(employeePost.basicPostContent.member).fetchJoin()
                 .where(checkChildIdByEmployeePostId(employeePostTmpList,employeePostSearch.getWorkFieldChildTagId())
                         ,greaterThanMinCareer(employeePostSearch.getMinCareer()),lowerThanMaxCareer(employeePostSearch.getMaxCareer())
                         ,workFieldIdEqWithEmployeePostTmpList(employeePostSearch.getWorkFieldId()))
@@ -213,7 +213,7 @@ public class EmployeePostCustomRepositoryImpl implements EmployeePostCustomRepos
                 .select(Projections.constructor(EmployeeSearchResponseDto2.class,employeePost.id,employeePost.basicPostContent.title,
                         employeePost.basicPostContent.workFieldTag,
                         employeePost.basicPostContent.member.name,employeePost.basicPostContent.accessUrl,employeePost.basicPostContent.member.sex,employeePost.basicPostContent.member
-                                .birthDay))
+                                .birthDay,employeePost.basicPostContent.contents))
                 .from(employeePost)
                 .leftJoin(employeePost.basicPostContent.workFieldTag)
                 .join(employeePost.basicPostContent.member)
