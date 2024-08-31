@@ -63,7 +63,7 @@ public class EmployeePostCustomRepositoryImpl implements EmployeePostCustomRepos
                         ,workFieldIdEqWithEmployeePostTmpList(employeePostSearch.getWorkFieldId()))
                 .offset(pageable.getOffset())
                 .limit(pageable.getPageSize())
-                .orderBy(employeePostSort(pageable))
+                .orderBy(employeePostSort(pageable),employeePost.id.desc())
                 .fetch();
 
 
@@ -148,7 +148,7 @@ public class EmployeePostCustomRepositoryImpl implements EmployeePostCustomRepos
                         ,workFieldIdEqWithEmployeePostTmpList(employeePostSearch.getWorkFieldId()))
                 .offset(pageable.getOffset())
                 .limit(pageable.getPageSize())
-                .orderBy(employeePostSort(pageable))
+                .orderBy(employeePostSort(pageable),employeePost.id.desc())
                 .fetch();
 
 
@@ -347,7 +347,7 @@ public class EmployeePostCustomRepositoryImpl implements EmployeePostCustomRepos
             }
         }
 
-        return new OrderSpecifier(Order.ASC,employeePost.id);
+        return new OrderSpecifier(Order.DESC,employeePost.id);
     }
 
     public  List<EmployeeSearchResponseDto> orderByAccordingToIndex(List<EmployeeSearchResponseDto> employeeSearchResponseDtoList,
@@ -361,6 +361,7 @@ public class EmployeePostCustomRepositoryImpl implements EmployeePostCustomRepos
         for (Long index : indexList) {
             output.add(hashMap.get(index));
         }
+
 
         return output;
 
