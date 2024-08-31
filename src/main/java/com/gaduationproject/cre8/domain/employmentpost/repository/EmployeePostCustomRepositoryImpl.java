@@ -21,8 +21,14 @@ import com.querydsl.core.types.Order;
 import com.querydsl.core.types.OrderSpecifier;
 import com.querydsl.core.types.Projections;
 import com.querydsl.core.types.dsl.BooleanExpression;
+import com.querydsl.core.types.dsl.CaseBuilder;
+import com.querydsl.core.types.dsl.Expressions;
+import com.querydsl.core.types.dsl.NumberExpression;
 import com.querydsl.jpa.impl.JPAQueryFactory;
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
@@ -51,7 +57,7 @@ public class EmployeePostCustomRepositoryImpl implements EmployeePostCustomRepos
         List<EmployeePost> content = queryFactory
                 .selectFrom(employeePost)
                 .leftJoin(employeePost.basicPostContent.workFieldTag).fetchJoin()
-                //.join(employeePost.basicPostContent.member).fetchJoin()
+                .join(employeePost.basicPostContent.member).fetchJoin()
                 .where(checkChildIdByEmployeePostId(employeePostTmpList,employeePostSearch.getWorkFieldChildTagId())
                         ,greaterThanMinCareer(employeePostSearch.getMinCareer()),lowerThanMaxCareer(employeePostSearch.getMaxCareer())
                         ,workFieldIdEqWithEmployeePostTmpList(employeePostSearch.getWorkFieldId()))
@@ -145,6 +151,7 @@ public class EmployeePostCustomRepositoryImpl implements EmployeePostCustomRepos
                 .orderBy(employeePostSort(pageable))
                 .fetch();
 
+
 //        List<EmployeeSearchResponseDto> content = queryFactory
 //                .select(Projections.constructor(EmployeeSearchResponseDto.class,employeePost.id,employeePost.basicPostContent.title,
 //                        employeePost.basicPostContent.workFieldTag,employeePost.basicPostContent.member.name,
@@ -174,9 +181,9 @@ public class EmployeePostCustomRepositoryImpl implements EmployeePostCustomRepos
                         ,list(Projections.constructor(
                                 EmployeePostWorkFieldChildTagSearchResponseDto.class,
                                 employeePostWorkFieldChildTag.id,employeePostWorkFieldChildTag.workFieldChildTag.name))
-                        ,employeePost.basicPostContent.member.personalStatement
-                        ,employeePost.basicPostContent.contents
                 )));
+
+
 
         Long count = queryFactory
                 .select(employeePost.count())
@@ -187,7 +194,7 @@ public class EmployeePostCustomRepositoryImpl implements EmployeePostCustomRepos
                 .fetchOne();
 
 
-        return new PageImpl<>(content2,pageable,count);
+        return new PageImpl<>(orderByAccordingToIndex(content2,employeePostTmpTmpList),pageable,count);
 
     }
 
@@ -341,6 +348,22 @@ public class EmployeePostCustomRepositoryImpl implements EmployeePostCustomRepos
         }
 
         return new OrderSpecifier(Order.ASC,employeePost.id);
+    }
+
+    public  List<EmployeeSearchResponseDto> orderByAccordingToIndex(List<EmployeeSearchResponseDto> employeeSearchResponseDtoList,
+            List<Long> indexList) {
+
+        HashMap<Long, EmployeeSearchResponseDto> hashMap = new HashMap<>(employeeSearchResponseDtoList.size());
+        employeeSearchResponseDtoList.forEach(employeeSearchResponseDto -> hashMap.put(employeeSearchResponseDto.getEmployeePostId(), employeeSearchResponseDto));
+
+        List<EmployeeSearchResponseDto> output = new ArrayList<>(employeeSearchResponseDtoList.size());
+
+        for (Long index : indexList) {
+            output.add(hashMap.get(index));
+        }
+
+        return output;
+
     }
 
 
