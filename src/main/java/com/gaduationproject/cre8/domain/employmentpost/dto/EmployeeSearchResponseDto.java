@@ -19,12 +19,14 @@ public class EmployeeSearchResponseDto {
     private Sex sex;
     private LocalDate birthDay;
     private List<EmployeePostWorkFieldChildTagSearchResponseDto> employeePostWorkFieldChildTagSearchResponseDtoList;
+    private String contents;
 
 
 
     public EmployeeSearchResponseDto(Long employeePostId, String title, WorkFieldTag workFieldTag,
             String memberName,
-            String accessUrl, Sex sex,LocalDate birthDay,List<EmployeePostWorkFieldChildTagSearchResponseDto> employeePostWorkFieldChildTagSearchResponseDtoList
+            String accessUrl, Sex sex,LocalDate birthDay,List<EmployeePostWorkFieldChildTagSearchResponseDto> employeePostWorkFieldChildTagSearchResponseDtoList,
+            String contents
 
 
     ) {
@@ -36,6 +38,7 @@ public class EmployeeSearchResponseDto {
         this.sex = sex;
         this.birthDay =birthDay;
         this.employeePostWorkFieldChildTagSearchResponseDtoList =employeePostWorkFieldChildTagSearchResponseDtoList;
+        this.contents = contents;
 
     }
 
