@@ -181,6 +181,7 @@ public class EmployeePostCustomRepositoryImpl implements EmployeePostCustomRepos
                         ,list(Projections.constructor(
                                 EmployeePostWorkFieldChildTagSearchResponseDto.class,
                                 employeePostWorkFieldChildTag.id,employeePostWorkFieldChildTag.workFieldChildTag.name))
+                        ,employeePost.basicPostContent.contents
                 )));
 
 
@@ -220,7 +221,7 @@ public class EmployeePostCustomRepositoryImpl implements EmployeePostCustomRepos
                 .select(Projections.constructor(EmployeeSearchResponseDto2.class,employeePost.id,employeePost.basicPostContent.title,
                         employeePost.basicPostContent.workFieldTag,
                         employeePost.basicPostContent.member.name,employeePost.basicPostContent.accessUrl,employeePost.basicPostContent.member.sex,employeePost.basicPostContent.member
-                                .birthDay,employeePost.basicPostContent.contents))
+                                .birthDay,employeePost.basicPostContent.member.personalStatement))
                 .from(employeePost)
                 .leftJoin(employeePost.basicPostContent.workFieldTag)
                 .join(employeePost.basicPostContent.member)
