@@ -1,5 +1,6 @@
 package com.gaduationproject.cre8.app.employmentpost.dto.response;
 
+import com.gaduationproject.cre8.domain.employmentpost.dto.EmployerSearchDBResponseDto;
 import com.gaduationproject.cre8.domain.employmentpost.entity.EmployerPost;
 import java.util.ArrayList;
 import java.util.List;
@@ -28,6 +29,18 @@ public class EmployerPostSearchResponseDto {
                 employerPost.getEnrollDurationType().getName(),
                 tagNameList,
                 employerPost.getBasicPostContent().getAccessUrl());
+    }
+
+    public static EmployerPostSearchResponseDto ofFaster(final EmployerSearchDBResponseDto employerSearchDBResponseDto
+            ,final List<String> tagNameList){
+
+        return new EmployerPostSearchResponseDto(employerSearchDBResponseDto.getEmployerPostId(),
+                employerSearchDBResponseDto.getTitle(),
+                employerSearchDBResponseDto.getCompanyName(),
+                employerSearchDBResponseDto.getEnrollDurationType().getName(),
+                tagNameList,
+                employerSearchDBResponseDto.getAccessUrl());
+
     }
 
 }

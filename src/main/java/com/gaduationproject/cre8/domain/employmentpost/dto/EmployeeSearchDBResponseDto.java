@@ -1,14 +1,14 @@
 package com.gaduationproject.cre8.domain.employmentpost.dto;
 
-import com.gaduationproject.cre8.domain.employmentpost.entity.EmployeePost;
 import com.gaduationproject.cre8.domain.member.type.Sex;
 import com.gaduationproject.cre8.domain.workfieldtag.entity.WorkFieldTag;
 import java.time.LocalDate;
 import java.util.List;
+import lombok.Builder;
 import lombok.Getter;
 
 @Getter
-public class EmployeeSearchResponseDto2 {
+public class EmployeeSearchDBResponseDto {
 
     private Long employeePostId;
     private String title;
@@ -17,12 +17,17 @@ public class EmployeeSearchResponseDto2 {
     private String memberName;
     private Sex sex;
     private LocalDate birthDay;
-    private String contents;
+    private List<EmployeePostWorkFieldChildTagSearchDBResponseDto> employeePostWorkFieldChildTagSearchDBResponseDtoList;
 
 
-    public EmployeeSearchResponseDto2(Long employeePostId, String title, WorkFieldTag workFieldTag,
-            String memberName,
-            String accessUrl, Sex sex,LocalDate birthDay,String contents
+
+
+    @Builder
+    public EmployeeSearchDBResponseDto(final Long employeePostId, final String title, final WorkFieldTag workFieldTag,
+            final String memberName,
+            final String accessUrl, final Sex sex,final LocalDate birthDay,final List<EmployeePostWorkFieldChildTagSearchDBResponseDto> employeePostWorkFieldChildTagSearchDBResponseDtoList
+
+
     ) {
         this.employeePostId = employeePostId;
         this.title = title;
@@ -31,7 +36,8 @@ public class EmployeeSearchResponseDto2 {
         this.accessUrl = accessUrl;
         this.sex = sex;
         this.birthDay =birthDay;
-        this.contents = contents;
+        this.employeePostWorkFieldChildTagSearchDBResponseDtoList = employeePostWorkFieldChildTagSearchDBResponseDtoList;
+
     }
 
 }

@@ -2,13 +2,22 @@ package com.gaduationproject.cre8.domain.employmentpost.repository;
 
 
 
+import static com.gaduationproject.cre8.domain.employmentpost.entity.QEmployeePost.employeePost;
+import static com.gaduationproject.cre8.domain.employmentpost.entity.QEmployeePostWorkFieldChildTag.employeePostWorkFieldChildTag;
 import static com.gaduationproject.cre8.domain.employmentpost.entity.QEmployerPost.employerPost;
 import static com.gaduationproject.cre8.domain.employmentpost.entity.QEmployerPostWorkFieldChildTag.employerPostWorkFieldChildTag;
+import static com.querydsl.core.group.GroupBy.groupBy;
+import static com.querydsl.core.group.GroupBy.list;
 
+import com.gaduationproject.cre8.domain.employmentpost.dto.EmployeePostWorkFieldChildTagSearchDBResponseDto;
+import com.gaduationproject.cre8.domain.employmentpost.dto.EmployeeSearchDBResponseDto;
+import com.gaduationproject.cre8.domain.employmentpost.dto.EmployerPostWorkFieldChildTagSearchDBResponseDto;
+import com.gaduationproject.cre8.domain.employmentpost.dto.EmployerSearchDBResponseDto;
 import com.gaduationproject.cre8.domain.employmentpost.entity.EmployerPost;
 import com.gaduationproject.cre8.domain.employmentpost.search.EmployerPostSearch;
 import com.querydsl.core.types.Order;
 import com.querydsl.core.types.OrderSpecifier;
+import com.querydsl.core.types.Projections;
 import com.querydsl.core.types.dsl.BooleanExpression;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import java.util.List;
@@ -29,7 +38,7 @@ public class EmployerPostCustomRepositoryImpl implements EmployerPostCustomRepos
     @Override
     public Page<EmployerPost> showEmployerPostListWithPage(final EmployerPostSearch employerPostSearch,final Pageable pageable){
 
-        List<Long> employerPostTmpList = queryFactory
+        List<Long> employerPostContainsChild = queryFactory
                 .select(employerPostWorkFieldChildTag.employerPost.id)
                 .from(employerPostWorkFieldChildTag)
                 .where(employerPostWorkFieldChildTag.workFieldChildTag.id.in(employerPostSearch.getWorkFieldChildTagId()))
@@ -40,20 +49,20 @@ public class EmployerPostCustomRepositoryImpl implements EmployerPostCustomRepos
         List<EmployerPost> content = queryFactory
                 .selectFrom(employerPost)
                 .leftJoin(employerPost.basicPostContent.workFieldTag).fetchJoin()
-                .where(checkChildIdByEmployerPostId(employerPostTmpList,employerPostSearch.getWorkFieldChildTagId())
+                .where(checkChildIdByEmployerPostId(employerPostContainsChild,employerPostSearch.getWorkFieldChildTagId())
                         ,greaterThanMinCareer(employerPostSearch.getMinCareer()),lowerThanMaxCareer(employerPostSearch.getMaxCareer())
-                        ,workFieldIdEqWithEmployerPostTmpList(employerPostSearch.getWorkFieldId()))
+                        ,workFieldIdEqWithEmployerPostContainsChild(employerPostSearch.getWorkFieldId()))
                 .offset(pageable.getOffset())
                 .limit(pageable.getPageSize())
-                .orderBy(employerPostSort(pageable))
+                .orderBy(employerPostSort(pageable),employerPost.id.desc())
                 .fetch();
 
         Long count = queryFactory
                 .select(employerPost.count())
                 .from(employerPost)
-                .where(checkChildIdByEmployerPostId(employerPostTmpList,employerPostSearch.getWorkFieldChildTagId())
+                .where(checkChildIdByEmployerPostId(employerPostContainsChild,employerPostSearch.getWorkFieldChildTagId())
                         ,greaterThanMinCareer(employerPostSearch.getMinCareer()),lowerThanMaxCareer(employerPostSearch.getMaxCareer())
-                        ,workFieldIdEqWithEmployerPostTmpList(employerPostSearch.getWorkFieldId()))
+                        ,workFieldIdEqWithEmployerPostContainsChild(employerPostSearch.getWorkFieldId()))
                 .fetchOne();
 
 
@@ -62,6 +71,62 @@ public class EmployerPostCustomRepositoryImpl implements EmployerPostCustomRepos
 
     }
 
+    @Override
+    public Page<EmployerSearchDBResponseDto> showEmployerPostDtoListWithPage(final EmployerPostSearch employerPostSearch,
+                                                                             final Pageable pageable) {
+
+        List<Long> employerPostContainsChild = queryFactory
+                .select(employerPostWorkFieldChildTag.employerPost.id)
+                .from(employerPostWorkFieldChildTag)
+                .where(employerPostWorkFieldChildTag.workFieldChildTag.id.in(employerPostSearch.getWorkFieldChildTagId()))
+                .groupBy(employerPostWorkFieldChildTag.employerPost.id)
+                .having(employerPostWorkFieldChildTag.workFieldChildTag.id.countDistinct().eq((long) employerPostSearch.getWorkFieldChildTagId().size()))
+                .fetch();
+
+
+        List<Long> employerPostAfterWherePaging = queryFactory
+                .select(employerPost.id)
+                .from(employerPost)
+                .where(checkChildIdByEmployerPostId(employerPostContainsChild,employerPostSearch.getWorkFieldChildTagId())
+                        ,greaterThanMinCareer(employerPostSearch.getMinCareer()),lowerThanMaxCareer(employerPostSearch.getMaxCareer())
+                        ,workFieldIdEqWithEmployerPostContainsChild(employerPostSearch.getWorkFieldId()))
+                .offset(pageable.getOffset())
+                .limit(pageable.getPageSize())
+                .orderBy(employerPostSort(pageable),employerPost.id.desc())
+                .fetch();
+
+
+        List<EmployerSearchDBResponseDto> content = queryFactory
+                .selectFrom(employerPost)
+                .leftJoin(employerPost.employerPostWorkFieldChildTagList,employerPostWorkFieldChildTag)
+                .where(employerPost.id.in(employerPostAfterWherePaging))
+                .orderBy(employerPostSort(pageable),employerPost.id.desc())
+                .transform(groupBy(employerPost.id).list(Projections.constructor(
+                        EmployerSearchDBResponseDto.class,
+                        employerPost.id,employerPost.basicPostContent.title,
+                        employerPost.companyName,
+                        employerPost.basicPostContent.workFieldTag,
+                        employerPost.enrollDurationType,
+                        employerPost.basicPostContent.accessUrl,
+                        list(Projections.constructor(
+                                EmployerPostWorkFieldChildTagSearchDBResponseDto.class,
+                                employerPostWorkFieldChildTag.id,employerPostWorkFieldChildTag.workFieldChildTag.name))
+                )));
+
+
+
+        Long count = queryFactory
+                .select(employerPost.count())
+                .from(employerPost)
+                .where(checkChildIdByEmployerPostId(employerPostContainsChild,employerPostSearch.getWorkFieldChildTagId())
+                        ,greaterThanMinCareer(employerPostSearch.getMinCareer()),lowerThanMaxCareer(employerPostSearch.getMaxCareer())
+                        ,workFieldIdEqWithEmployerPostContainsChild(employerPostSearch.getWorkFieldId()))
+                .fetchOne();
+
+
+        return new PageImpl<>(content,pageable,count);
+
+    }
 
     private BooleanExpression checkChildIdByEmployerPostId(final List<Long> employerPostIdList,final List<Long> beforeWorkFieldChildTag){
 
@@ -85,7 +150,7 @@ public class EmployerPostCustomRepositoryImpl implements EmployerPostCustomRepos
         return maxCareer==null?null:employerPost.hopeCareerYear.loe(maxCareer);
     }
 
-    private BooleanExpression workFieldIdEqWithEmployerPostTmpList(final Long workFieldTagId){
+    private BooleanExpression workFieldIdEqWithEmployerPostContainsChild(final Long workFieldTagId){
 
         return workFieldTagId==null?null:employerPost.basicPostContent.workFieldTag.id.eq(workFieldTagId);
 
@@ -112,7 +177,7 @@ public class EmployerPostCustomRepositoryImpl implements EmployerPostCustomRepos
             }
         }
 
-        return new OrderSpecifier(Order.ASC,employerPost.id);
+        return new OrderSpecifier(Order.DESC,employerPost.id);
     }
 
 
