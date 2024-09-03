@@ -1,20 +1,11 @@
 package com.gaduationproject.cre8.app.employmentpost.service;
 
-import com.gaduationproject.cre8.app.employmentpost.dto.response.EmployeePostSearchResponseDto;
-import com.gaduationproject.cre8.app.employmentpost.dto.response.EmployeePostSearchResponseDto2;
-import com.gaduationproject.cre8.app.employmentpost.dto.response.EmployeePostSearchWithCountResponseDto2;
-import com.gaduationproject.cre8.app.employmentpost.dto.response.EmployeePostSearchWithSliceResponseDto;
-import com.gaduationproject.cre8.app.employmentpost.dto.response.EmployerPostSearchResponseDto2;
-import com.gaduationproject.cre8.app.employmentpost.dto.response.EmployerPostSearchWithCountResponseDto2;
 import com.gaduationproject.cre8.app.employmentpost.dto.response.EmployerPostSearchWithSliceResponseDto;
 import com.gaduationproject.cre8.common.response.error.ErrorCode;
 import com.gaduationproject.cre8.common.response.error.exception.NotFoundException;
-import com.gaduationproject.cre8.domain.employmentpost.dto.EmployeeSearchDBResponseDto;
 import com.gaduationproject.cre8.domain.employmentpost.dto.EmployerSearchDBResponseDto;
-import com.gaduationproject.cre8.domain.employmentpost.entity.EmployeePost;
 import com.gaduationproject.cre8.domain.employmentpost.entity.EmployerPost;
 import com.gaduationproject.cre8.domain.employmentpost.repository.BookMarkEmployerPostRepository;
-import com.gaduationproject.cre8.domain.employmentpost.search.EmployeePostSearch;
 import com.gaduationproject.cre8.domain.employmentpost.search.EmployerPostSearch;
 import com.gaduationproject.cre8.app.employmentpost.dto.response.EmployerPostSearchResponseDto;
 import com.gaduationproject.cre8.app.employmentpost.dto.response.EmployerPostSearchWithCountResponseDto;
@@ -59,18 +50,18 @@ public class EmployerPostSearchService {
                         Collectors.toList()),employerPostSearchResponseDtoPage.getTotalPages());
     }
 
-    public EmployerPostSearchWithCountResponseDto2 searchEmployerPostWithDto(final EmployerPostSearch employerPostSearch,
+    public EmployerPostSearchWithCountResponseDto searchEmployerPostWithDto(final EmployerPostSearch employerPostSearch,
             final Pageable pageable){
 
         Page<EmployerSearchDBResponseDto> employerPostSearchResponseDtoPage =
                 employerPostRepository.showEmployerPostDtoListWithPage(employerPostSearch,pageable);
 
-        return EmployerPostSearchWithCountResponseDto2.of(employerPostSearchResponseDtoPage.getTotalElements(),
+        return EmployerPostSearchWithCountResponseDto.of(employerPostSearchResponseDtoPage.getTotalElements(),
                 employerPostSearchResponseDtoPage.getContent().stream().map(
                         employerSearchDBResponseDto -> {
                             List<String> tagNameList = getTagListWithFetchTag(employerSearchDBResponseDto);
 
-                            return EmployerPostSearchResponseDto2.of(employerSearchDBResponseDto,tagNameList);
+                            return EmployerPostSearchResponseDto.ofFaster(employerSearchDBResponseDto,tagNameList);
 
                         }).collect(
                         Collectors.toList()),employerPostSearchResponseDtoPage.getTotalPages());

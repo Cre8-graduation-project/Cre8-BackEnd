@@ -1,8 +1,6 @@
 package com.gaduationproject.cre8.app.employmentpost.controller;
 
 import com.gaduationproject.cre8.app.auth.interfaces.CurrentMemberLoginId;
-import com.gaduationproject.cre8.app.employmentpost.dto.response.EmployeePostSearchWithSliceResponseDto;
-import com.gaduationproject.cre8.app.employmentpost.dto.response.EmployerPostSearchWithCountResponseDto2;
 import com.gaduationproject.cre8.app.employmentpost.dto.response.EmployerPostSearchWithSliceResponseDto;
 import com.gaduationproject.cre8.app.response.BaseResponse;
 import com.gaduationproject.cre8.domain.employmentpost.search.EmployerPostSearch;
@@ -74,7 +72,7 @@ public class EmployerPostSearchController {
             @Parameter(name = "size", description = "페이지당 아이템 갯수", in = ParameterIn.QUERY)
     }
     )
-    public ResponseEntity<BaseResponse<EmployerPostSearchWithCountResponseDto2>> employerPostSearchResponse2(final EmployerPostSearch employerPostSearch,
+    public ResponseEntity<BaseResponse<EmployerPostSearchWithCountResponseDto>> employerPostSearchResponse2(final EmployerPostSearch employerPostSearch,
             @PageableDefault(size = 10,sort = "createdAt",direction = Direction.DESC,page = 0) final Pageable pageable){
 
         return ResponseEntity.ok(BaseResponse.createSuccess(employerPostSearchService.searchEmployerPostWithDto(employerPostSearch,pageable)));
