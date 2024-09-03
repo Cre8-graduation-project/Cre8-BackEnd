@@ -92,7 +92,7 @@ public class EmployerPostSearchController {
             @Parameter(name = "sort", description = "정렬기준(createdAt,hopeCareerYear,deadLine)", in = ParameterIn.QUERY),
             @Parameter(name = "size", description = "페이지당 아이템 갯수", in = ParameterIn.QUERY)
     })
-    public ResponseEntity<BaseResponse<EmployerPostSearchWithSliceResponseDto>> employerPostSearchByKeywordResponse(
+    public ResponseEntity<BaseResponse<EmployerPostSearchWithCountResponseDto>> employerPostSearchByKeywordResponse(
             @RequestParam(value = "keyword",required = false) final String keyword,@PageableDefault(size = 10,sort = "createdAt",direction = Direction.DESC,page = 0) final Pageable pageable){
 
         return ResponseEntity.ok(BaseResponse.createSuccess(employerPostSearchService.searchEmployerPostByKeyWord(keyword,pageable)));
