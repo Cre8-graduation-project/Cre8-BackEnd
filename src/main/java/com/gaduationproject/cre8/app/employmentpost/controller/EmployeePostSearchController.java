@@ -2,7 +2,6 @@ package com.gaduationproject.cre8.app.employmentpost.controller;
 
 import com.gaduationproject.cre8.app.auth.interfaces.CurrentMemberLoginId;
 import com.gaduationproject.cre8.app.employmentpost.dto.response.EmployeePostSearchWithSliceResponseDto;
-import com.gaduationproject.cre8.app.employmentpost.dto.response.EmployeePostSearchWithCountResponseDto2;
 import com.gaduationproject.cre8.app.response.BaseResponse;
 import com.gaduationproject.cre8.domain.employmentpost.search.EmployeePostSearch;
 import com.gaduationproject.cre8.app.employmentpost.dto.response.EmployeePostSearchWithCountResponseDto;
@@ -72,7 +71,7 @@ public class EmployeePostSearchController {
             @Parameter(name = "size", description = "페이지당 아이템 갯수", in = ParameterIn.QUERY)
     }
     )
-    public ResponseEntity<BaseResponse<EmployeePostSearchWithCountResponseDto2>> employeePostSearchResponse2(final EmployeePostSearch employeePostSearch,
+    public ResponseEntity<BaseResponse<EmployeePostSearchWithCountResponseDto>> employeePostSearchResponse2(final EmployeePostSearch employeePostSearch,
             @PageableDefault(size = 10,sort = "createdAt",direction = Direction.DESC,page = 0) final Pageable pageable){
 
         return ResponseEntity.ok(BaseResponse.createSuccess(employeePostSearchService.searchEmployeePostWithDto(employeePostSearch,pageable)));
@@ -91,7 +90,7 @@ public class EmployeePostSearchController {
             @Parameter(name = "sort", description = "정렬기준(createdAt,careerYear)", in = ParameterIn.QUERY),
             @Parameter(name = "size", description = "페이지당 아이템 갯수", in = ParameterIn.QUERY)
     })
-    public ResponseEntity<BaseResponse<EmployeePostSearchWithSliceResponseDto>> employeePostSearchByKeywordResponse(
+    public ResponseEntity<BaseResponse<EmployeePostSearchWithCountResponseDto>> employeePostSearchByKeywordResponse(
             @RequestParam(value = "keyword",required = false) final String keyword,@PageableDefault(size = 10,sort = "createdAt",direction = Direction.DESC,page = 0) final Pageable pageable){
 
         return ResponseEntity.ok(BaseResponse.createSuccess(employeePostSearchService.searchEmployeeByKeyword(keyword,pageable)));

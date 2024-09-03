@@ -1,13 +1,13 @@
 package com.gaduationproject.cre8.app.employmentpost.service;
 
 import com.gaduationproject.cre8.app.employmentpost.dto.response.EmployeePostSearchWithSliceResponseDto;
-import com.gaduationproject.cre8.app.employmentpost.dto.response.EmployeePostSearchResponseDto2;
-import com.gaduationproject.cre8.app.employmentpost.dto.response.EmployeePostSearchWithCountResponseDto2;
 import com.gaduationproject.cre8.common.response.error.ErrorCode;
 import com.gaduationproject.cre8.common.response.error.exception.NotFoundException;
+import com.gaduationproject.cre8.domain.employmentpost.dto.EmployeePostKeyWordSearchDBResponseDto;
 import com.gaduationproject.cre8.domain.employmentpost.dto.EmployeeSearchDBResponseDto;
 import com.gaduationproject.cre8.domain.employmentpost.entity.EmployeePost;
 import com.gaduationproject.cre8.domain.employmentpost.repository.BookMarkEmployeePostRepository;
+import com.gaduationproject.cre8.domain.employmentpost.repository.EmployeePostWorkFieldChildTagRepository;
 import com.gaduationproject.cre8.domain.employmentpost.search.EmployeePostSearch;
 import com.gaduationproject.cre8.app.employmentpost.dto.response.EmployeePostSearchResponseDto;
 import com.gaduationproject.cre8.app.employmentpost.dto.response.EmployeePostSearchWithCountResponseDto;
@@ -32,6 +32,7 @@ public class EmployeePostSearchService {
     private final EmployeePostRepository employeePostRepository;
     private final MemberRepository memberRepository;
     private final BookMarkEmployeePostRepository bookMarkEmployeePostRepository;
+    private final EmployeePostWorkFieldChildTagRepository employeePostWorkFieldChildTagRepository;
 
 
 
@@ -51,18 +52,18 @@ public class EmployeePostSearchService {
                         Collectors.toList()),employeePostSearchResponseDtoPage.getTotalPages());
     }
 
-    public EmployeePostSearchWithCountResponseDto2 searchEmployeePostWithDto(final EmployeePostSearch employeePostSearch,
+    public EmployeePostSearchWithCountResponseDto searchEmployeePostWithDto(final EmployeePostSearch employeePostSearch,
             final Pageable pageable){
 
         Page<EmployeeSearchDBResponseDto> employeePostSearchResponseDtoPage =
                 employeePostRepository.showEmployeePostDtoListWithPage(employeePostSearch,pageable);
 
-        return EmployeePostSearchWithCountResponseDto2.of(employeePostSearchResponseDtoPage.getTotalElements(),
+        return EmployeePostSearchWithCountResponseDto.of(employeePostSearchResponseDtoPage.getTotalElements(),
                 employeePostSearchResponseDtoPage.getContent().stream().map(
                         employeeSearchDBResponseDto -> {
                     List<String> tagNameList = getTagListWithFetchTag(employeeSearchDBResponseDto);
 
-                    return EmployeePostSearchResponseDto2.of(employeeSearchDBResponseDto,tagNameList);
+                    return EmployeePostSearchResponseDto.ofFaster(employeeSearchDBResponseDto,tagNameList);
 
                 }).collect(
                         Collectors.toList()),employeePostSearchResponseDtoPage.getTotalPages());
@@ -70,17 +71,34 @@ public class EmployeePostSearchService {
 
 
 
-    public EmployeePostSearchWithSliceResponseDto searchEmployeeByKeyword(final String keyword,final Pageable pageable){
+    public EmployeePostSearchWithCountResponseDto searchEmployeeByKeyword(final String keyword,final Pageable pageable){
 
-        Slice<EmployeePost> employeePostSlice =
-                employeePostRepository.findEmployeePostWithFetchMemberAndWorkFieldTagAndChildTagListWithSlice(keyword,pageable);
+//        Slice<EmployeePost> employeePostSlice =
+//                employeePostRepository.findEmployeePostWithFetchMemberAndWorkFieldTagAndChildTagListWithSlice(keyword,pageable);
+//
+//        return EmployeePostSearchWithSliceResponseDto.of(employeePostSlice.getContent().stream().map(employeePost -> {
+//            List<String> tagNameList = getTagList(employeePost);
+//
+//            return EmployeePostSearchResponseDto.of(employeePost,tagNameList);
+//
+//        }).collect(Collectors.toList()), employeePostSlice.hasNext());
 
-        return EmployeePostSearchWithSliceResponseDto.of(employeePostSlice.getContent().stream().map(employeePost -> {
-            List<String> tagNameList = getTagList(employeePost);
+        Page<Long> employeePostIdList = employeePostRepository.findEmployeePostIdWithPage(keyword,pageable);
 
-            return EmployeePostSearchResponseDto.of(employeePost,tagNameList);
+        List<EmployeePostKeyWordSearchDBResponseDto> employeePostList =
+                employeePostRepository.findEmployeePostKeyWordSearchDB(employeePostIdList.getContent(),pageable.getSort());
 
-        }).collect(Collectors.toList()), employeePostSlice.hasNext());
+        return EmployeePostSearchWithCountResponseDto.of(employeePostIdList.getTotalElements(),
+                employeePostList.stream().map(employeePostKeyWordSearchDBResponseDto -> {
+
+                    return EmployeePostSearchResponseDto.ofSearch(employeePostKeyWordSearchDBResponseDto,
+                            getTagListByEmployeePostWorkField(
+                                    employeePostKeyWordSearchDBResponseDto));
+                }
+                ).collect(Collectors.toList()),employeePostIdList.getTotalPages());
+
+
+
     }
 
     public EmployeePostSearchWithSliceResponseDto searchMyEmployeePost(final String loginId,final Pageable pageable){
@@ -145,6 +163,22 @@ public class EmployeePostSearchService {
             tagNameList.add(employeePostWorkFieldChildTagSearchResponseDto.getChildTagName());
         });
 
+
+        return tagNameList;
+
+    }
+
+    private List<String> getTagListByEmployeePostWorkField(final
+    EmployeePostKeyWordSearchDBResponseDto employeePostKeyWordSearchDBResponseDto){
+
+        List<String> tagNameList = new ArrayList<>();
+
+        if(employeePostKeyWordSearchDBResponseDto.getWorkFieldTag()!=null){
+            tagNameList.add(employeePostKeyWordSearchDBResponseDto.getWorkFieldTag().getName());
+        }
+
+        employeePostWorkFieldChildTagRepository.findByEmployeePost_Id(employeePostKeyWordSearchDBResponseDto.getEmployeePostId())
+                .forEach(employeePostWorkFieldChildTag -> tagNameList.add(employeePostWorkFieldChildTag.getWorkFieldChildTag().getName()));
 
         return tagNameList;
 
