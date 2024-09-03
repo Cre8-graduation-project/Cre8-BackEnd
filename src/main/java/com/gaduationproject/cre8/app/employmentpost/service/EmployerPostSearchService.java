@@ -1,11 +1,16 @@
 package com.gaduationproject.cre8.app.employmentpost.service;
 
+import com.gaduationproject.cre8.app.employmentpost.dto.response.EmployeePostSearchResponseDto;
+import com.gaduationproject.cre8.app.employmentpost.dto.response.EmployeePostSearchWithCountResponseDto;
 import com.gaduationproject.cre8.app.employmentpost.dto.response.EmployerPostSearchWithSliceResponseDto;
 import com.gaduationproject.cre8.common.response.error.ErrorCode;
 import com.gaduationproject.cre8.common.response.error.exception.NotFoundException;
+import com.gaduationproject.cre8.domain.employmentpost.dto.EmployeePostKeyWordSearchDBResponseDto;
+import com.gaduationproject.cre8.domain.employmentpost.dto.EmployerPostKeyWordSearchDBResponseDto;
 import com.gaduationproject.cre8.domain.employmentpost.dto.EmployerSearchDBResponseDto;
 import com.gaduationproject.cre8.domain.employmentpost.entity.EmployerPost;
 import com.gaduationproject.cre8.domain.employmentpost.repository.BookMarkEmployerPostRepository;
+import com.gaduationproject.cre8.domain.employmentpost.repository.EmployerPostWorkFieldChildTagRepository;
 import com.gaduationproject.cre8.domain.employmentpost.search.EmployerPostSearch;
 import com.gaduationproject.cre8.app.employmentpost.dto.response.EmployerPostSearchResponseDto;
 import com.gaduationproject.cre8.app.employmentpost.dto.response.EmployerPostSearchWithCountResponseDto;
@@ -30,6 +35,7 @@ public class EmployerPostSearchService {
     private final EmployerPostRepository employerPostRepository;
     private final MemberRepository memberRepository;
     private final BookMarkEmployerPostRepository bookMarkEmployerPostRepository;
+    private final EmployerPostWorkFieldChildTagRepository employerPostWorkFieldChildTagRepository;
 
 
 
@@ -69,19 +75,34 @@ public class EmployerPostSearchService {
 
 
 
-    public EmployerPostSearchWithSliceResponseDto searchEmployerPostByKeyWord(final String keyword,
+    public EmployerPostSearchWithCountResponseDto searchEmployerPostByKeyWord(final String keyword,
             final Pageable pageable) {
 
-        Slice<EmployerPost> employerPostSlice =
-                employerPostRepository.findEmployerPostWithFetchMemberAndWorkFieldTagAndChildTagListWithSlice(
-                        keyword, pageable);
+//        Slice<EmployerPost> employerPostSlice =
+//                employerPostRepository.findEmployerPostWithFetchMemberAndWorkFieldTagAndChildTagListWithSlice(
+//                        keyword, pageable);
+//
+//        return EmployerPostSearchWithSliceResponseDto.of(
+//                employerPostSlice.stream().map(employerPost -> {
+//                    List<String> tagNameList = getTagList(employerPost);
+//
+//                    return EmployerPostSearchResponseDto.of(employerPost, tagNameList);
+//                }).collect(Collectors.toList()), employerPostSlice.hasNext());
 
-        return EmployerPostSearchWithSliceResponseDto.of(
-                employerPostSlice.stream().map(employerPost -> {
-                    List<String> tagNameList = getTagList(employerPost);
+        Page<Long> employerPostIdList =
+                employerPostRepository.findEmployerPostIdWithPage(keyword,pageable);
 
-                    return EmployerPostSearchResponseDto.of(employerPost, tagNameList);
-                }).collect(Collectors.toList()), employerPostSlice.hasNext());
+        List<EmployerPostKeyWordSearchDBResponseDto> employerPostList =
+                employerPostRepository.findEmployerPostKeyWordSearchDB(employerPostIdList.getContent(),pageable.getSort());
+
+        return EmployerPostSearchWithCountResponseDto.of(employerPostIdList.getTotalElements(),
+                employerPostList.stream().map(employerPostKeyWordSearchDBResponseDto -> {
+
+                            return EmployerPostSearchResponseDto.ofSearch(employerPostKeyWordSearchDBResponseDto,
+                                    getTagListByEmployerPostWorkField(
+                                            employerPostKeyWordSearchDBResponseDto));
+                        }
+                ).collect(Collectors.toList()),employerPostIdList.getTotalPages());
     }
 
 
@@ -147,6 +168,22 @@ public class EmployerPostSearchService {
             tagNameList.add(employerPostWorkFieldChildTagSearchResponseDto.getChildTagName());
         });
 
+
+        return tagNameList;
+
+    }
+
+    private List<String> getTagListByEmployerPostWorkField(final
+    EmployerPostKeyWordSearchDBResponseDto employerPostKeyWordSearchDBResponseDto){
+
+        List<String> tagNameList = new ArrayList<>();
+
+        if(employerPostKeyWordSearchDBResponseDto.getWorkFieldTag()!=null){
+            tagNameList.add(employerPostKeyWordSearchDBResponseDto.getWorkFieldTag().getName());
+        }
+
+        employerPostWorkFieldChildTagRepository.findByEmployerPost_Id(employerPostKeyWordSearchDBResponseDto.getEmployerPostId())
+                .forEach(employerPostWorkFieldChildTag -> tagNameList.add(employerPostWorkFieldChildTag.getWorkFieldChildTag().getName()));
 
         return tagNameList;
 

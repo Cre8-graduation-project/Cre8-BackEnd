@@ -1,5 +1,7 @@
 package com.gaduationproject.cre8.app.employmentpost.dto.response;
 
+import com.gaduationproject.cre8.domain.employmentpost.dto.EmployeePostKeyWordSearchDBResponseDto;
+import com.gaduationproject.cre8.domain.employmentpost.dto.EmployerPostKeyWordSearchDBResponseDto;
 import com.gaduationproject.cre8.domain.employmentpost.dto.EmployerSearchDBResponseDto;
 import com.gaduationproject.cre8.domain.employmentpost.entity.EmployerPost;
 import java.util.ArrayList;
@@ -41,6 +43,15 @@ public class EmployerPostSearchResponseDto {
                 tagNameList,
                 employerSearchDBResponseDto.getAccessUrl());
 
+    }
+
+    public static EmployerPostSearchResponseDto ofSearch(final EmployerPostKeyWordSearchDBResponseDto employerPostKeyWordSearchDBResponseDto,final List<String> tagNameList){
+
+        return new EmployerPostSearchResponseDto(employerPostKeyWordSearchDBResponseDto.getEmployerPostId(),employerPostKeyWordSearchDBResponseDto.getTitle(),
+                employerPostKeyWordSearchDBResponseDto.getCompanyName(),
+                employerPostKeyWordSearchDBResponseDto.getEnrollDurationType().getName(),
+                tagNameList,
+                employerPostKeyWordSearchDBResponseDto.getAccessUrl());
     }
 
 }
