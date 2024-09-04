@@ -3,7 +3,7 @@ package com.gaduationproject.cre8.app.auth.service;
 import com.gaduationproject.cre8.app.auth.dto.SignInRequestDto;
 import com.gaduationproject.cre8.app.auth.dto.TokenDto;
 import com.gaduationproject.cre8.app.auth.dto.TokenReIssueResponseDto;
-import com.gaduationproject.cre8.app.auth.dto.TokenResponseWithUserIdDto;
+import com.gaduationproject.cre8.app.auth.dto.TokenResponseWithUserBasicInfoDto;
 import com.gaduationproject.cre8.app.auth.jwt.TokenProvider;
 import com.gaduationproject.cre8.common.response.error.ErrorCode;
 import com.gaduationproject.cre8.common.response.error.exception.BadRequestException;
@@ -35,7 +35,7 @@ public class AuthService {
 
 
     @Transactional
-    public TokenResponseWithUserIdDto login(final SignInRequestDto signInRequestDto){
+    public TokenResponseWithUserBasicInfoDto login(final SignInRequestDto signInRequestDto){
 
 
         Member findMember=memberRepository.findMemberByLoginId(signInRequestDto.getUserID()).orElseThrow(()->new BadRequestException(
@@ -51,9 +51,9 @@ public class AuthService {
 
         redisUtil.saveAtRedis(authentication.getName(),tokenDto.getRefreshToken(),tokenDto.getRefreshTokenValidationTime(),TimeUnit.MILLISECONDS);
 
-        return new TokenResponseWithUserIdDto(tokenDto.getType(),tokenDto.getAccessToken(),
+        return new TokenResponseWithUserBasicInfoDto(tokenDto.getType(),tokenDto.getAccessToken(),
                 makeResponseCookie(tokenDto.getRefreshToken(),tokenDto.getRefreshTokenValidationTime()),
-                tokenDto.getAccessTokenValidationTime(),findMember.getLoginId(),findMember.getId());
+                tokenDto.getAccessTokenValidationTime(),findMember.getLoginId(),findMember.getId(),findMember.getAccessUrl());
 
     }
 

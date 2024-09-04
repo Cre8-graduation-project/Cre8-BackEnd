@@ -5,7 +5,7 @@ import com.gaduationproject.cre8.app.auth.dto.AccessTokenResponseDto;
 import com.gaduationproject.cre8.app.auth.dto.MemberIdResponseDto;
 import com.gaduationproject.cre8.app.auth.dto.SignInRequestDto;
 import com.gaduationproject.cre8.app.auth.dto.TokenReIssueResponseDto;
-import com.gaduationproject.cre8.app.auth.dto.TokenResponseWithUserIdDto;
+import com.gaduationproject.cre8.app.auth.dto.TokenResponseWithUserBasicInfoDto;
 import com.gaduationproject.cre8.app.auth.service.AuthService;
 import com.gaduationproject.cre8.app.response.BaseResponse;
 import io.swagger.v3.oas.annotations.Operation;
@@ -42,14 +42,15 @@ public class AuthController {
     })
     public ResponseEntity<BaseResponse<MemberIdResponseDto>> login(@RequestBody @Valid final SignInRequestDto memberSignInRequestDto){
 
-        TokenResponseWithUserIdDto tokenResponseWithUserIdDto = authService.login(memberSignInRequestDto);
+        TokenResponseWithUserBasicInfoDto tokenResponseWithUserBasicInfoDto = authService.login(memberSignInRequestDto);
 
         return ResponseEntity.status(HttpStatus.CREATED)
-                .header(accessTokenHeader,tokenResponseWithUserIdDto.getAccessToken())
-                .header(HttpHeaders.SET_COOKIE, tokenResponseWithUserIdDto.getResponseCookie().toString())
+                .header(accessTokenHeader, tokenResponseWithUserBasicInfoDto.getAccessToken())
+                .header(HttpHeaders.SET_COOKIE, tokenResponseWithUserBasicInfoDto.getResponseCookie().toString())
                 .body(BaseResponse.createSuccess(MemberIdResponseDto.builder()
-                        .loginId(tokenResponseWithUserIdDto.getLoginId())
-                        .memberId(tokenResponseWithUserIdDto.getMemberId())
+                        .loginId(tokenResponseWithUserBasicInfoDto.getLoginId())
+                        .memberId(tokenResponseWithUserBasicInfoDto.getMemberId())
+                        .memberAccessUrl(tokenResponseWithUserBasicInfoDto.getMemberAccessUrl())
                         .build()));
     }
 

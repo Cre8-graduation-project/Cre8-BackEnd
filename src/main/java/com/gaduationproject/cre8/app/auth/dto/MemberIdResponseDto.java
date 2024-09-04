@@ -10,11 +10,14 @@ public class MemberIdResponseDto {
 
     private Long memberId;
 
+    private String memberAccessUrl;
+
     @Builder
-    public MemberIdResponseDto(String loginId,Long memberId){
+    public MemberIdResponseDto(String loginId,Long memberId,String memberAccessUrl){
 
         this.loginId = loginId;
         this.memberId = memberId;
+        this.memberAccessUrl = memberAccessUrl;
     }
 
 }
