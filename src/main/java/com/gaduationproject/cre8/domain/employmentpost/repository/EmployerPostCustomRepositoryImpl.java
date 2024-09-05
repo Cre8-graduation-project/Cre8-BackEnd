@@ -33,7 +33,7 @@ public class EmployerPostCustomRepositoryImpl implements EmployerPostCustomRepos
     private final JPAQueryFactory queryFactory;
     private static final String CREATED_AT="createdAt";
     private static final String DEAD_LINE="deadLine";
-    private static final String HOPE_CAREER = "hopeCareer";
+    private static final String HOPE_CAREER_YEAR = "hopeCareerYear";
 
     @Override
     public Page<EmployerPost> showEmployerPostListWithPage(final EmployerPostSearch employerPostSearch,final Pageable pageable){
@@ -170,7 +170,7 @@ public class EmployerPostCustomRepositoryImpl implements EmployerPostCustomRepos
                     case DEAD_LINE:
                         return new OrderSpecifier(direction,employerPost.deadLine);
 
-                    case HOPE_CAREER:
+                    case HOPE_CAREER_YEAR:
                         return new OrderSpecifier(direction,employerPost.hopeCareerYear);
 
                 }
