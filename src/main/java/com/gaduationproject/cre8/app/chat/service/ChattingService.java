@@ -2,8 +2,10 @@ package com.gaduationproject.cre8.app.chat.service;
 
 import com.gaduationproject.cre8.app.chat.dto.request.ChatDto;
 import com.gaduationproject.cre8.app.chat.dto.response.MessageResponseDto;
+import com.gaduationproject.cre8.domain.chat.entity.ChattingMessage;
 import com.gaduationproject.cre8.domain.chat.entity.ChattingRoom;
 import com.gaduationproject.cre8.domain.chat.entity.Message;
+import com.gaduationproject.cre8.domain.chat.repository.ChattingMessageRepository;
 import com.gaduationproject.cre8.domain.chat.repository.ChattingRoomRepository;
 import com.gaduationproject.cre8.domain.chat.repository.MessageRepository;
 import com.gaduationproject.cre8.common.response.error.ErrorCode;
@@ -23,6 +25,7 @@ public class ChattingService {
     private final ChattingRoomRepository chattingRoomRepository;
     private final MessagingService messagingService;
     private final MessageRepository messageRepository;
+    private final ChattingMessageRepository chattingMessageRepository;
 
 
     public void sendMessage(final Long roomId,final ChatDto chatDto,final SimpMessageHeaderAccessor simpMessageHeaderAccessor){
@@ -40,6 +43,12 @@ public class ChattingService {
                 .sender(sender)
                 .contents(chatDto.getMessage())
                 .build());
+
+         chattingMessageRepository.save(ChattingMessage.builder()
+                 .chattingRoomId(chattingRoom.getId())
+                 .senderId(sender.getId())
+                 .contents(chatDto.getMessage())
+                 .build());
 
 
     }
