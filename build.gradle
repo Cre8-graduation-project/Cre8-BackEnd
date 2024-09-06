@@ -56,6 +56,9 @@ dependencies {
 	//chat
 	implementation 'org.springframework.boot:spring-boot-starter-websocket'
 
+	//mongoDB
+	implementation 'org.springframework.boot:spring-boot-starter-data-mongodb'
+
 
 	//h2
 	implementation 'com.h2database:h2'

@@ -2,15 +2,16 @@ package com.gaduationproject.cre8.app.chat.service;
 
 import com.gaduationproject.cre8.app.chat.dto.request.ChatDto;
 import com.gaduationproject.cre8.app.chat.dto.response.MessageResponseDto;
+import com.gaduationproject.cre8.domain.chat.entity.ChattingMessage;
 import com.gaduationproject.cre8.domain.chat.entity.ChattingRoom;
-import com.gaduationproject.cre8.domain.chat.entity.Message;
+import com.gaduationproject.cre8.domain.chat.repository.ChattingMessageRepository;
 import com.gaduationproject.cre8.domain.chat.repository.ChattingRoomRepository;
-import com.gaduationproject.cre8.domain.chat.repository.MessageRepository;
 import com.gaduationproject.cre8.common.response.error.ErrorCode;
 import com.gaduationproject.cre8.common.response.error.exception.BadRequestException;
 import com.gaduationproject.cre8.common.response.error.exception.NotFoundException;
 import com.gaduationproject.cre8.domain.member.entity.Member;
 import com.gaduationproject.cre8.domain.member.repository.MemberRepository;
+import java.time.LocalDateTime;
 import lombok.RequiredArgsConstructor;
 import org.springframework.messaging.simp.SimpMessageHeaderAccessor;
 import org.springframework.stereotype.Service;
@@ -22,7 +23,8 @@ public class ChattingService {
     private final MemberRepository memberRepository;
     private final ChattingRoomRepository chattingRoomRepository;
     private final MessagingService messagingService;
-    private final MessageRepository messageRepository;
+    //private final MessageRepository messageRepository;
+    private final ChattingMessageRepository chattingMessageRepository;
 
 
     public void sendMessage(final Long roomId,final ChatDto chatDto,final SimpMessageHeaderAccessor simpMessageHeaderAccessor){
@@ -35,11 +37,18 @@ public class ChattingService {
 
         messagingService.sendMessage("/sub/chat/room/"+roomId,MessageResponseDto.ofPayLoad(sender.getId(),chatDto));
 
-         messageRepository.save(Message.builder()
-                .chattingRoom(chattingRoom)
-                .sender(sender)
-                .contents(chatDto.getMessage())
-                .build());
+//         messageRepository.save(Message.builder()
+//                .chattingRoom(chattingRoom)
+//                .sender(sender)
+//                .contents(chatDto.getMessage())
+//                .build());
+
+         chattingMessageRepository.save(ChattingMessage.builder()
+                 .chattingRoomId(chattingRoom.getId())
+                 .senderId(sender.getId())
+                 .contents(chatDto.getMessage())
+                 .createdAt(LocalDateTime.now())
+                 .build());
 
 
     }

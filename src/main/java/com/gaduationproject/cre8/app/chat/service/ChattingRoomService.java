@@ -2,10 +2,10 @@ package com.gaduationproject.cre8.app.chat.service;
 
 import com.gaduationproject.cre8.app.chat.dto.response.ChattingRoomResponseDto;
 import com.gaduationproject.cre8.app.chat.dto.response.MessageResponseDto;
+import com.gaduationproject.cre8.domain.chat.entity.ChattingMessage;
 import com.gaduationproject.cre8.domain.chat.entity.ChattingRoom;
-import com.gaduationproject.cre8.domain.chat.entity.Message;
+import com.gaduationproject.cre8.domain.chat.repository.ChattingMessageRepository;
 import com.gaduationproject.cre8.domain.chat.repository.ChattingRoomRepository;
-import com.gaduationproject.cre8.domain.chat.repository.MessageRepository;
 import com.gaduationproject.cre8.common.response.error.ErrorCode;
 import com.gaduationproject.cre8.common.response.error.exception.BadRequestException;
 import com.gaduationproject.cre8.common.response.error.exception.InternalServerErrorException;
@@ -26,7 +26,8 @@ public class ChattingRoomService {
 
     private final ChattingRoomRepository chattingRoomRepository;
     private final MemberRepository memberRepository;
-    private final MessageRepository messageRepository;
+    //private final MessageRepository messageRepository;
+    private final ChattingMessageRepository chattingMessageRepository;
     @Transactional
     public Long getChattingRoomNumberByOpponentId(final Long opponentId,final String loginId){
 
@@ -50,7 +51,7 @@ public class ChattingRoomService {
             throw new BadRequestException(ErrorCode.CANT_ACCESS_CHAT_ROOM);
         }
 
-        return messageRepository.findByChattingRoom(chattingRoom).stream().map(MessageResponseDto::of)
+        return chattingMessageRepository.findByChattingRoomId(chattingRoom.getId()).stream().map(MessageResponseDto::ofChatMessage)
                 .collect(Collectors.toList());
 
     }
@@ -64,13 +65,14 @@ public class ChattingRoomService {
         List<ChattingRoom> chattingRoomList = chattingRoomRepository.findByBelongChattingRoom(currentMember.getId());
 
 
-        return chattingRoomList.stream().filter(chattingRoom -> messageRepository.findLatestMessageByChattingRoom(chattingRoom).isPresent())
+        return chattingRoomList.stream().filter(chattingRoom -> chattingMessageRepository.
+                        findTop1ByChattingRoomIdOrderByCreatedAtDesc(chattingRoom.getId()).isPresent())
                         .map(chattingRoom -> {
                             String opponentNickName = chattingRoom.getSender().getId()== currentMember.getId()
                                     ?chattingRoom.getReceiver().getNickName()
                                     :chattingRoom.getSender().getNickName();
 
-                            Message message = messageRepository.findLatestMessageByChattingRoom(chattingRoom)
+                            ChattingMessage message = chattingMessageRepository.findTop1ByChattingRoomIdOrderByCreatedAtDesc(chattingRoom.getId())
                                     .orElseThrow(()->new InternalServerErrorException(ErrorCode.NOT_APPLY_RECENT_CHAT_FILTER));
 
                             return ChattingRoomResponseDto.builder()
