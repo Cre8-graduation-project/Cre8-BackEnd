@@ -7,6 +7,7 @@ import static com.gaduationproject.cre8.domain.employmentpost.entity.QEmployeePo
 import static com.gaduationproject.cre8.domain.employmentpost.entity.QEmployerPost.employerPost;
 import static com.gaduationproject.cre8.domain.employmentpost.entity.QEmployerPostWorkFieldChildTag.employerPostWorkFieldChildTag;
 import static com.gaduationproject.cre8.domain.workfieldtag.entity.QWorkFieldChildTag.workFieldChildTag;
+import static com.gaduationproject.cre8.domain.workfieldtag.entity.QWorkFieldTag.workFieldTag;
 import static com.querydsl.core.group.GroupBy.groupBy;
 import static com.querydsl.core.group.GroupBy.list;
 
@@ -102,6 +103,7 @@ public class EmployerPostCustomRepositoryImpl implements EmployerPostCustomRepos
                 .selectFrom(employerPost)
                 .leftJoin(employerPost.employerPostWorkFieldChildTagList,employerPostWorkFieldChildTag)
                 .leftJoin(employerPostWorkFieldChildTag.workFieldChildTag,workFieldChildTag)
+                .leftJoin(employerPost.basicPostContent.workFieldTag,workFieldTag)
                 .where(employerPost.id.in(employerPostAfterWherePaging))
                 .orderBy(employerPostSort(pageable),employerPost.id.desc())
                 .transform(groupBy(employerPost.id).list(Projections.constructor(
