@@ -4,6 +4,7 @@ import com.gaduationproject.cre8.domain.member.type.Sex;
 import com.gaduationproject.cre8.domain.workfieldtag.entity.WorkFieldTag;
 import java.time.LocalDate;
 import java.util.List;
+import java.util.Optional;
 import lombok.Builder;
 import lombok.Getter;
 
@@ -13,7 +14,7 @@ public class EmployeeSearchDBResponseDto {
     private Long employeePostId;
     private String title;
     private String accessUrl;
-    private WorkFieldTag workFieldTag;
+    private Optional<WorkFieldTag> workFieldTag;
     private String memberName;
     private Sex sex;
     private LocalDate birthDay;
@@ -31,7 +32,7 @@ public class EmployeeSearchDBResponseDto {
     ) {
         this.employeePostId = employeePostId;
         this.title = title;
-        this.workFieldTag = workFieldTag;
+        this.workFieldTag = Optional.ofNullable(workFieldTag);
         this.memberName = memberName;
         this.accessUrl = accessUrl;
         this.sex = sex;

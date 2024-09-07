@@ -17,6 +17,7 @@ import com.gaduationproject.cre8.app.employmentpost.dto.response.EmployerPostSea
 import com.gaduationproject.cre8.domain.employmentpost.repository.EmployerPostRepository;
 import com.gaduationproject.cre8.domain.member.entity.Member;
 import com.gaduationproject.cre8.domain.member.repository.MemberRepository;
+import com.gaduationproject.cre8.domain.workfieldtag.entity.WorkFieldTag;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -160,12 +161,10 @@ public class EmployerPostSearchService {
 
         List<String> tagNameList = new ArrayList<>();
 
-        if(employerSearchDBResponseDto.getWorkFieldTag()!=null){
-            tagNameList.add(employerSearchDBResponseDto.getWorkFieldTag().getName());
-        }
+        employerSearchDBResponseDto.getWorkFieldTag().map(WorkFieldTag::getName).ifPresent(tagNameList::add);
 
         employerSearchDBResponseDto.getEmployerPostWorkFieldChildTagSearchDBResponseDtoList().forEach(employerPostWorkFieldChildTagSearchResponseDto -> {
-            tagNameList.add(employerPostWorkFieldChildTagSearchResponseDto.getChildTagName());
+            employerPostWorkFieldChildTagSearchResponseDto.getChildTagName().ifPresent(tagNameList::add);
         });
 
 

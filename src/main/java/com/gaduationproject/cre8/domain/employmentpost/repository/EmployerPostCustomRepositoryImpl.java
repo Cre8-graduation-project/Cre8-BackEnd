@@ -6,6 +6,7 @@ import static com.gaduationproject.cre8.domain.employmentpost.entity.QEmployeePo
 import static com.gaduationproject.cre8.domain.employmentpost.entity.QEmployeePostWorkFieldChildTag.employeePostWorkFieldChildTag;
 import static com.gaduationproject.cre8.domain.employmentpost.entity.QEmployerPost.employerPost;
 import static com.gaduationproject.cre8.domain.employmentpost.entity.QEmployerPostWorkFieldChildTag.employerPostWorkFieldChildTag;
+import static com.gaduationproject.cre8.domain.workfieldtag.entity.QWorkFieldChildTag.workFieldChildTag;
 import static com.querydsl.core.group.GroupBy.groupBy;
 import static com.querydsl.core.group.GroupBy.list;
 
@@ -45,6 +46,7 @@ public class EmployerPostCustomRepositoryImpl implements EmployerPostCustomRepos
                 .groupBy(employerPostWorkFieldChildTag.employerPost.id)
                 .having(employerPostWorkFieldChildTag.workFieldChildTag.id.countDistinct().eq((long) employerPostSearch.getWorkFieldChildTagId().size()))
                 .fetch();
+
 
         List<EmployerPost> content = queryFactory
                 .selectFrom(employerPost)
@@ -99,6 +101,7 @@ public class EmployerPostCustomRepositoryImpl implements EmployerPostCustomRepos
         List<EmployerSearchDBResponseDto> content = queryFactory
                 .selectFrom(employerPost)
                 .leftJoin(employerPost.employerPostWorkFieldChildTagList,employerPostWorkFieldChildTag)
+                .leftJoin(employerPostWorkFieldChildTag.workFieldChildTag,workFieldChildTag)
                 .where(employerPost.id.in(employerPostAfterWherePaging))
                 .orderBy(employerPostSort(pageable),employerPost.id.desc())
                 .transform(groupBy(employerPost.id).list(Projections.constructor(

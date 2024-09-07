@@ -4,6 +4,7 @@ import com.gaduationproject.cre8.domain.employmentpost.type.EnrollDurationType;
 import com.gaduationproject.cre8.domain.workfieldtag.entity.WorkFieldTag;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 import lombok.Builder;
 import lombok.Getter;
 
@@ -15,7 +16,7 @@ public class EmployerSearchDBResponseDto {
     private String companyName;
     private EnrollDurationType enrollDurationType;
     private String accessUrl;
-    private WorkFieldTag workFieldTag;
+    private Optional<WorkFieldTag> workFieldTag;
     private List<EmployerPostWorkFieldChildTagSearchDBResponseDto> employerPostWorkFieldChildTagSearchDBResponseDtoList;
 
     @Builder
@@ -31,6 +32,6 @@ public class EmployerSearchDBResponseDto {
         this.enrollDurationType = enrollDurationType;
         this.employerPostWorkFieldChildTagSearchDBResponseDtoList = employerPostWorkFieldChildTagSearchDBResponseDtoList;
         this.accessUrl = accessUrl;
-        this.workFieldTag = workFieldTag;
+        this.workFieldTag = Optional.ofNullable(workFieldTag);
     }
 }
