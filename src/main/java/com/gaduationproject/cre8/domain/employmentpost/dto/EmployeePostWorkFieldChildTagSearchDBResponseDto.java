@@ -1,12 +1,13 @@
 package com.gaduationproject.cre8.domain.employmentpost.dto;
 
+import java.util.Optional;
 import lombok.Getter;
 
 @Getter
 public class EmployeePostWorkFieldChildTagSearchDBResponseDto {
 
     private Long employeePostWorkFieldChildTagId;
-    private String childTagName;
+    private Optional<String> childTagName;
 
 
 
@@ -14,6 +15,6 @@ public class EmployeePostWorkFieldChildTagSearchDBResponseDto {
     public EmployeePostWorkFieldChildTagSearchDBResponseDto(final Long employeePostWorkFieldChildTagId,
             final String childTagName) {
         this.employeePostWorkFieldChildTagId = employeePostWorkFieldChildTagId;
-        this.childTagName = childTagName;
+        this.childTagName = Optional.ofNullable(childTagName);
     }
 }

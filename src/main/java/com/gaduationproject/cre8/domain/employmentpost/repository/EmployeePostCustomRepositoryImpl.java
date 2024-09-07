@@ -4,6 +4,8 @@ package com.gaduationproject.cre8.domain.employmentpost.repository;
 
 import static com.gaduationproject.cre8.domain.employmentpost.entity.QEmployeePost.employeePost;
 import static com.gaduationproject.cre8.domain.employmentpost.entity.QEmployeePostWorkFieldChildTag.employeePostWorkFieldChildTag;
+import static com.gaduationproject.cre8.domain.workfieldtag.entity.QWorkFieldChildTag.workFieldChildTag;
+import static com.gaduationproject.cre8.domain.workfieldtag.entity.QWorkFieldTag.workFieldTag;
 import static com.querydsl.core.group.GroupBy.groupBy;
 import static com.querydsl.core.group.GroupBy.list;
 import static com.querydsl.core.group.GroupBy.set;
@@ -93,9 +95,12 @@ public class EmployeePostCustomRepositoryImpl implements EmployeePostCustomRepos
                 .fetch();
 
 
+
                 List<EmployeeSearchDBResponseDto> content = queryFactory
                 .selectFrom(employeePost)
                 .leftJoin(employeePost.employeePostWorkFieldChildTagList,employeePostWorkFieldChildTag)
+                .leftJoin(employeePostWorkFieldChildTag.workFieldChildTag,workFieldChildTag)
+                .leftJoin(employeePost.basicPostContent.workFieldTag,workFieldTag)
                         .where(employeePost.id.in(employeePostAfterWherePaging))
                         .orderBy(employeePostSort(pageable),employeePost.id.desc())
                 .transform(groupBy(employeePost.id).list(Projections.constructor(
