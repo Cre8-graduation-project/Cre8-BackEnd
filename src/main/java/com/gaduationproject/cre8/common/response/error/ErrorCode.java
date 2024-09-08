@@ -56,6 +56,7 @@ public enum ErrorCode {
     CANT_FIND_ENROLL_DURATION_TYPE("해당 채용 방식을 다시 확인해주세요"),
     CANT_FIND_CHATTING_ROOM("채팅방을 찾을 수 없습니다"),
     CANT_FIND_PORTFOLIO_IMAGE_ID("해당 포트폴리오 이미지 아이디 기반으로 포트폴리오 이미지를 찾을 수 없습니다"),
+    CANT_FIND_COMMUNITY_BOARD("해당 게시판을 찾을 수 없습니다"),
 
 
     /**
