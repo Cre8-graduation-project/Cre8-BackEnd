@@ -25,9 +25,6 @@ public class Reply {
     @Column(length = 200)
     private String contents;
 
-    private int likeCount = 0;
-
-
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "member_id")
     private Member writer;
