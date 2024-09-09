@@ -37,7 +37,7 @@ public class CommunityPostResponseDto {
                 communityPost.getCreatedAt(),
                 communityPost.getContents(),
                 communityPost.getAccessUrl(),
-                communityPost.getLikeCount(),
+                0,
                 isLike,
                 replyListResponseDtoList);
     }

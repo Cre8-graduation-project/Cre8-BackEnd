@@ -17,12 +17,11 @@ public class CommunityPostSearchResponseDto {
     private int replyCount;
     private String writerNickName;
     private LocalDateTime createdAt;
-    private int likeCount;
 
 
     public static CommunityPostSearchResponseDto of(final Long communityPostId,final String title, int replyCount,
-            final String writerNickName, final LocalDateTime createdAt, int likeCount) {
+            final String writerNickName, final LocalDateTime createdAt) {
 
-        return new CommunityPostSearchResponseDto(communityPostId,title,replyCount,writerNickName,createdAt,likeCount);
+        return new CommunityPostSearchResponseDto(communityPostId,title,replyCount,writerNickName,createdAt);
     }
 }
