@@ -83,7 +83,9 @@ public class CommunityPostCRUDService {
 
         List<ReplyListResponseDto> replyListResponseDtoList = getReplyResponseDtoList(communityPostId);
 
-        return CommunityPostResponseDto.of(communityPost,isLikeCommunityPost(loginId,communityPostId),replyListResponseDtoList);
+        return CommunityPostResponseDto.of(communityPost,
+                likeCommunityPostRepository.getLikeCountsByCommunityPostId(communityPostId),
+                isLikeCommunityPost(loginId,communityPostId),replyListResponseDtoList);
 
     }
 
@@ -147,6 +149,7 @@ public class CommunityPostCRUDService {
 
         //댓글 삭제
 
+        replyRepository.deleteByCommunityPostId(communityPostId);
 
         //post 자체 삭제
         communityPostRepository.deleteById(communityPostId);
