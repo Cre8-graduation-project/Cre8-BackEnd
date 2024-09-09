@@ -1,5 +1,6 @@
 package com.gaduationproject.cre8.domain.community.entity;
 
+import com.gaduationproject.cre8.domain.baseentity.BaseEntity;
 import com.gaduationproject.cre8.domain.member.entity.Member;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -10,11 +11,15 @@ import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import lombok.AccessLevel;
+import lombok.Builder;
+import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 @Entity
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-public class Reply {
+@Getter
+public class Reply extends BaseEntity {
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "reply_id")
@@ -24,23 +29,28 @@ public class Reply {
     @Column(length = 200)
     private String contents;
 
-    private int likeCount = 0;
-
-
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "writer_id")
+    @JoinColumn(name = "member_id")
     private Member writer;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "post_id",nullable = false,updatable = false)
-    private Post post;
+    @JoinColumn(name = "community_post_id",nullable = false,updatable = false)
+    private CommunityPost communityPost;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "parent_reply_id",updatable = false)
     private Reply parentReply;
 
 
+    @Builder
+    public Reply(final String contents, final Member writer, final CommunityPost communityPost, final Reply parentReply) {
+        this.contents = contents;
+        this.writer = writer;
+        this.communityPost = communityPost;
+        this.parentReply = parentReply;
+    }
 
-
-
+    public void changeReplyContents(final String contents){
+        this.contents = contents;
+    }
 }

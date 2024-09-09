@@ -2,6 +2,7 @@ package com.gaduationproject.cre8.app.member.dto;
 
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.constraints.NotEmpty;
+import jakarta.validation.constraints.Size;
 import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
@@ -15,6 +16,7 @@ public class ProfileWithUserInfoEditRequestDto {
 
     @Schema(description = "사용자 닉네임")
     @NotEmpty(message = "사용자 닉네임을 입력해주세요")
+    @Size(min = 5, max = 20, message = "최소 5글자에서 최대 20글자를 입력해주세요")
     private String userNickName;
 
     @Schema(description = "이미지 데이터")
