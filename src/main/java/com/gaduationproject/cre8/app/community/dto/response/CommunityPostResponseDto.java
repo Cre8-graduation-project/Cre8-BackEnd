@@ -15,10 +15,12 @@ public class CommunityPostResponseDto {
 
     private Long communityPostId;
     private String title;
+    private Long writerId;
     private String writerNickName;
-    private int readCount;
+    private String memberAccessUrl;
     private LocalDateTime createdAt;
     private String contents;
+    private String accessUrl;
     private int likeCounts;
     private boolean isLike;
     private List<ReplyListResponseDto> replyListResponseDtoList;
@@ -29,10 +31,12 @@ public class CommunityPostResponseDto {
 
         return new CommunityPostResponseDto(communityPost.getId(),
                 communityPost.getTitle(),
+                communityPost.getWriter().getId(),
                 communityPost.getWriter().getNickName(),
-                communityPost.getReadCount(),
+                communityPost.getWriter().getAccessUrl(),
                 communityPost.getCreatedAt(),
                 communityPost.getContents(),
+                communityPost.getAccessUrl(),
                 communityPost.getLikeCount(),
                 isLike,
                 replyListResponseDtoList);
