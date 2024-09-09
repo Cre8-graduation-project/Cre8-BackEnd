@@ -4,6 +4,7 @@ import com.gaduationproject.cre8.app.auth.interfaces.CurrentMemberLoginId;
 import com.gaduationproject.cre8.app.community.dto.request.CommunityBoardSaveRequestDto;
 import com.gaduationproject.cre8.app.community.dto.response.CommunityBoardResponseDto;
 import com.gaduationproject.cre8.app.community.service.CommunityBoardService;
+import com.gaduationproject.cre8.app.response.BaseResponse;
 import com.gaduationproject.cre8.domain.community.entity.CommunityBoard;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
@@ -66,8 +67,8 @@ public class CommunityBoardController {
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200",description = "커뮤니티 게시판 리스트 성공적 조회")
     })
-    public ResponseEntity<List<CommunityBoardResponseDto>> communityBoardList(){
-        return ResponseEntity.ok(communityBoardService.findAllCommunityBoard());
+    public ResponseEntity<BaseResponse<List<CommunityBoardResponseDto>>> communityBoardList(){
+        return ResponseEntity.ok(BaseResponse.createSuccess(communityBoardService.findAllCommunityBoard()));
     }
 
 
