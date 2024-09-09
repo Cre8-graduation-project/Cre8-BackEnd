@@ -35,10 +35,6 @@ public class CommunityPost extends BaseEntity {
 
     private String accessUrl;
 
-    private int readCount = 0;
-    private int likeCount=0;
-    private int replyCount = 0;
-
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "writer_id")
     private Member writer;
@@ -65,7 +61,5 @@ public class CommunityPost extends BaseEntity {
         this.accessUrl = accessUrl;
     }
 
-    public void addReadCount(){
-        this.readCount++;
-    }
+
 }

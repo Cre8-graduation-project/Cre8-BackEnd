@@ -25,7 +25,7 @@ public class CommunityPostResponseDto {
     private boolean isLike;
     private List<ReplyListResponseDto> replyListResponseDtoList;
 
-    public static CommunityPostResponseDto of (final CommunityPost communityPost,boolean isLike,
+    public static CommunityPostResponseDto of (final CommunityPost communityPost,int likeCounts,boolean isLike,
             final List<ReplyListResponseDto> replyListResponseDtoList) {
 
 
@@ -37,7 +37,7 @@ public class CommunityPostResponseDto {
                 communityPost.getCreatedAt(),
                 communityPost.getContents(),
                 communityPost.getAccessUrl(),
-                communityPost.getLikeCount(),
+                likeCounts,
                 isLike,
                 replyListResponseDtoList);
     }

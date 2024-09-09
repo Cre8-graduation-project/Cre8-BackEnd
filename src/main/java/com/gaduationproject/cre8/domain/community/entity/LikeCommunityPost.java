@@ -1,5 +1,6 @@
 package com.gaduationproject.cre8.domain.community.entity;
 
+import com.gaduationproject.cre8.domain.baseentity.BaseEntity;
 import com.gaduationproject.cre8.domain.member.entity.Member;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -10,13 +11,14 @@ import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import lombok.AccessLevel;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 @Entity
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Getter
-public class LikeCommunityPost {
+public class LikeCommunityPost extends BaseEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -32,6 +34,9 @@ public class LikeCommunityPost {
     @JoinColumn(name = "member_id")
     private Member liker;
 
-
-
+    @Builder
+    public LikeCommunityPost(final CommunityPost communityPost,final Member liker) {
+        this.communityPost = communityPost;
+        this.liker = liker;
+    }
 }

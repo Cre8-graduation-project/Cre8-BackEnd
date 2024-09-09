@@ -62,6 +62,7 @@ public class ReplyService {
 
     }
 
+
     private Member getLoginMember(final String loginId){
 
         return memberRepository.findMemberByLoginId(loginId).orElseThrow(()->new NotFoundException(

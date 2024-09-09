@@ -21,4 +21,5 @@ public interface CommunityPostRepository extends JpaRepository<CommunityPost,Lon
                                                                                                final Pageable pageable);
 
 
+
 }
