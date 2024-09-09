@@ -3,6 +3,8 @@ package com.gaduationproject.cre8.app.community.service;
 import com.gaduationproject.cre8.app.community.dto.request.CommunityPostEditRequestDto;
 import com.gaduationproject.cre8.app.community.dto.request.CommunityPostSaveRequestDto;
 import com.gaduationproject.cre8.app.community.dto.response.CommunityPostResponseDto;
+import com.gaduationproject.cre8.app.community.dto.response.ReplyListResponseDto;
+import com.gaduationproject.cre8.app.community.dto.response.ReplyResponseDto;
 import com.gaduationproject.cre8.app.employmentpost.dto.request.EditEmployeePostRequestDto;
 import com.gaduationproject.cre8.app.employmentpost.dto.request.SaveEmployeePostRequestDto;
 import com.gaduationproject.cre8.app.employmentpost.dto.response.EmployeePostResponseDto;
@@ -14,9 +16,11 @@ import com.gaduationproject.cre8.common.response.error.exception.BadRequestExcep
 import com.gaduationproject.cre8.common.response.error.exception.NotFoundException;
 import com.gaduationproject.cre8.domain.community.entity.CommunityBoard;
 import com.gaduationproject.cre8.domain.community.entity.CommunityPost;
+import com.gaduationproject.cre8.domain.community.entity.Reply;
 import com.gaduationproject.cre8.domain.community.repository.CommunityBoardRepository;
 import com.gaduationproject.cre8.domain.community.repository.CommunityPostRepository;
 import com.gaduationproject.cre8.domain.community.repository.LikeCommunityPostRepository;
+import com.gaduationproject.cre8.domain.community.repository.ReplyRepository;
 import com.gaduationproject.cre8.domain.employmentpost.entity.EmployeePost;
 import com.gaduationproject.cre8.domain.employmentpost.entity.EmployeePostWorkFieldChildTag;
 import com.gaduationproject.cre8.domain.employmentpost.type.PaymentMethod;
@@ -48,6 +52,7 @@ public class CommunityPostCRUDService {
     private final ApplicationEventPublisher eventPublisher;
     private static final String COMMUNITY_POST_IMAGE="communityPost-images/";
     private final LikeCommunityPostRepository likeCommunityPostRepository;
+    private final ReplyRepository replyRepository;
 
     @Transactional
     public void saveCommunityPost(final String loginId,final CommunityPostSaveRequestDto communityPostSaveRequestDto){
@@ -76,9 +81,30 @@ public class CommunityPostCRUDService {
                 .findCommunityPostByIdWithFetchWriter(communityPostId).orElseThrow(
                         ()-> new NotFoundException(ErrorCode.CANT_FIND_COMMUNITY_POST));
 
+        List<ReplyListResponseDto> replyListResponseDtoList = getReplyResponseDtoList(communityPostId);
 
-        return CommunityPostResponseDto.of(communityPost,isLikeCommunityPost(loginId,communityPostId));
+        return CommunityPostResponseDto.of(communityPost,isLikeCommunityPost(loginId,communityPostId),replyListResponseDtoList);
 
+    }
+
+    private List<ReplyListResponseDto> getReplyResponseDtoList(Long communityPostId) {
+        List<Reply> parentReply = replyRepository.findParentReplyByPostIdOrderByCreatedWithFetchWriter(
+                communityPostId);
+
+        List<ReplyListResponseDto> replyListResponseDtoList = new ArrayList<>();
+
+        //부모-> 자식 순으로 DTO 순서 저장.
+        for(Reply parent: parentReply){
+
+            List<ReplyResponseDto> replyChildResponseDto=
+                    replyRepository.findChildByParentIdOrderByCreatedAtWithFetchWriter(parent.getId()).stream().map(ReplyResponseDto::of)
+                            .collect(Collectors.toList());
+
+            replyListResponseDtoList.add(ReplyListResponseDto.of(ReplyResponseDto.of(parent),replyChildResponseDto));
+
+        }
+
+        return replyListResponseDtoList;
     }
 
     @Transactional
@@ -160,7 +186,7 @@ public class CommunityPostCRUDService {
     private void checkAccessMember(final String loginId,final CommunityPost communityPost){
 
         if(loginId==null || !loginId.equals(communityPost.getWriter().getLoginId())){
-            throw new BadRequestException(ErrorCode.CANT_ACCESS_EMPLOYEE_POST);
+            throw new BadRequestException(ErrorCode.CANT_ACCESS_COMMUNITY_POST);
         }
 
     }

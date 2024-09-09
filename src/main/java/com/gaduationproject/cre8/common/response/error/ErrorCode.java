@@ -29,6 +29,9 @@ public enum ErrorCode {
     CANT_ACCESS_CHAT_ROOM("자신의 채팅방의 채팅만 조회가능합니다"),
     NOT_ALLOWABLE_EXTENSION("지원되지 않는 확장자입니다"),
     CANT_ACCESS_COMMUNITY_POSt("자신의 커뮤니티글만 수정, 삭제할 수 있습니다"),
+    CANT_MAKE_RE_RE_REPLY("대대댓글은 만들 수 없습니다"),
+    CANT_ACCESS_COMMUNITY_POST("자신의 게시글만 수정,삭제 할 수 있습니다"),
+    CANT_ACCESS_REPLY("자신의 댓글만 수정,삭제 할 수 있습니다"),
 
 
 
@@ -59,6 +62,7 @@ public enum ErrorCode {
     CANT_FIND_PORTFOLIO_IMAGE_ID("해당 포트폴리오 이미지 아이디 기반으로 포트폴리오 이미지를 찾을 수 없습니다"),
     CANT_FIND_COMMUNITY_BOARD("해당 게시판을 찾을 수 없습니다"),
     CANT_FIND_COMMUNITY_POST("해당 게시글을 찾을 수 없습니다"),
+    CANT_FIND_REPLY("댓글을 찾을 수 없습니다"),
 
 
     /**
