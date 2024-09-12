@@ -1,5 +1,6 @@
 package com.gaduationproject.cre8.app.community.service;
 
+import com.gaduationproject.cre8.app.community.dto.request.CommunityPostEditListRequestDto;
 import com.gaduationproject.cre8.app.community.dto.request.CommunityPostEditRequestDto;
 import com.gaduationproject.cre8.app.community.dto.request.CommunityPostSaveRequestDto;
 import com.gaduationproject.cre8.app.community.dto.response.CommunityPostResponseDto;
@@ -10,14 +11,18 @@ import com.gaduationproject.cre8.app.employmentpost.dto.request.SaveEmployeePost
 import com.gaduationproject.cre8.app.employmentpost.dto.response.EmployeePostResponseDto;
 import com.gaduationproject.cre8.app.employmentpost.dto.response.SubCategoryWithChildTagResponseDto;
 import com.gaduationproject.cre8.app.event.s3.S3UploadImageCommitEvent;
+import com.gaduationproject.cre8.app.event.s3.S3UploadImageListCommitEvent;
+import com.gaduationproject.cre8.app.event.s3.S3UploadImageListRollbackEvent;
 import com.gaduationproject.cre8.app.event.s3.S3UploadImageRollbackEvent;
 import com.gaduationproject.cre8.common.response.error.ErrorCode;
 import com.gaduationproject.cre8.common.response.error.exception.BadRequestException;
 import com.gaduationproject.cre8.common.response.error.exception.NotFoundException;
 import com.gaduationproject.cre8.domain.community.entity.CommunityBoard;
 import com.gaduationproject.cre8.domain.community.entity.CommunityPost;
+import com.gaduationproject.cre8.domain.community.entity.CommunityPostImage;
 import com.gaduationproject.cre8.domain.community.entity.Reply;
 import com.gaduationproject.cre8.domain.community.repository.CommunityBoardRepository;
+import com.gaduationproject.cre8.domain.community.repository.CommunityPostImageRepository;
 import com.gaduationproject.cre8.domain.community.repository.CommunityPostRepository;
 import com.gaduationproject.cre8.domain.community.repository.LikeCommunityPostRepository;
 import com.gaduationproject.cre8.domain.community.repository.ReplyRepository;
@@ -53,9 +58,10 @@ public class CommunityPostCRUDService {
     private static final String COMMUNITY_POST_IMAGE="communityPost-images/";
     private final LikeCommunityPostRepository likeCommunityPostRepository;
     private final ReplyRepository replyRepository;
+    private final CommunityPostImageRepository communityPostImageRepository;
 
     @Transactional
-    public void saveCommunityPost(final String loginId,final CommunityPostSaveRequestDto communityPostSaveRequestDto){
+    public void saveCommunityPost(final String loginId,final CommunityPostSaveRequestDto communityPostSaveRequestDto) throws InterruptedException{
 
 
 
@@ -110,7 +116,7 @@ public class CommunityPostCRUDService {
     }
 
     @Transactional
-    public void updateCommunityPost(final String loginId, final CommunityPostEditRequestDto communityPostEditRequestDto){
+    public void updateCommunityPost(final String loginId, final CommunityPostEditRequestDto communityPostEditRequestDto) throws InterruptedException{
 
 
         CommunityPost communityPost = findCommunityPostById(communityPostEditRequestDto.getCommunityPostId());
@@ -126,8 +132,110 @@ public class CommunityPostCRUDService {
 
 
         communityPost.changeTitleAndContentsAndAccessUrl(communityPostEditRequestDto.getTitle(),
-                                                         communityPost.getContents(),
+                                                         communityPostEditRequestDto.getContents(),
                                                          newImageUrl);
+
+
+    }
+
+    @Transactional
+    public void updateCommunityPost2(final String loginId, final CommunityPostEditRequestDto communityPostEditRequestDto,
+                                     final String newAccessUrl){
+
+
+        CommunityPost communityPost = findCommunityPostById(communityPostEditRequestDto.getCommunityPostId());
+
+        settingS3CommitEventOnOldAccessUrl(communityPost.getAccessUrl());
+        //자신 소유의 CommunityPost 인지 확인
+        checkAccessMember(loginId,communityPost);
+
+
+        communityPost.changeTitleAndContentsAndAccessUrl(communityPostEditRequestDto.getTitle(),
+                communityPostEditRequestDto.getContents(),
+                newAccessUrl);
+
+
+    }
+
+    @Transactional
+    public void updateCommunityPostList(final String loginId, final CommunityPostEditListRequestDto communityPostEditListRequestDto) throws InterruptedException{
+
+        List<String> newAccessUrlList = new ArrayList<>();
+
+        //  long l = System.currentTimeMillis();
+        // System.out.println("현재시간:" +l);
+        communityPostEditListRequestDto.getMultipartFileList().forEach(multipartFile -> {
+            newAccessUrlList.add(s3ImageService.saveImage(multipartFile,COMMUNITY_POST_IMAGE,multipartFile.getOriginalFilename()));
+        });
+        //Thread.sleep(500);
+        // System.out.println("차이: "+  (System.currentTimeMillis()-l));
+
+
+        eventPublisher.publishEvent(
+                S3UploadImageListRollbackEvent.builder().newAccessImageUrlList(newAccessUrlList).build());
+
+        CommunityPost communityPost = findCommunityPostById(communityPostEditListRequestDto.getCommunityPostId());
+
+        //자신 소유의 CommunityPost 인지 확인
+        checkAccessMember(loginId,communityPost);
+
+
+
+        //기존의 Image 이벤트 세팅(성공정 commit 시) 및 새로운 이미지, 이벤트 생성(RollBack 시)
+        List<String> deleteImageList = communityPostImageRepository.findByCommunityPost(communityPost).stream()
+                .map(CommunityPostImage::getAccessUrl).collect(
+                        Collectors.toList());
+
+        settingS3CommitEventOnOldAccessUrlList(deleteImageList,communityPost);
+
+        for(int i=0;i<communityPostEditListRequestDto.getMultipartFileList().size();i++){
+
+            communityPostImageRepository.save(CommunityPostImage.builder().communityPost(communityPost)
+                    .accessUrl(newAccessUrlList.get(i)).originalName(communityPostEditListRequestDto.getMultipartFileList().get(i).getOriginalFilename())
+                    .build());
+
+        }
+
+
+
+        communityPost.changeTitleAndContents(communityPostEditListRequestDto.getTitle(),
+                communityPostEditListRequestDto.getContents());
+
+
+
+    }
+
+    @Transactional
+    public void updateCommunityPostListTest(final String loginId, final CommunityPostEditListRequestDto communityPostEditListRequestDto, final List<String> newAccessUrlList) throws InterruptedException{
+
+
+        CommunityPost communityPost = findCommunityPostById(communityPostEditListRequestDto.getCommunityPostId());
+
+        //자신 소유의 CommunityPost 인지 확인
+        checkAccessMember(loginId,communityPost);
+
+
+
+        //기존의 Image 이벤트 세팅(성공정 commit 시) 및 새로운 이미지, 이벤트 생성(RollBack 시)
+        List<String> deleteImageList = communityPostImageRepository.findByCommunityPost(communityPost).stream()
+                .map(CommunityPostImage::getAccessUrl).collect(
+                        Collectors.toList());
+
+        settingS3CommitEventOnOldAccessUrlList(deleteImageList,communityPost);
+
+        for(int i=0;i<communityPostEditListRequestDto.getMultipartFileList().size();i++){
+
+            communityPostImageRepository.save(CommunityPostImage.builder().communityPost(communityPost)
+                    .accessUrl(newAccessUrlList.get(i)).originalName(communityPostEditListRequestDto.getMultipartFileList().get(i).getOriginalFilename())
+                    .build());
+
+        }
+
+
+
+        communityPost.changeTitleAndContents(communityPostEditListRequestDto.getTitle(),
+                communityPostEditListRequestDto.getContents());
+
 
 
     }
@@ -195,17 +303,36 @@ public class CommunityPostCRUDService {
     }
 
     // dto 의 사진이 null 일 경우 기존의 url 반환 , 그렇지 않으면 새로 생성 후 저장
-    private String getAccessUrlWithSettingS3RollBackEvent(MultipartFile multipartFile){
+    private String getAccessUrlWithSettingS3RollBackEvent(MultipartFile multipartFile) throws InterruptedException{
 
         if(checkInputMultiPartFileNull(multipartFile)){
             return null;
         }
 
         String newImageAccessUrl = s3ImageService.saveImage(multipartFile,COMMUNITY_POST_IMAGE,multipartFile.getOriginalFilename());
+        //Thread.sleep(500);
         eventPublisher.publishEvent(
                 S3UploadImageRollbackEvent.builder().newAccessImageUrl(newImageAccessUrl).build());
 
         return newImageAccessUrl;
+    }
+
+    private List<String> getAccessUrlListWithSettingS3RollBackEvent(CommunityPost communityPost,List<MultipartFile> multipartFileList) throws InterruptedException{
+
+        List<String> newImageAccessUrlList = new ArrayList<>();
+
+        multipartFileList.forEach(multipartFile -> {
+            String newAccessUrl = s3ImageService.saveImage(multipartFile,COMMUNITY_POST_IMAGE,multipartFile.getOriginalFilename());
+            communityPostImageRepository.save(CommunityPostImage.builder().communityPost(communityPost).originalName(multipartFile.getOriginalFilename())
+                    .accessUrl(newAccessUrl).build());
+            newImageAccessUrlList.add(newAccessUrl);
+
+        });
+
+        eventPublisher.publishEvent(
+                S3UploadImageListRollbackEvent.builder().newAccessImageUrlList(newImageAccessUrlList).build());
+
+        return newImageAccessUrlList;
     }
 
 
@@ -216,6 +343,20 @@ public class CommunityPostCRUDService {
             eventPublisher.publishEvent(
                     S3UploadImageCommitEvent.builder().oldAccessImageUrl(oldAccessImageUrl).build());
         }
+
+    }
+
+    private void settingS3CommitEventOnOldAccessUrlList(final List<String> oldAccessImageUrlList,CommunityPost communityPost){
+
+        if(oldAccessImageUrlList==null || oldAccessImageUrlList.size()==0){
+            return;
+        }
+
+        communityPostImageRepository.deleteByCommunityPost(communityPost);
+
+        eventPublisher.publishEvent(S3UploadImageListCommitEvent
+                .builder().deleteAccessImageUrlList(oldAccessImageUrlList).build());
+
 
     }
 
