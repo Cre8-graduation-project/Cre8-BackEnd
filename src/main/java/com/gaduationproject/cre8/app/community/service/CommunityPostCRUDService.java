@@ -126,7 +126,7 @@ public class CommunityPostCRUDService {
 
 
         communityPost.changeTitleAndContentsAndAccessUrl(communityPostEditRequestDto.getTitle(),
-                                                         communityPost.getContents(),
+                                                         communityPostEditRequestDto.getContents(),
                                                          newImageUrl);
 
 
