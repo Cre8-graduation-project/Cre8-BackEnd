@@ -61,5 +61,12 @@ public class CommunityPost extends BaseEntity {
         this.accessUrl = accessUrl;
     }
 
+    public void changeTitleAndContents(final String title,final String contents){
+
+        this.title = title;
+        this.contents = contents;
+
+    }
+
 
 }
