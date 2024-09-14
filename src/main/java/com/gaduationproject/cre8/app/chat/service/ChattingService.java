@@ -11,6 +11,7 @@ import com.gaduationproject.cre8.common.response.error.exception.BadRequestExcep
 import com.gaduationproject.cre8.common.response.error.exception.NotFoundException;
 import com.gaduationproject.cre8.domain.member.entity.Member;
 import com.gaduationproject.cre8.domain.member.repository.MemberRepository;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import lombok.RequiredArgsConstructor;
 import org.springframework.messaging.simp.SimpMessageHeaderAccessor;
@@ -34,8 +35,8 @@ public class ChattingService {
 
         checkCanPublishMessage(chattingRoom,sender);
 
-
-        messagingService.sendMessage("/sub/chat/room/"+roomId,MessageResponseDto.ofPayLoad(sender.getId(),chatDto));
+        LocalDateTime messageCreatedTime = LocalDateTime.now();
+        messagingService.sendMessage("/sub/chat/room/"+roomId,MessageResponseDto.ofPayLoad(sender.getId(),chatDto,messageCreatedTime));
 
 //         messageRepository.save(Message.builder()
 //                .chattingRoom(chattingRoom)
@@ -47,7 +48,7 @@ public class ChattingService {
                  .chattingRoomId(chattingRoom.getId())
                  .senderId(sender.getId())
                  .contents(chatDto.getMessage())
-                 .createdAt(LocalDateTime.now())
+                 .createdAt(messageCreatedTime)
                  .build());
 
 
