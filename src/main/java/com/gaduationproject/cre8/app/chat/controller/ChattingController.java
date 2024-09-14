@@ -2,6 +2,7 @@ package com.gaduationproject.cre8.app.chat.controller;
 
 import com.gaduationproject.cre8.app.auth.interfaces.CurrentMemberLoginId;
 import com.gaduationproject.cre8.app.chat.dto.request.ChatDto;
+import com.gaduationproject.cre8.app.chat.dto.response.ChattingRoomInfoResponseDto;
 import com.gaduationproject.cre8.app.chat.dto.response.ChattingRoomResponseDto;
 import com.gaduationproject.cre8.app.chat.dto.response.MessageResponseDto;
 import com.gaduationproject.cre8.app.chat.service.ChattingRoomService;
@@ -14,6 +15,9 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort.Direction;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.http.ResponseEntity;
 import org.springframework.messaging.handler.annotation.DestinationVariable;
 import org.springframework.messaging.handler.annotation.MessageMapping;
@@ -60,16 +64,17 @@ public class ChattingController {
     }
 
     @GetMapping("/room/{roomId}")
-    @Operation(summary = "채팅 리스트 조회",description = "채팅방의 ID 로 채팅 리스트를 조회합니다")
+    @Operation(summary = "채팅방 채팅리스트, 방 정보 조회",description = "채팅방의 ID 로 채팅 리스트, 채팅방 정보를 조회합니다")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "500",description = "filter 가 동작하지 않았을 경우 이므로 500 반환시 알려주십시오"),
             @ApiResponse(responseCode = "404",description = "member 의 loginId 를 기반으로 조회해 오는 것을 실패 or roomId 를 기반으로 채팅방 조회 실패"),
             @ApiResponse(responseCode = "400",description = "자신이 속해 있지 않은 채팅방의 채팅 리스트에 접근 하려 할때 ")
     })
-    public ResponseEntity<BaseResponse<List<MessageResponseDto>>> showChatListByChattingRoomId(@CurrentMemberLoginId final String loginId,
-                                                                                               @PathVariable("roomId")final Long roomId){
+    public ResponseEntity<BaseResponse<ChattingRoomInfoResponseDto>> showChatListWithRoomInfoByChattingRoomId(@CurrentMemberLoginId final String loginId,
+                                                                                               @PathVariable("roomId")final Long roomId,
+                                                                                               @PageableDefault(size = 20,sort = "createdAt",direction = Direction.DESC,page = 0) final Pageable pageable){
 
-        return ResponseEntity.ok(BaseResponse.createSuccess(chattingRoomService.showChattingListByChattingRoomId(roomId,loginId)));
+        return ResponseEntity.ok(BaseResponse.createSuccess(chattingRoomService.showChattingListWithRoomInfoByChattingRoomId(roomId,loginId,pageable)));
 
 
     }
