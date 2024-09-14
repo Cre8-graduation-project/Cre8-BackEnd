@@ -5,6 +5,8 @@ import com.gaduationproject.cre8.domain.chat.entity.ChattingRoom;
 import java.util.List;
 import java.util.Optional;
 
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Slice;
 import org.springframework.data.mongodb.repository.MongoRepository;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
@@ -13,7 +15,7 @@ import org.springframework.stereotype.Repository;
 public interface ChattingMessageRepository extends MongoRepository<ChattingMessage,String> {
 
 
-    List<ChattingMessage> findByChattingRoomId(final Long chattingRoomId);
+    Slice<ChattingMessage> findByChattingRoomId(final Long chattingRoomId,final Pageable pageable);
 
     Optional<ChattingMessage> findTop1ByChattingRoomIdOrderByCreatedAtDesc(final Long chattingRoomId);
 }

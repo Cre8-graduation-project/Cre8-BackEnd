@@ -1,5 +1,6 @@
 package com.gaduationproject.cre8.app.chat.service;
 
+import com.gaduationproject.cre8.app.chat.dto.response.ChattingRoomInfoResponseDto;
 import com.gaduationproject.cre8.app.chat.dto.response.ChattingRoomResponseDto;
 import com.gaduationproject.cre8.app.chat.dto.response.MessageResponseDto;
 import com.gaduationproject.cre8.domain.chat.entity.ChattingMessage;
@@ -15,6 +16,10 @@ import com.gaduationproject.cre8.domain.member.repository.MemberRepository;
 import java.util.List;
 import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Slice;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -38,7 +43,8 @@ public class ChattingRoomService {
 
     }
 
-    public List<MessageResponseDto> showChattingListByChattingRoomId(final Long chattingRoomId, final String loginId){
+    public ChattingRoomInfoResponseDto showChattingListWithRoomInfoByChattingRoomId(final Long chattingRoomId, final String loginId,
+            final Pageable pageable){
 
         Member currentMember = getCurrentLoginMember(loginId);
 
@@ -51,8 +57,21 @@ public class ChattingRoomService {
             throw new BadRequestException(ErrorCode.CANT_ACCESS_CHAT_ROOM);
         }
 
-        return chattingMessageRepository.findByChattingRoomId(chattingRoom.getId()).stream().map(MessageResponseDto::ofChatMessage)
-                .collect(Collectors.toList());
+        //채팅 메시지
+        Slice<ChattingMessage> chattingMessageSlice = chattingMessageRepository.findByChattingRoomId(
+                chattingRoom.getId(),
+                PageRequest.of(pageable.getPageNumber(), pageable.getPageSize(),
+                        Sort.by("createdAt").descending()));
+
+
+        //상대방 정보
+        Member opponent = chattingRoom.getSender().getId()==currentMember.getId()?
+                          chattingRoom.getReceiver():
+                          chattingRoom.getSender();
+
+        return ChattingRoomInfoResponseDto.of(opponent,chattingMessageSlice.stream().map(MessageResponseDto::ofChatMessage).collect(
+                Collectors.toList()), chattingMessageSlice.hasNext());
+
 
     }
 
