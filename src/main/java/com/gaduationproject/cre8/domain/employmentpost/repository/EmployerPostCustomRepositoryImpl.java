@@ -17,6 +17,7 @@ import com.gaduationproject.cre8.domain.employmentpost.dto.EmployerPostWorkField
 import com.gaduationproject.cre8.domain.employmentpost.dto.EmployerSearchDBResponseDto;
 import com.gaduationproject.cre8.domain.employmentpost.entity.EmployerPost;
 import com.gaduationproject.cre8.domain.employmentpost.search.EmployerPostSearch;
+import com.gaduationproject.cre8.domain.employmentpost.type.EnrollDurationType;
 import com.querydsl.core.types.Order;
 import com.querydsl.core.types.OrderSpecifier;
 import com.querydsl.core.types.Projections;
@@ -92,7 +93,8 @@ public class EmployerPostCustomRepositoryImpl implements EmployerPostCustomRepos
                 .from(employerPost)
                 .where(checkChildIdByEmployerPostId(employerPostContainsChild,employerPostSearch.getWorkFieldChildTagId())
                         ,greaterThanMinCareer(employerPostSearch.getMinCareer()),lowerThanMaxCareer(employerPostSearch.getMaxCareer())
-                        ,workFieldIdEqWithEmployerPostContainsChild(employerPostSearch.getWorkFieldId()))
+                        ,workFieldIdEqWithEmployerPostContainsChild(employerPostSearch.getWorkFieldId())
+                        ,onlyOrderByDeadLineInDeadLine(pageable))
                 .offset(pageable.getOffset())
                 .limit(pageable.getPageSize())
                 .orderBy(employerPostSort(pageable),employerPost.id.desc())
@@ -125,7 +127,8 @@ public class EmployerPostCustomRepositoryImpl implements EmployerPostCustomRepos
                 .from(employerPost)
                 .where(checkChildIdByEmployerPostId(employerPostContainsChild,employerPostSearch.getWorkFieldChildTagId())
                         ,greaterThanMinCareer(employerPostSearch.getMinCareer()),lowerThanMaxCareer(employerPostSearch.getMaxCareer())
-                        ,workFieldIdEqWithEmployerPostContainsChild(employerPostSearch.getWorkFieldId()))
+                        ,workFieldIdEqWithEmployerPostContainsChild(employerPostSearch.getWorkFieldId())
+                        ,onlyOrderByDeadLineInDeadLine(pageable))
                 .fetchOne();
 
 
@@ -159,6 +162,27 @@ public class EmployerPostCustomRepositoryImpl implements EmployerPostCustomRepos
 
         return workFieldTagId==null?null:employerPost.basicPostContent.workFieldTag.id.eq(workFieldTagId);
 
+    }
+
+    private BooleanExpression onlyOrderByDeadLineInDeadLine(final Pageable pageable){
+
+        if(!pageable.getSort().isEmpty() && containDeadLineOnOrder(pageable)){
+            return employerPost.enrollDurationType.eq(EnrollDurationType.DEAD_LINE);
+        }
+
+        return null;
+    }
+
+    private boolean containDeadLineOnOrder(final Pageable pageable){
+
+        boolean containDeadLineOnOrder = false;
+        for(Sort.Order order: pageable.getSort()){
+            if(order.getProperty().equals(DEAD_LINE)){
+                containDeadLineOnOrder = true;
+            }
+        }
+
+        return containDeadLineOnOrder;
     }
 
     private OrderSpecifier<?> employerPostSort(final Pageable pageable){
