@@ -162,7 +162,7 @@ public class CommunityPostCRUDService {
 
         Member member = getLoginMember(loginId);
 
-        return likeCommunityPostRepository.existsByCommunityPostIdAndLikerId(member.getId(),communityPostId);
+        return likeCommunityPostRepository.existsByCommunityPostIdAndLikerId(communityPostId,member.getId());
 
     }
 
