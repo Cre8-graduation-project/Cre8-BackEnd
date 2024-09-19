@@ -35,7 +35,7 @@ public class LikeCommunityPostService {
         final CommunityPost communityPost = findCommunityPostById(communityPostId);
 
 
-        //이미 눌러져 있을 때 deleteStareEmployerPost 수행, 없다면 saveStareEmployerPost 수행
+        //이미 눌러져 있을 때 삭제, 처음이면 저장
         likeCommunityPostRepository.findByLikerIdAndAndCommunityPostId(currentMember.getId(), communityPost.getId())
                 .ifPresentOrElse(likeCommunityPost -> {
                     cancelLikeCommunityPost(likeCommunityPost);
