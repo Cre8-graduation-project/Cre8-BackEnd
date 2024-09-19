@@ -25,7 +25,7 @@ public class CommunityPostEditRequestDto {
 
     @NotEmpty(message = "내용을 입력해 주세요")
     @Schema(description = "구직자 게시물에 대한 내용을 입력합니다",example = "나는 진짜 능력이 있어요")
-    @Size(max = 50,message = "500글자 미만으로 입력해주세요")
+    @Size(max = 500,message = "500글자 미만으로 입력해주세요")
     private String contents;
 
     @Schema(description = "이미지 데이터")
