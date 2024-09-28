@@ -2,16 +2,15 @@ package com.gaduationproject.cre8.app.chat.service;
 
 import com.gaduationproject.cre8.app.chat.dto.request.ChatDto;
 import com.gaduationproject.cre8.app.chat.dto.response.MessageResponseDto;
-import com.gaduationproject.cre8.domain.chat.entity.ChattingMessage;
+import com.gaduationproject.cre8.externalApi.mongodb.domain.ChattingMessage;
 import com.gaduationproject.cre8.domain.chat.entity.ChattingRoom;
-import com.gaduationproject.cre8.domain.chat.repository.ChattingMessageRepository;
+import com.gaduationproject.cre8.externalApi.mongodb.repository.ChattingMessageRepository;
 import com.gaduationproject.cre8.domain.chat.repository.ChattingRoomRepository;
 import com.gaduationproject.cre8.common.response.error.ErrorCode;
 import com.gaduationproject.cre8.common.response.error.exception.BadRequestException;
 import com.gaduationproject.cre8.common.response.error.exception.NotFoundException;
 import com.gaduationproject.cre8.domain.member.entity.Member;
 import com.gaduationproject.cre8.domain.member.repository.MemberRepository;
-import java.time.LocalDate;
 import java.time.LocalDateTime;
 import lombok.RequiredArgsConstructor;
 import org.springframework.messaging.simp.SimpMessageHeaderAccessor;

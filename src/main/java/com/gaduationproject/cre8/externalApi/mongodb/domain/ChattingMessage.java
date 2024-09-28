@@ -1,4 +1,4 @@
-package com.gaduationproject.cre8.domain.chat.entity;
+package com.gaduationproject.cre8.externalApi.mongodb.domain;
 
 import com.fasterxml.jackson.databind.ser.Serializers.Base;
 import com.gaduationproject.cre8.domain.baseentity.BaseEntity;
