@@ -1,14 +1,11 @@
-package com.gaduationproject.cre8.domain.chat.repository;
+package com.gaduationproject.cre8.externalApi.mongodb.repository;
 
-import com.gaduationproject.cre8.domain.chat.entity.ChattingMessage;
-import com.gaduationproject.cre8.domain.chat.entity.ChattingRoom;
-import java.util.List;
+import com.gaduationproject.cre8.externalApi.mongodb.domain.ChattingMessage;
 import java.util.Optional;
 
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Slice;
 import org.springframework.data.mongodb.repository.MongoRepository;
-import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
 @Repository

@@ -1,7 +1,7 @@
 package com.gaduationproject.cre8.app.chat.dto.response;
 
 import com.gaduationproject.cre8.app.chat.dto.request.ChatDto;
-import com.gaduationproject.cre8.domain.chat.entity.ChattingMessage;
+import com.gaduationproject.cre8.externalApi.mongodb.domain.ChattingMessage;
 import java.time.LocalDateTime;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
