@@ -11,10 +11,15 @@ import com.gaduationproject.cre8.common.response.error.exception.BadRequestExcep
 import com.gaduationproject.cre8.common.response.error.exception.NotFoundException;
 import com.gaduationproject.cre8.domain.member.entity.Member;
 import com.gaduationproject.cre8.domain.member.repository.MemberRepository;
+import com.gaduationproject.cre8.externalApi.redis.service.ChattingRoomConnectService;
 import java.time.LocalDateTime;
 import lombok.RequiredArgsConstructor;
 import org.springframework.messaging.simp.SimpMessageHeaderAccessor;
 import org.springframework.stereotype.Service;
+import org.springframework.data.mongodb.core.query.Update;
+import org.springframework.data.mongodb.core.MongoTemplate;
+import org.springframework.data.mongodb.core.query.Criteria;
+import org.springframework.data.mongodb.core.query.Query;
 
 @Service
 @RequiredArgsConstructor
@@ -25,6 +30,8 @@ public class ChattingService {
     private final MessagingService messagingService;
     //private final MessageRepository messageRepository;
     private final ChattingMessageRepository chattingMessageRepository;
+    private final ChattingRoomConnectService chattingRoomConnectService;
+    private final MongoTemplate mongoTemplate;
 
 
     public void sendMessage(final Long roomId,final ChatDto chatDto,final SimpMessageHeaderAccessor simpMessageHeaderAccessor){
@@ -34,8 +41,10 @@ public class ChattingService {
 
         checkCanPublishMessage(chattingRoom,sender);
 
+        int readCount = chattingRoomConnectService.isAllConnected(chattingRoom.getId())?0:1;
+
         LocalDateTime messageCreatedTime = LocalDateTime.now();
-        messagingService.sendMessage("/sub/chat/room/"+roomId,MessageResponseDto.ofPayLoad(sender.getId(),chatDto,messageCreatedTime));
+        messagingService.sendMessage("/sub/chat/room/"+roomId,MessageResponseDto.ofPayLoad(sender.getId(),chatDto,messageCreatedTime,readCount));
 
 //         messageRepository.save(Message.builder()
 //                .chattingRoom(chattingRoom)
@@ -48,10 +57,29 @@ public class ChattingService {
                  .senderId(sender.getId())
                  .contents(chatDto.getMessage())
                  .createdAt(messageCreatedTime)
+                 .readCount(readCount)
                  .build());
 
 
     }
+
+    public void updateCountAllZero(Long chattingRoomId, String loginId) {
+
+        Member findMember = memberRepository.findMemberByLoginId(loginId)
+                .orElseThrow(()->new NotFoundException(ErrorCode.CANT_FIND_MEMBER));
+
+        Update update = new Update().set("readCount", 0);
+        Query query = new Query(Criteria.where("chattingRoomId").is(chattingRoomId)
+                .and("senderId").ne(findMember.getId()));
+
+        mongoTemplate.updateMulti(query, update, ChattingMessage.class);
+    }
+
+    public void updateMessage(Long chattingRoomId, String loginId) {
+
+        messagingService.sendMessage("/sub/chat/room/"+chattingRoomId,MessageResponseDto.ofEnter("접속하였습니다"+loginId));
+    }
+
 
     private Member getCurrentLoginMember(final SimpMessageHeaderAccessor simpMessageHeaderAccessor){
 

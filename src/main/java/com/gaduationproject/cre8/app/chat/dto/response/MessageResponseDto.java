@@ -16,17 +16,30 @@ public class MessageResponseDto {
     private Long senderId;
     private String contents;
     private LocalDateTime createdAt;
+    private MessageType messageType;
+    private Integer readCount;
 
 //    public static MessageResponseDto of(Message message){
 //        return new MessageResponseDto(message.getSender().getId(),message.getContents());
 //    }
 
     public static MessageResponseDto ofChatMessage(final ChattingMessage chattingMessage){
-        return new MessageResponseDto(chattingMessage.getSenderId(),chattingMessage.getContents(),chattingMessage.getCreatedAt());
+
+        return new MessageResponseDto(chattingMessage.getSenderId(),
+                                      chattingMessage.getContents(),
+                                      chattingMessage.getCreatedAt(),
+                                      MessageType.MESSAGE,
+                                      chattingMessage.getReadCount());
     }
 
-    public static MessageResponseDto ofPayLoad(final Long memberId,final ChatDto chatDto,final LocalDateTime createdAt){
-        return new MessageResponseDto(memberId,chatDto.getMessage(),createdAt);
+    public static MessageResponseDto ofPayLoad(final Long memberId,final ChatDto chatDto,final LocalDateTime createdAt,final int readCount){
+
+        return new MessageResponseDto(memberId,chatDto.getMessage(),createdAt,MessageType.MESSAGE,readCount);
     }
+
+    public static MessageResponseDto ofEnter(final String contents){
+        return new MessageResponseDto(null,contents,null,MessageType.ENTER,null);
+    }
+
 
 }

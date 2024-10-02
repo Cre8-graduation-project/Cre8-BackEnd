@@ -20,6 +20,9 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Slice;
 import org.springframework.data.domain.Sort;
+import org.springframework.data.mongodb.core.MongoTemplate;
+import org.springframework.data.mongodb.core.query.Criteria;
+import org.springframework.data.mongodb.core.query.Query;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -33,6 +36,7 @@ public class ChattingRoomService {
     private final MemberRepository memberRepository;
     //private final MessageRepository messageRepository;
     private final ChattingMessageRepository chattingMessageRepository;
+    private final MongoTemplate mongoTemplate;
     @Transactional
     public Long getChattingRoomNumberByOpponentId(final Long opponentId,final String loginId){
 
@@ -98,6 +102,7 @@ public class ChattingRoomService {
                                     .roomId(chattingRoom.getId())
                                     .latestMessage(message.getContents())
                                     .nickName(opponentNickName)
+                                    .unReadMessage(countUnReadMessages(chattingRoom.getId(),currentMember.getId()))
                                     .build();
 
                         }).collect(Collectors.toList());
@@ -123,6 +128,15 @@ public class ChattingRoomService {
                     return newChattingRoom;
                 }
         );
+    }
+
+    private long countUnReadMessages(Long chattingRoomId, Long senderId) {
+
+        Query query = new Query(Criteria.where("chattingRoomId").is(chattingRoomId)
+                .and("readCount").is(1)
+                .and("senderId").ne(senderId));
+
+        return  mongoTemplate.count(query, ChattingMessage.class);
     }
 
 
