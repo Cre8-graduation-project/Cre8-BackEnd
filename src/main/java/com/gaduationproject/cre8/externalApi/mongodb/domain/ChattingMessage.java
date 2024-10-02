@@ -34,14 +34,17 @@ public class ChattingMessage {
 
     private LocalDateTime createdAt;
 
+    private int readCount;
+
 
     @Builder
-    public ChattingMessage(final Long chattingRoomId, final Long senderId,final String contents,final LocalDateTime createdAt) {
+    public ChattingMessage(final Long chattingRoomId, final Long senderId,final String contents,final LocalDateTime createdAt,final int readCount) {
 
         this.chattingRoomId = chattingRoomId;
         this.senderId = senderId;
         this.contents = contents;
         this.createdAt = createdAt;
+        this.readCount = readCount;
     }
 
 }
