@@ -60,6 +60,9 @@ dependencies {
 	implementation 'org.springframework.boot:spring-boot-starter-data-mongodb'
 
 
+	//kafka
+	implementation 'org.springframework.kafka:spring-kafka'
+
 	//h2
 	implementation 'com.h2database:h2'
 

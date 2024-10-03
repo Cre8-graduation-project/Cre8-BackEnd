@@ -2,6 +2,7 @@ package com.gaduationproject.cre8.app.chat.service;
 
 import com.gaduationproject.cre8.app.chat.dto.request.ChatDto;
 import com.gaduationproject.cre8.app.chat.dto.response.MessageResponseDto;
+import com.gaduationproject.cre8.externalApi.kafka.KafkaMessageSender;
 import com.gaduationproject.cre8.externalApi.mongodb.domain.ChattingMessage;
 import com.gaduationproject.cre8.domain.chat.entity.ChattingRoom;
 import com.gaduationproject.cre8.externalApi.mongodb.repository.ChattingMessageRepository;
@@ -32,6 +33,7 @@ public class ChattingService {
     private final ChattingMessageRepository chattingMessageRepository;
     private final ChattingRoomConnectService chattingRoomConnectService;
     private final MongoTemplate mongoTemplate;
+    private final KafkaMessageSender kafkaMessageSender;
 
 
     public void sendMessage(final Long roomId,final ChatDto chatDto,final SimpMessageHeaderAccessor simpMessageHeaderAccessor){
@@ -44,7 +46,8 @@ public class ChattingService {
         int readCount = chattingRoomConnectService.isAllConnected(chattingRoom.getId())?0:1;
 
         LocalDateTime messageCreatedTime = LocalDateTime.now();
-        messagingService.sendMessage("/sub/chat/room/"+roomId,MessageResponseDto.ofPayLoad(sender.getId(),chatDto,messageCreatedTime,readCount));
+       // messagingService.sendMessage("/sub/chat/room/"+roomId,MessageResponseDto.ofPayLoad(sender.getId(),chatDto,messageCreatedTime,readCount,roomId));
+        kafkaMessageSender.send("devchat",MessageResponseDto.ofPayLoad(sender.getId(),chatDto,messageCreatedTime,readCount,roomId));
 
 //         messageRepository.save(Message.builder()
 //                .chattingRoom(chattingRoom)
@@ -77,7 +80,7 @@ public class ChattingService {
 
     public void updateMessage(Long chattingRoomId, String loginId) {
 
-        messagingService.sendMessage("/sub/chat/room/"+chattingRoomId,MessageResponseDto.ofEnter("접속하였습니다"+loginId));
+        messagingService.sendMessage("/sub/chat/room/"+chattingRoomId,MessageResponseDto.ofEnter("접속하였습니다"+loginId,chattingRoomId));
     }
 
 
