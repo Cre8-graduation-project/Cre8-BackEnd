@@ -2,7 +2,6 @@ package com.gaduationproject.cre8.app.chat.service;
 
 import com.gaduationproject.cre8.app.chat.dto.request.ChatDto;
 import com.gaduationproject.cre8.app.chat.dto.response.MessageResponseDto;
-import com.gaduationproject.cre8.externalApi.kafka.KafkaMessageSender;
 import com.gaduationproject.cre8.externalApi.mongodb.domain.ChattingMessage;
 import com.gaduationproject.cre8.domain.chat.entity.ChattingRoom;
 import com.gaduationproject.cre8.externalApi.mongodb.repository.ChattingMessageRepository;
@@ -15,6 +14,7 @@ import com.gaduationproject.cre8.domain.member.repository.MemberRepository;
 import com.gaduationproject.cre8.externalApi.redis.service.ChattingRoomConnectService;
 import java.time.LocalDateTime;
 import lombok.RequiredArgsConstructor;
+import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.messaging.simp.SimpMessageHeaderAccessor;
 import org.springframework.stereotype.Service;
 import org.springframework.data.mongodb.core.query.Update;
@@ -33,7 +33,7 @@ public class ChattingService {
     private final ChattingMessageRepository chattingMessageRepository;
     private final ChattingRoomConnectService chattingRoomConnectService;
     private final MongoTemplate mongoTemplate;
-    private final KafkaMessageSender kafkaMessageSender;
+    private final RabbitTemplate rabbitTemplate;
 
 
     public void sendMessage(final Long roomId,final ChatDto chatDto,final SimpMessageHeaderAccessor simpMessageHeaderAccessor){
@@ -48,7 +48,8 @@ public class ChattingService {
 
         LocalDateTime messageCreatedTime = LocalDateTime.now();
   //      messagingService.sendMessage("/sub/chat/room/"+roomId,MessageResponseDto.ofPayLoad(sender.getId(),chatDto,messageCreatedTime,0,roomId));
-        kafkaMessageSender.send("chat",MessageResponseDto.ofPayLoad(sender.getId(),chatDto,messageCreatedTime,0,roomId));
+        rabbitTemplate.convertAndSend("chat.exchange","room."+roomId,MessageResponseDto.ofPayLoad(
+                sender.getId(), chatDto,messageCreatedTime,0,roomId));
 
 //         messageRepository.save(Message.builder()
 //                .chattingRoom(chattingRoom)
