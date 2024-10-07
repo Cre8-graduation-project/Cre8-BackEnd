@@ -48,7 +48,7 @@ public class ChattingService {
 
         LocalDateTime messageCreatedTime = LocalDateTime.now();
         messagingService.sendMessage("/sub/chat/room/"+roomId,MessageResponseDto.ofPayLoad(sender.getId(),chatDto,messageCreatedTime,0,roomId));
-   //     kafkaMessageSender.send("chat",MessageResponseDto.ofPayLoad(sender.getId(),chatDto,messageCreatedTime,0,roomId));
+        kafkaMessageSender.send("chat",MessageResponseDto.ofPayLoad(sender.getId(),chatDto,messageCreatedTime,0,roomId));
 
 //         messageRepository.save(Message.builder()
 //                .chattingRoom(chattingRoom)
