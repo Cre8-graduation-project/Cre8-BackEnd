@@ -38,16 +38,17 @@ public class ChattingService {
 
     public void sendMessage(final Long roomId,final ChatDto chatDto,final SimpMessageHeaderAccessor simpMessageHeaderAccessor){
 
-        ChattingRoom chattingRoom = chattingRoomRepository.findById(roomId).orElseThrow(()->new NotFoundException(ErrorCode.CANT_FIND_CHATTING_ROOM));
+    //    ChattingRoom chattingRoom = chattingRoomRepository.findById(roomId).orElseThrow(()->new NotFoundException(ErrorCode.CANT_FIND_CHATTING_ROOM));
         Member sender = getCurrentLoginMember(simpMessageHeaderAccessor);
+        System.out.println("어이!");
 
-        checkCanPublishMessage(chattingRoom,sender);
+     //   checkCanPublishMessage(chattingRoom,sender);
 
-        int readCount = chattingRoomConnectService.isAllConnected(chattingRoom.getId())?0:1;
+   //     int readCount = chattingRoomConnectService.isAllConnected(chattingRoom.getId())?0:1;
 
         LocalDateTime messageCreatedTime = LocalDateTime.now();
-       // messagingService.sendMessage("/sub/chat/room/"+roomId,MessageResponseDto.ofPayLoad(sender.getId(),chatDto,messageCreatedTime,readCount,roomId));
-        kafkaMessageSender.send("devchat",MessageResponseDto.ofPayLoad(sender.getId(),chatDto,messageCreatedTime,readCount,roomId));
+   //     messagingService.sendMessage("/sub/chat/room/"+roomId,MessageResponseDto.ofPayLoad(sender.getId(),chatDto,messageCreatedTime,0,roomId));
+        kafkaMessageSender.send("chat",MessageResponseDto.ofPayLoad(sender.getId(),chatDto,messageCreatedTime,0,roomId));
 
 //         messageRepository.save(Message.builder()
 //                .chattingRoom(chattingRoom)
@@ -56,11 +57,11 @@ public class ChattingService {
 //                .build());
 
          chattingMessageRepository.save(ChattingMessage.builder()
-                 .chattingRoomId(chattingRoom.getId())
+                 .chattingRoomId(roomId)
                  .senderId(sender.getId())
                  .contents(chatDto.getMessage())
                  .createdAt(messageCreatedTime)
-                 .readCount(readCount)
+                 .readCount(0)
                  .build());
 
 

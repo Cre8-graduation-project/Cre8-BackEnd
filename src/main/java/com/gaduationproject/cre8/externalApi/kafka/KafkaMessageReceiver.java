@@ -15,7 +15,7 @@ public class KafkaMessageReceiver {
     private final SimpMessageSendingOperations template;
 
 
-    @KafkaListener(topics = "devchat", containerFactory = "kafkaListenerContainerFactory")
+    @KafkaListener(topics = "chat", containerFactory = "kafkaListenerContainerFactory")
     public void receiveMessage(MessageResponseDto messageResponseDto) {
         log.info("전송 위치 = /subscribe/public/"+ messageResponseDto.getChattingRoomId());
         log.info("채팅 방으로 메시지 전송 = {}", messageResponseDto);
