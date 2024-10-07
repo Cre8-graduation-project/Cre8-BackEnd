@@ -4,6 +4,7 @@ import com.gaduationproject.cre8.app.chat.handler.StompErrorHandler;
 import com.gaduationproject.cre8.app.chat.handler.StompPreHandler;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.messaging.simp.SimpMessageSendingOperations;
@@ -11,6 +12,7 @@ import org.springframework.messaging.simp.config.ChannelRegistration;
 import org.springframework.messaging.simp.config.MessageBrokerRegistry;
 import org.springframework.scheduling.concurrent.DefaultManagedTaskScheduler;
 import org.springframework.scheduling.concurrent.ThreadPoolTaskScheduler;
+import org.springframework.util.AntPathMatcher;
 import org.springframework.web.socket.config.annotation.EnableWebSocketMessageBroker;
 import org.springframework.web.socket.config.annotation.StompEndpointRegistry;
 import org.springframework.web.socket.config.annotation.WebSocketMessageBrokerConfigurer;
@@ -23,6 +25,14 @@ public class StompConfig implements WebSocketMessageBrokerConfigurer {
     private final StompErrorHandler stompErrorHandler;
     private final StompPreHandler stompPreHandler;
 
+    @Value("${rabbit.host}")
+    private String rabbitHost;
+
+    @Value("${rabbit.id}")
+    private String rabbitId;
+
+    @Value("${rabbit.pw}")
+    private String rabbitPw;
 
     @Override
     public void registerStompEndpoints(StompEndpointRegistry registry) {
@@ -43,12 +53,26 @@ public class StompConfig implements WebSocketMessageBrokerConfigurer {
         te.initialize();
 
         // 메시지를 구독하는 요청 url => 즉 메시지 받을 때
-        registry.enableSimpleBroker("/sub","/queue")
-                .setTaskScheduler(te)
-                .setHeartbeatValue(new long[]{20000,20000});
+//        registry.enableSimpleBroker("/sub","/queue")
+//                .setTaskScheduler(te)
+//                .setHeartbeatValue(new long[]{20000,20000});
+//
+//        // 메시지를 발행하는 요청 url => 즉 메시지 보낼 때
+//        registry.setApplicationDestinationPrefixes("/pub");
 
-        // 메시지를 발행하는 요청 url => 즉 메시지 보낼 때
-        registry.setApplicationDestinationPrefixes("/pub");
+                registry.setPathMatcher(new AntPathMatcher("."))
+                .setApplicationDestinationPrefixes("/pub")
+                .enableStompBrokerRelay("/queue", "/topic", "/exchange", "/amq/queue")
+                .setTaskScheduler(te)
+                .setSystemHeartbeatReceiveInterval(20000)
+                .setSystemHeartbeatSendInterval(20000)
+                .setRelayHost(rabbitHost)
+                .setVirtualHost("/")
+                .setRelayPort(61613)
+                .setSystemLogin(rabbitId)
+                .setSystemPasscode(rabbitPw)
+                .setClientLogin(rabbitId)
+                .setClientPasscode(rabbitPw);
 
     }
 

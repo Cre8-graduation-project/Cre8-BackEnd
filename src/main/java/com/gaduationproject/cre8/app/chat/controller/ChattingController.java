@@ -91,5 +91,16 @@ public class ChattingController {
         return ResponseEntity.ok().build();
     }
 
+    @MessageMapping("message.{roomId}")
+    public ResponseEntity<Void> sendMessage2(@DestinationVariable("roomId")final Long roomId, @Payload  @Valid final ChatDto chatDto,
+            final SimpMessageHeaderAccessor simpMessageHeaderAccessor) throws InterruptedException {
+
+        System.out.println("여기 안오지?");
+        chattingService.sendMessage(roomId,chatDto,simpMessageHeaderAccessor);
+
+        return ResponseEntity.ok().build();
+    }
+
+
 
 }
