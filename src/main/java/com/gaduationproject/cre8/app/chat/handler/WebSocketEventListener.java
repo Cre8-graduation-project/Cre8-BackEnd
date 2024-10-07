@@ -31,40 +31,40 @@ public class WebSocketEventListener {
     @EventListener
     public void handleWebSocketDisconnectListener(SessionDisconnectEvent event) {
 
-        StompHeaderAccessor headerAccessor = StompHeaderAccessor.wrap(event.getMessage());
-
-        chattingRoomConnectService.disconnectChattingRoom((Long)headerAccessor.getSessionAttributes().get(SUB),headerAccessor.getUser().getName());
+//        StompHeaderAccessor headerAccessor = StompHeaderAccessor.wrap(event.getMessage());
+//
+//        chattingRoomConnectService.disconnectChattingRoom((Long)headerAccessor.getSessionAttributes().get(SUB),headerAccessor.getUser().getName());
         log.info("disconnect 끊김");
     }
 
     @EventListener
     public void handleWebSocketSubscribeListener(SessionSubscribeEvent event){
 
-        StompHeaderAccessor headerAccessor = StompHeaderAccessor.wrap(event.getMessage());
-
-        final Long chattingRoomId = Long.valueOf(headerAccessor.getSubscriptionId());
-        final String loginId = headerAccessor.getUser().getName();
-
-        chattingRoomConnectService.connectChattingRoom(chattingRoomId,loginId);
-        chattingService.updateMessage(chattingRoomId,loginId);
-        chattingService.updateCountAllZero(chattingRoomId,loginId);
-
-        headerAccessor.getSessionAttributes().put(SUB,chattingRoomId);
-
-
-        log.info("채팅방 입장: chattingRoomId: {}",chattingRoomId);
+//        StompHeaderAccessor headerAccessor = StompHeaderAccessor.wrap(event.getMessage());
+//
+//        final Long chattingRoomId = Long.valueOf(headerAccessor.getSubscriptionId());
+//        final String loginId = headerAccessor.getUser().getName();
+//
+//        chattingRoomConnectService.connectChattingRoom(chattingRoomId,loginId);
+//        chattingService.updateMessage(chattingRoomId,loginId);
+//        chattingService.updateCountAllZero(chattingRoomId,loginId);
+//
+//        headerAccessor.getSessionAttributes().put(SUB,chattingRoomId);
+//
+//
+//        log.info("채팅방 입장: chattingRoomId: {}",chattingRoomId);
     }
 
     @EventListener
     public void handleWebSocketUnsubscribeListener(SessionUnsubscribeEvent event) {
 
-        StompHeaderAccessor headerAccessor = StompHeaderAccessor.wrap(event.getMessage());
-
-        final Long chattingRoomId = Long.valueOf(headerAccessor.getSubscriptionId());
-        final String loginId = headerAccessor.getUser().getName();
-
-        chattingRoomConnectService.disconnectChattingRoom(chattingRoomId,loginId);
-        log.info("채팅방 퇴장: chattingRoomId: {}",chattingRoomId);
+//        StompHeaderAccessor headerAccessor = StompHeaderAccessor.wrap(event.getMessage());
+//
+//        final Long chattingRoomId = Long.valueOf(headerAccessor.getSubscriptionId());
+//        final String loginId = headerAccessor.getUser().getName();
+//
+//        chattingRoomConnectService.disconnectChattingRoom(chattingRoomId,loginId);
+//        log.info("채팅방 퇴장: chattingRoomId: {}",chattingRoomId);
 
     }
 
