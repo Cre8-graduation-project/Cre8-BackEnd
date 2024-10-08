@@ -30,7 +30,7 @@ public class StompPreHandler implements ChannelInterceptor {
     private static final String CHAT_SUB_PREFIX_RABBIT = "/exchange/chat.exchange/room";
 
     @Override
-    //@Transactional
+    @Transactional
     public Message<?> preSend(Message<?> message, MessageChannel channel) {
 
         //헤더 접근
