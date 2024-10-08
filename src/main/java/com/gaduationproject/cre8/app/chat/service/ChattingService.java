@@ -38,24 +38,17 @@ public class ChattingService {
 
     public void sendMessage(final Long roomId,final ChatDto chatDto,final SimpMessageHeaderAccessor simpMessageHeaderAccessor){
 
-    //    ChattingRoom chattingRoom = chattingRoomRepository.findById(roomId).orElseThrow(()->new NotFoundException(ErrorCode.CANT_FIND_CHATTING_ROOM));
-       // Member sender = getCurrentLoginMember(simpMessageHeaderAccessor);
-        System.out.println("어이!");
+        ChattingRoom chattingRoom = chattingRoomRepository.findById(roomId).orElseThrow(()->new NotFoundException(ErrorCode.CANT_FIND_CHATTING_ROOM));
+        Member sender = getCurrentLoginMember(simpMessageHeaderAccessor);
 
-     //   checkCanPublishMessage(chattingRoom,sender);
+        checkCanPublishMessage(chattingRoom,sender);
 
-   //     int readCount = chattingRoomConnectService.isAllConnected(chattingRoom.getId())?0:1;
+        int readCount = chattingRoomConnectService.isAllConnected(chattingRoom.getId())?0:1;
 
         LocalDateTime messageCreatedTime = LocalDateTime.now();
-    //    messagingService.sendMessage("/sub/chat/room/"+roomId,MessageResponseDto.ofPayLoad(sender.getId(),chatDto,messageCreatedTime,0,roomId));
-        rabbitTemplate.convertAndSend("chat.exchange","room."+roomId,MessageResponseDto.ofPayLoad(
-                null, chatDto,messageCreatedTime,0,roomId));
-
-//         messageRepository.save(Message.builder()
-//                .chattingRoom(chattingRoom)
-//                .sender(sender)
-//                .contents(chatDto.getMessage())
-//                .build());
+        messagingService.sendMessage("/sub/chat/room/"+roomId,MessageResponseDto.ofPayLoad(sender.getId(),chatDto,messageCreatedTime,0,roomId));
+//        rabbitTemplate.convertAndSend("chat.exchange","room."+roomId,MessageResponseDto.ofPayLoad(
+//                null, chatDto,messageCreatedTime,0,roomId));
 
          chattingMessageRepository.save(ChattingMessage.builder()
                  .chattingRoomId(roomId)
