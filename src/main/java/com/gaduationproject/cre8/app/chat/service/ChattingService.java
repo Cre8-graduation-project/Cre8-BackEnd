@@ -47,9 +47,9 @@ public class ChattingService {
    //     int readCount = chattingRoomConnectService.isAllConnected(chattingRoom.getId())?0:1;
 
         LocalDateTime messageCreatedTime = LocalDateTime.now();
-        messagingService.sendMessage("/sub/chat/room/"+roomId,MessageResponseDto.ofPayLoad(sender.getId(),chatDto,messageCreatedTime,0,roomId));
-     //   rabbitTemplate.convertAndSend("chat.exchange","room."+roomId,MessageResponseDto.ofPayLoad(
-    //            sender.getId(), chatDto,messageCreatedTime,0,roomId));
+    //    messagingService.sendMessage("/sub/chat/room/"+roomId,MessageResponseDto.ofPayLoad(sender.getId(),chatDto,messageCreatedTime,0,roomId));
+        rabbitTemplate.convertAndSend("chat.exchange","room."+roomId,MessageResponseDto.ofPayLoad(
+                sender.getId(), chatDto,messageCreatedTime,0,roomId));
 
 //         messageRepository.save(Message.builder()
 //                .chattingRoom(chattingRoom)
