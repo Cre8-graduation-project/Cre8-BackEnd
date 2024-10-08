@@ -57,12 +57,12 @@ public class StompPreHandler implements ChannelInterceptor {
             // destination을 사용하여 구독 경로를 확인하거나 로깅
             System.out.println("Subscribing to destination: " + destination);
 
-            if(!destination.equals(CHAT_SUB_ERROR_PREFIX)&& !destination.startsWith(CHAT_SUB_PREFIX_RABBIT)){
+            if(!destination.equals(CHAT_SUB_ERROR_PREFIX)&& !destination.startsWith(CHAT_SUB_PREFIX)){
                 throw new BadRequestException(ErrorCode.SUB_URL_NOT_MATCH);
             }
 
-            if(destination.startsWith(CHAT_SUB_PREFIX_RABBIT)){
-                Long roomId = Long.valueOf(destination.substring(CHAT_SUB_PREFIX_RABBIT.length()+1));
+            if(destination.startsWith(CHAT_SUB_PREFIX)){
+                Long roomId = Long.valueOf(destination.substring(CHAT_SUB_PREFIX.length()+1));
                 ChattingRoom chattingRoom =
                         chattingRoomRepository.findById(roomId).orElseThrow(()->new NotFoundException(ErrorCode.CANT_FIND_CHATTING_ROOM));
 
