@@ -46,16 +46,16 @@ public class ChattingService {
         int readCount = chattingRoomConnectService.isAllConnected(chattingRoom.getId())?0:1;
 
         LocalDateTime messageCreatedTime = LocalDateTime.now();
-        messagingService.sendMessage("/sub/chat/room/"+roomId,MessageResponseDto.ofPayLoad(sender.getId(),chatDto,messageCreatedTime,0,roomId));
+        messagingService.sendMessage("/sub/chat/room/"+roomId,MessageResponseDto.ofPayLoad(sender.getId(),chatDto,messageCreatedTime,readCount,roomId));
 //        rabbitTemplate.convertAndSend("chat.exchange","room."+roomId,MessageResponseDto.ofPayLoad(
 //                null, chatDto,messageCreatedTime,0,roomId));
 
          chattingMessageRepository.save(ChattingMessage.builder()
                  .chattingRoomId(roomId)
-                 .senderId(null)
+                 .senderId(sender.getId())
                  .contents(chatDto.getMessage())
                  .createdAt(messageCreatedTime)
-                 .readCount(0)
+                 .readCount(readCount)
                  .build());
 
 
