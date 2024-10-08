@@ -53,26 +53,26 @@ public class StompConfig implements WebSocketMessageBrokerConfigurer {
         te.initialize();
 
         // 메시지를 구독하는 요청 url => 즉 메시지 받을 때
-//        registry.enableSimpleBroker("/sub","/queue")
-//                .setTaskScheduler(te)
-//                .setHeartbeatValue(new long[]{20000,20000});
-//
-//        // 메시지를 발행하는 요청 url => 즉 메시지 보낼 때
-//        registry.setApplicationDestinationPrefixes("/pub");
-
-                registry.setPathMatcher(new AntPathMatcher("."))
-                .setApplicationDestinationPrefixes("/pub")
-                .enableStompBrokerRelay("/queue", "/topic", "/exchange", "/amq/queue")
+        registry.enableSimpleBroker("/sub","/queue")
                 .setTaskScheduler(te)
-                .setSystemHeartbeatReceiveInterval(20000)
-                .setSystemHeartbeatSendInterval(20000)
-                .setRelayHost(rabbitHost)
-                .setVirtualHost("/")
-                .setRelayPort(61613)
-                .setSystemLogin(rabbitId)
-                .setSystemPasscode(rabbitPw)
-                .setClientLogin(rabbitId)
-                .setClientPasscode(rabbitPw);
+                .setHeartbeatValue(new long[]{20000,20000});
+
+        // 메시지를 발행하는 요청 url => 즉 메시지 보낼 때
+        registry.setApplicationDestinationPrefixes("/pub");
+
+//                registry.setPathMatcher(new AntPathMatcher("."))
+//                .setApplicationDestinationPrefixes("/pub")
+//                .enableStompBrokerRelay("/queue", "/topic", "/exchange", "/amq/queue")
+//                .setTaskScheduler(te)
+//                .setSystemHeartbeatReceiveInterval(20000)
+//                .setSystemHeartbeatSendInterval(20000)
+//                .setRelayHost(rabbitHost)
+//                .setVirtualHost("/")
+//                .setRelayPort(61613)
+//                .setSystemLogin(rabbitId)
+//                .setSystemPasscode(rabbitPw)
+//                .setClientLogin(rabbitId)
+//                .setClientPasscode(rabbitPw);
 
     }
 
