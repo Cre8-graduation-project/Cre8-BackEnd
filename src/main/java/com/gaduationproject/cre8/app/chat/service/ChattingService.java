@@ -39,7 +39,7 @@ public class ChattingService {
     public void sendMessage(final Long roomId,final ChatDto chatDto,final SimpMessageHeaderAccessor simpMessageHeaderAccessor){
 
     //    ChattingRoom chattingRoom = chattingRoomRepository.findById(roomId).orElseThrow(()->new NotFoundException(ErrorCode.CANT_FIND_CHATTING_ROOM));
-        Member sender = getCurrentLoginMember(simpMessageHeaderAccessor);
+       // Member sender = getCurrentLoginMember(simpMessageHeaderAccessor);
         System.out.println("어이!");
 
      //   checkCanPublishMessage(chattingRoom,sender);
@@ -49,7 +49,7 @@ public class ChattingService {
         LocalDateTime messageCreatedTime = LocalDateTime.now();
     //    messagingService.sendMessage("/sub/chat/room/"+roomId,MessageResponseDto.ofPayLoad(sender.getId(),chatDto,messageCreatedTime,0,roomId));
         rabbitTemplate.convertAndSend("chat.exchange","room."+roomId,MessageResponseDto.ofPayLoad(
-                sender.getId(), chatDto,messageCreatedTime,0,roomId));
+                null, chatDto,messageCreatedTime,0,roomId));
 
 //         messageRepository.save(Message.builder()
 //                .chattingRoom(chattingRoom)
