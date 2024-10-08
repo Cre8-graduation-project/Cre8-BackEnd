@@ -57,8 +57,7 @@ public class StompConfig implements WebSocketMessageBrokerConfigurer {
                 .setTaskScheduler(te)
                 .setHeartbeatValue(new long[]{20000,20000});
 
-        // 메시지를 발행하는 요청 url => 즉 메시지 보낼 때
-//        registry.setApplicationDestinationPrefixes("/pub");
+        registry.setApplicationDestinationPrefixes("/pub");
 //
 //                registry.setPathMatcher(new AntPathMatcher("."))
 //                .setApplicationDestinationPrefixes("/pub")
