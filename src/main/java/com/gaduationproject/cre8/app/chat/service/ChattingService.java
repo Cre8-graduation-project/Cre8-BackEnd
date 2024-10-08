@@ -59,7 +59,7 @@ public class ChattingService {
 
          chattingMessageRepository.save(ChattingMessage.builder()
                  .chattingRoomId(roomId)
-                 .senderId(sender.getId())
+                 .senderId(null)
                  .contents(chatDto.getMessage())
                  .createdAt(messageCreatedTime)
                  .readCount(0)
