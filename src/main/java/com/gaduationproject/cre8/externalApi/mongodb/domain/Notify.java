@@ -27,28 +27,26 @@ public class Notify {
     @Id
     private String id;
 
+    private Long memberId;
+
     private String contents;
 
-    private String url;
+    private NotificationType notificationType;
 
     private boolean read;
 
-    private String notificationType;
+    private Long postId;
 
-    private Long memberId;
-
-    private String eventId;
 
 
 
     @Builder
-    public Notify(String contents, String url,boolean read,NotificationType notificationType,
-            Long  memberId,String eventId) {
+    public Notify(final String contents,boolean read,final NotificationType notificationType,
+            final Long  memberId,final Long postId) {
         this.contents = contents;
         this.read = read;
-        this.notificationType = notificationType.name();
-        this.url = url;
+        this.notificationType = notificationType;
         this.memberId = memberId;
-        this.eventId = eventId;
+        this.postId = postId;
     }
 }

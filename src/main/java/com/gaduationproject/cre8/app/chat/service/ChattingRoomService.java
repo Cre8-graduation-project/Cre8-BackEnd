@@ -141,6 +141,7 @@ public class ChattingRoomService {
 
 
 
+
     private Member getCurrentLoginMember(final String loginId){
 
         return memberRepository.findMemberByLoginId(loginId).orElseThrow(()->new NotFoundException(ErrorCode.CANT_FIND_MEMBER));

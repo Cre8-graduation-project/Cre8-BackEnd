@@ -1,7 +1,9 @@
 package com.gaduationproject.cre8.domain.community.entity;
 
+import com.gaduationproject.cre8.common.aop.NotifyInfo;
 import com.gaduationproject.cre8.domain.baseentity.BaseEntity;
 import com.gaduationproject.cre8.domain.member.entity.Member;
+import com.gaduationproject.cre8.externalApi.mongodb.domain.NotificationType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
@@ -18,7 +20,7 @@ import lombok.NoArgsConstructor;
 @Entity
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Getter
-public class Reply extends BaseEntity {
+public class Reply extends BaseEntity implements NotifyInfo {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -52,5 +54,26 @@ public class Reply extends BaseEntity {
 
     public void changeReplyContents(final String contents){
         this.contents = contents;
+    }
+
+
+    @Override
+    public Member receiver() {
+        return communityPost.getWriter();
+    }
+
+    @Override
+    public String getSenderNickName() {
+        return writer.getNickName();
+    }
+
+    @Override
+    public Long getPostId(){
+        return id;
+    }
+
+    @Override
+    public NotificationType getNotificationType() {
+        return NotificationType.COMMUNITY;
     }
 }

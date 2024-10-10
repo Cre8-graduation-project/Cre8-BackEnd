@@ -6,6 +6,7 @@ import com.gaduationproject.cre8.app.notify.service.NotifyService;
 import com.gaduationproject.cre8.externalApi.mongodb.domain.ChattingMessage;
 import com.gaduationproject.cre8.domain.chat.entity.ChattingRoom;
 import com.gaduationproject.cre8.externalApi.mongodb.domain.NotificationType;
+import com.gaduationproject.cre8.externalApi.mongodb.domain.Notify;
 import com.gaduationproject.cre8.externalApi.mongodb.repository.ChattingMessageRepository;
 import com.gaduationproject.cre8.domain.chat.repository.ChattingRoomRepository;
 import com.gaduationproject.cre8.common.response.error.ErrorCode;
@@ -47,11 +48,6 @@ public class ChattingService {
         checkCanPublishMessage(chattingRoom,sender);
 
         int readCount = chattingRoomConnectService.isAllConnected(chattingRoom.getId())?0:1;
-
-        if(readCount==1){
-            Member receiver = chattingRoom.getSender().getId()== sender.getId()? chattingRoom.getReceiver():chattingRoom.getSender();
-            notifyService.send(receiver, NotificationType.CHAT,chatDto.getMessage(),"tmpurl");
-        }
 
         LocalDateTime messageCreatedTime = LocalDateTime.now();
         messagingService.sendMessage("/sub/chat/room/"+roomId,MessageResponseDto.ofPayLoad(sender.getId(),chatDto,messageCreatedTime,readCount,roomId));
