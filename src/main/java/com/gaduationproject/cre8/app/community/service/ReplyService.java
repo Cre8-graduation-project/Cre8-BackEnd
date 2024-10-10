@@ -2,6 +2,7 @@ package com.gaduationproject.cre8.app.community.service;
 
 import com.gaduationproject.cre8.app.community.dto.request.ReplyEditRequestDto;
 import com.gaduationproject.cre8.app.community.dto.request.ReplySaveRequestDto;
+import com.gaduationproject.cre8.app.notify.annotation.SendNotify;
 import com.gaduationproject.cre8.common.response.error.ErrorCode;
 import com.gaduationproject.cre8.common.response.error.exception.BadRequestException;
 import com.gaduationproject.cre8.common.response.error.exception.NotFoundException;
@@ -26,9 +27,20 @@ public class ReplyService {
 
 
     @Transactional
-    public void saveReply(final ReplySaveRequestDto replySaveRequestDto,final String loginId){
+    @SendNotify
+    public Reply saveReply(final ReplySaveRequestDto replySaveRequestDto,final String loginId){
 
         checkChildReply(replySaveRequestDto.getParentReplyId());
+
+        Reply reply = getReply(replySaveRequestDto, loginId);
+
+        return replyRepository.save(reply);
+    }
+
+
+
+
+    private Reply getReply(ReplySaveRequestDto replySaveRequestDto, String loginId) {
 
         Reply reply = Reply.builder()
                 .parentReply(replySaveRequestDto.getParentReplyId()==null?null:getReplyById(replySaveRequestDto.getParentReplyId()))
@@ -37,7 +49,7 @@ public class ReplyService {
                 .contents(replySaveRequestDto.getContents())
                 .build();
 
-        replyRepository.save(reply);
+        return reply;
     }
 
     @Transactional
@@ -99,6 +111,8 @@ public class ReplyService {
         }
 
     }
+    
+    
 
 
 
