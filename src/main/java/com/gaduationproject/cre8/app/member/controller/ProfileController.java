@@ -1,6 +1,7 @@
 package com.gaduationproject.cre8.app.member.controller;
 
 import com.gaduationproject.cre8.app.auth.interfaces.CurrentMemberLoginId;
+import com.gaduationproject.cre8.app.member.dto.PasswordChangeAfterTMPRequestDto;
 import com.gaduationproject.cre8.app.member.dto.PasswordChangeRequestDto;
 import com.gaduationproject.cre8.app.response.BaseResponse;
 import com.gaduationproject.cre8.app.member.dto.ProfileWithUserInfoEditRequestDto;
@@ -70,12 +71,27 @@ public class ProfileController {
     @PatchMapping(value = "/members/passwords")
     @Operation(summary = "자신의 비밀번호 수정",description = "자신의 비밀번호를 수정할 수 있습니다.")
     @ApiResponses(value = {
-            @ApiResponse(responseCode = "200",description = "비밀번호 성공적 수정")
+            @ApiResponse(responseCode = "200",description = "비밀번호 성공적 수정"),
+            @ApiResponse(responseCode = "400",description = "비밀번호가 자신의 비밀번호와 맞지 않거나 새로운 비밀번호가 비밀번호 형식을 벗어날 때")
     })
     public ResponseEntity<Void> changeMyPassword(@CurrentMemberLoginId final String loginId,
                                                  @Valid @RequestBody final PasswordChangeRequestDto passwordChangeRequestDto){
 
         profileService.changeMyPassword(loginId,passwordChangeRequestDto);
+
+        return ResponseEntity.ok().build();
+    }
+
+    @PatchMapping(value = "/members/tmp/passwords")
+    @Operation(summary = "자신의 비밀번호 임시 비밀번호 이후 수정",description = "임시 비밀번호 이후 자신의 비밀번호를 입력할 수 있습니다.")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200",description = "비밀번호 성공적 수정"),
+            @ApiResponse(responseCode = "400",description = "새로운 비밀번호가 비밀번호 형식을 벗어날 때")
+    })
+    public ResponseEntity<Void> changeMyPassword(@CurrentMemberLoginId final String loginId,
+            @Valid @RequestBody final PasswordChangeAfterTMPRequestDto passwordChangeAfterTMPRequestDto){
+
+        profileService.changeMyPasswordAfterTMPPassword(loginId,passwordChangeAfterTMPRequestDto);
 
         return ResponseEntity.ok().build();
     }

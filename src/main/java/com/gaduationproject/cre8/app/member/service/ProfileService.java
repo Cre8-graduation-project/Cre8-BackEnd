@@ -2,6 +2,7 @@ package com.gaduationproject.cre8.app.member.service;
 
 import com.gaduationproject.cre8.app.event.s3.S3UploadImageCommitEvent;
 import com.gaduationproject.cre8.app.event.s3.S3UploadImageRollbackEvent;
+import com.gaduationproject.cre8.app.member.dto.PasswordChangeAfterTMPRequestDto;
 import com.gaduationproject.cre8.app.member.dto.PasswordChangeRequestDto;
 import com.gaduationproject.cre8.common.response.error.ErrorCode;
 import com.gaduationproject.cre8.common.response.error.exception.BadRequestException;
@@ -87,6 +88,18 @@ public class ProfileService {
         }
 
         member.changePassword(passwordEncoder.encode(passwordChangeRequestDto.getNewPassword()));
+
+
+    }
+
+    @Transactional
+    public void changeMyPasswordAfterTMPPassword(final String loginId, final PasswordChangeAfterTMPRequestDto PasswordChangeAfterTMPRequestDto){
+
+        Member member = getLoginMember(loginId);
+
+
+        member.changePassword(passwordEncoder.encode(PasswordChangeAfterTMPRequestDto.getNewPassword()));
+        member.changeStatusToNormalPassword();
 
 
     }
