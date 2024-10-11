@@ -11,6 +11,8 @@ public interface PortfolioImageRepository extends JpaRepository<PortfolioImage,L
 
     List<PortfolioImage> findByPortfolio(Portfolio portfolio);
 
+    void deleteByPortfolio(final Portfolio portfolio);
+
 
 
 }

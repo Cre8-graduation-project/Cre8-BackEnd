@@ -1,6 +1,7 @@
 package com.gaduationproject.cre8.domain.chat.repository;
 
 import com.gaduationproject.cre8.domain.chat.entity.ChattingRoom;
+import com.gaduationproject.cre8.domain.member.entity.Member;
 import java.util.List;
 import java.util.Optional;
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -15,5 +16,8 @@ public interface ChattingRoomRepository extends JpaRepository<ChattingRoom,Long>
 
     @Query("select cr from ChattingRoom cr where cr.sender.id=:memberId or cr.receiver.id=:memberId")
     List<ChattingRoom> findByBelongChattingRoom(@Param("memberId") final Long memberId);
+
+    void deleteBySender(final Member member);
+    void deleteByReceiver(final Member member);
 
 }
