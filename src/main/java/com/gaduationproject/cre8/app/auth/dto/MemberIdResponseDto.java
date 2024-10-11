@@ -12,12 +12,15 @@ public class MemberIdResponseDto {
 
     private String memberAccessUrl;
 
+    private boolean isTMPPassword;
+
     @Builder
-    public MemberIdResponseDto(String loginId,Long memberId,String memberAccessUrl){
+    public MemberIdResponseDto(String loginId,Long memberId,String memberAccessUrl,boolean isTMPPassword){
 
         this.loginId = loginId;
         this.memberId = memberId;
         this.memberAccessUrl = memberAccessUrl;
+        this.isTMPPassword = isTMPPassword;
     }
 
 }
