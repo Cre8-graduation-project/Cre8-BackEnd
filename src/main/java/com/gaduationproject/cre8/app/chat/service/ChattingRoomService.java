@@ -68,12 +68,7 @@ public class ChattingRoomService {
                         Sort.by("createdAt").descending()));
 
 
-        //상대방 정보
-        Member opponent = chattingRoom.getSender().getId()==currentMember.getId()?
-                          chattingRoom.getReceiver():
-                          chattingRoom.getSender();
-
-        return ChattingRoomInfoResponseDto.of(opponent,chattingMessageSlice.stream().map(MessageResponseDto::ofChatMessage).collect(
+        return ChattingRoomInfoResponseDto.of(chattingMessageSlice.stream().map(MessageResponseDto::ofChatMessage).collect(
                 Collectors.toList()), chattingMessageSlice.hasNext());
 
 
@@ -91,9 +86,10 @@ public class ChattingRoomService {
         return chattingRoomList.stream().filter(chattingRoom -> chattingMessageRepository.
                         findTop1ByChattingRoomIdOrderByCreatedAtDesc(chattingRoom.getId()).isPresent())
                         .map(chattingRoom -> {
-                            String opponentNickName = chattingRoom.getSender().getId()== currentMember.getId()
-                                    ?chattingRoom.getReceiver().getNickName()
-                                    :chattingRoom.getSender().getNickName();
+
+                            Member opponent = chattingRoom.getSender().getId()== currentMember.getId()
+                                    ?chattingRoom.getReceiver()
+                                    :chattingRoom.getSender();
 
                             ChattingMessage message = chattingMessageRepository.findTop1ByChattingRoomIdOrderByCreatedAtDesc(chattingRoom.getId())
                                     .orElseThrow(()->new InternalServerErrorException(ErrorCode.NOT_APPLY_RECENT_CHAT_FILTER));
@@ -101,7 +97,8 @@ public class ChattingRoomService {
                             return ChattingRoomResponseDto.builder()
                                     .roomId(chattingRoom.getId())
                                     .latestMessage(message.getContents())
-                                    .nickName(opponentNickName)
+                                    .nickName(opponent.getNickName())
+                                    .accessUrl(opponent.getAccessUrl())
                                     .unReadMessage(countUnReadMessages(chattingRoom.getId(),currentMember.getId()))
                                     .build();
 
