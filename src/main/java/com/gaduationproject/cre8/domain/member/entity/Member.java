@@ -64,6 +64,9 @@ public class Member {
 
     private String twitterLink;
 
+    @Column(nullable = false)
+    private boolean tmpPassword;
+
 
     @Builder
     public Member(String name, String loginId, String email, String password, String nickName,
@@ -81,6 +84,7 @@ public class Member {
         this.personalLink =null;
         this.twitterLink = null;
         this.accessUrl = "";
+        this.tmpPassword = false;
     }
 
     public MemberEditor.MemberEditorBuilder toEditor(){
@@ -112,6 +116,16 @@ public class Member {
 
     public void changePassword(String newPassword){
         this.password = newPassword;
+    }
+
+    public void changeStatusToTMPPassword(){
+
+        this.tmpPassword=true;
+    }
+
+    public void changeStatusToNormalPassword(){
+
+        this.tmpPassword = false;
     }
 
 
