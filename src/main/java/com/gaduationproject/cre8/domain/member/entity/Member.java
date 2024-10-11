@@ -110,6 +110,10 @@ public class Member {
         this.id = id;
     }
 
+    public void changePassword(String newPassword){
+        this.password = newPassword;
+    }
+
 
 
 
