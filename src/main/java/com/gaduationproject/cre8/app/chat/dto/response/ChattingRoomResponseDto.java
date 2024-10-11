@@ -13,14 +13,17 @@ public class ChattingRoomResponseDto {
 
     private String nickName;
 
+    private String accessUrl;
+
     private String latestMessage;
 
     private long unReadMessage;
 
     @Builder
-    public ChattingRoomResponseDto(Long roomId, String nickName, String latestMessage,long unReadMessage) {
+    public ChattingRoomResponseDto(Long roomId, String nickName,String accessUrl, String latestMessage,long unReadMessage) {
         this.roomId = roomId;
         this.nickName = nickName;
+        this.accessUrl = accessUrl;
         this.latestMessage = latestMessage;
         this.unReadMessage = unReadMessage;
     }
