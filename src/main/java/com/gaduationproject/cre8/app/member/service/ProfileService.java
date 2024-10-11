@@ -2,6 +2,8 @@ package com.gaduationproject.cre8.app.member.service;
 
 import com.gaduationproject.cre8.app.event.s3.S3UploadImageCommitEvent;
 import com.gaduationproject.cre8.app.event.s3.S3UploadImageRollbackEvent;
+import com.gaduationproject.cre8.app.member.dto.PasswordChangeAfterTMPRequestDto;
+import com.gaduationproject.cre8.app.member.dto.PasswordChangeRequestDto;
 import com.gaduationproject.cre8.common.response.error.ErrorCode;
 import com.gaduationproject.cre8.common.response.error.exception.BadRequestException;
 import com.gaduationproject.cre8.common.response.error.exception.NotFoundException;
@@ -14,6 +16,7 @@ import com.gaduationproject.cre8.domain.member.entity.Member;
 import com.gaduationproject.cre8.domain.member.repository.MemberRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.ApplicationEventPublisher;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
@@ -28,6 +31,7 @@ public class ProfileService {
     private final static String MEMBER_PROFILE_IMAGE="member-images/";
     private final static String DEFAULT_PROFILE_URL="";
     private final ApplicationEventPublisher eventPublisher;
+    private final PasswordEncoder passwordEncoder;
 
 
     //memberId 로 그 멤버의 profile 조회
@@ -69,6 +73,33 @@ public class ProfileService {
                 .build();
 
         member.edit(memberEditor);
+
+
+    }
+
+    @Transactional
+    public void changeMyPassword(final String loginId, final PasswordChangeRequestDto passwordChangeRequestDto){
+
+        Member member = getLoginMember(loginId);
+
+
+        if(!passwordEncoder.matches(passwordChangeRequestDto.getOldPassword(),member.getPassword())){
+            throw new BadRequestException(ErrorCode.PASSWORD_NOT_MATCH);
+        }
+
+        member.changePassword(passwordEncoder.encode(passwordChangeRequestDto.getNewPassword()));
+
+
+    }
+
+    @Transactional
+    public void changeMyPasswordAfterTMPPassword(final String loginId, final PasswordChangeAfterTMPRequestDto PasswordChangeAfterTMPRequestDto){
+
+        Member member = getLoginMember(loginId);
+
+
+        member.changePassword(passwordEncoder.encode(PasswordChangeAfterTMPRequestDto.getNewPassword()));
+        member.changeStatusToNormalPassword();
 
 
     }

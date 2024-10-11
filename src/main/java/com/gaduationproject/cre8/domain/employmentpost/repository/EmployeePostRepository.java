@@ -2,6 +2,8 @@ package com.gaduationproject.cre8.domain.employmentpost.repository;
 
 import com.gaduationproject.cre8.domain.employmentpost.dto.EmployeePostKeyWordSearchDBResponseDto;
 import com.gaduationproject.cre8.domain.employmentpost.entity.EmployeePost;
+import com.gaduationproject.cre8.domain.employmentpost.entity.EmployerPost;
+import com.gaduationproject.cre8.domain.member.entity.Member;
 import java.util.List;
 import java.util.Optional;
 import org.springframework.data.domain.Page;
@@ -38,5 +40,9 @@ public interface EmployeePostRepository extends JpaRepository<EmployeePost,Long>
     @Query("select ep from EmployeePost ep join fetch ep.basicPostContent.member m left join fetch ep.basicPostContent.workFieldTag "
             + "where m.id=:memberId")
     Slice<EmployeePost> findEmployeePostByMemberId(final Long memberId,final Pageable pageable);
+
+
+    List<EmployeePost> findByBasicPostContent_Member(final Member member);
+    void deleteByBasicPostContent_Member(final Member member);
 
 }

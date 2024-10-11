@@ -13,10 +13,11 @@ public class TokenResponseWithUserBasicInfoDto {
     private String loginId;
     private Long memberId;
     private String memberAccessUrl;
+    private boolean isTMPPassword;
 
     @Builder
     public TokenResponseWithUserBasicInfoDto(String grantType,String accessToken,ResponseCookie responseCookie, Long accessTokenExpirationTime,
-            String loginId,Long memberId,String memberAccessUrl){
+            String loginId,Long memberId,String memberAccessUrl,boolean isTMPPassword){
             this.grantType = grantType;
             this.accessToken = accessToken;
             this.responseCookie = responseCookie;
@@ -24,5 +25,6 @@ public class TokenResponseWithUserBasicInfoDto {
             this.loginId = loginId;
             this.memberId = memberId;
             this.memberAccessUrl = memberAccessUrl;
+            this.isTMPPassword = isTMPPassword;
     }
 }

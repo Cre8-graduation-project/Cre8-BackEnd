@@ -8,7 +8,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 import com.gaduationproject.cre8.app.member.dto.MemberSignUpRequestDto;
-import com.gaduationproject.cre8.app.member.service.MemberSignUpService;
+import com.gaduationproject.cre8.app.member.service.MemberService;
 import com.gaduationproject.cre8.common.LocalDateDeserializer;
 import com.gaduationproject.cre8.common.LocalDateSerializer;
 import com.gaduationproject.cre8.app.response.RestExceptionHandler;
@@ -35,7 +35,7 @@ class MemberControllerTest {
     private MemberController memberController;
 
     @Mock
-    private MemberSignUpService memberSignUpService;
+    private MemberService memberService;
 
     private MockMvc mockMvc;
     private Gson gson;
@@ -74,7 +74,7 @@ class MemberControllerTest {
     public void 멤버데이터_정상_저장() throws Exception {
         //given
 
-        when(memberSignUpService.saveMember(any(MemberSignUpRequestDto.class))).thenReturn(1L);
+        when(memberService.saveMember(any(MemberSignUpRequestDto.class))).thenReturn(1L);
 
         //when
         final ResultActions resultActions = mockMvc.perform(

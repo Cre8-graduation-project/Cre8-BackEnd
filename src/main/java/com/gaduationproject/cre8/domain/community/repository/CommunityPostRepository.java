@@ -2,6 +2,8 @@ package com.gaduationproject.cre8.domain.community.repository;
 
 import com.gaduationproject.cre8.domain.community.dto.CommunityPostSearchDBResponseDto;
 import com.gaduationproject.cre8.domain.community.entity.CommunityPost;
+import com.gaduationproject.cre8.domain.member.entity.Member;
+import java.util.List;
 import java.util.Optional;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Slice;
@@ -20,6 +22,9 @@ public interface CommunityPostRepository extends JpaRepository<CommunityPost,Lon
     Slice<CommunityPostSearchDBResponseDto> findCommunityPostKeyWordSearchDBByCommunityBoardId(@Param("communityBoardId") final Long communityBoardId,
                                                                                                final Pageable pageable);
 
+    void deleteByWriter(final Member member);
+
+    List<CommunityPost> findByWriter(final Member member);
 
 
 }

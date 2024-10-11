@@ -22,10 +22,10 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.test.util.ReflectionTestUtils;
 
 @ExtendWith(MockitoExtension.class)
-class MemberSignUpServiceTest {
+class MemberServiceTest {
 
     @InjectMocks
-    MemberSignUpService memberSignUpService;
+    MemberService memberService;
 
     @Mock
     MemberRepository memberRepository;
@@ -71,7 +71,7 @@ class MemberSignUpServiceTest {
 
 
         //then
-        Long findMemberId = memberSignUpService.saveMember(memberSignUpRequestDto);
+        Long findMemberId = memberService.saveMember(memberSignUpRequestDto);
 
         //then
         assertThat(findMemberId).isEqualTo(1L);
@@ -100,7 +100,7 @@ class MemberSignUpServiceTest {
         //then
 
         Exception e = assertThrows(DuplicateException.class,()->{
-            memberSignUpService.saveMember(memberSignUpRequestDto);
+            memberService.saveMember(memberSignUpRequestDto);
         });
 
         assertEquals("이메일이 중복되었습니다", e.getMessage());
@@ -127,7 +127,7 @@ class MemberSignUpServiceTest {
 
         //then
         Exception e = assertThrows(DuplicateException.class,()->{
-            memberSignUpService.saveMember(memberSignUpRequestDto);
+            memberService.saveMember(memberSignUpRequestDto);
         });
 
         assertEquals("닉네임이 중복되었습니다", e.getMessage());
@@ -154,7 +154,7 @@ class MemberSignUpServiceTest {
 
         //then
         Exception e = assertThrows(DuplicateException.class,()->{
-            memberSignUpService.saveMember(memberSignUpRequestDto);
+            memberService.saveMember(memberSignUpRequestDto);
         });
 
         assertEquals("이미 아이디가 존재합니다", e.getMessage());

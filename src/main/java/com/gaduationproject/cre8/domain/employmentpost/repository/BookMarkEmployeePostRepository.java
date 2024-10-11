@@ -1,6 +1,7 @@
 package com.gaduationproject.cre8.domain.employmentpost.repository;
 
 import com.gaduationproject.cre8.domain.employmentpost.entity.BookMarkEmployeePost;
+import com.gaduationproject.cre8.domain.member.entity.Member;
 import java.util.Optional;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Slice;
@@ -18,4 +19,6 @@ public interface BookMarkEmployeePostRepository extends JpaRepository<BookMarkEm
     @Query("select bep from BookMarkEmployeePost bep join fetch bep.employeePost ep join fetch ep.basicPostContent.member "
             + "left join fetch ep.basicPostContent.workFieldTag where bep.member.id=:memberId")
     Slice<BookMarkEmployeePost> showMyBookMarkEmployeePost(final Long memberId,final Pageable pageable);
+
+    void deleteByMember(final Member member);
 }

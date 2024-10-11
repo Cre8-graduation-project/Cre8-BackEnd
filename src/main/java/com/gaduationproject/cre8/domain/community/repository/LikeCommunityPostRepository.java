@@ -27,4 +27,6 @@ public interface LikeCommunityPostRepository extends JpaRepository<LikeCommunity
 
     @Query("select count(*) from LikeCommunityPost lcp where lcp.communityPost.id=:communityPostId")
     int getLikeCountsByCommunityPostId(@Param("communityPostId") Long communityPostId);
+
+    void deleteByLiker(final Member member);
 }

@@ -56,7 +56,7 @@ public class SecurityConfig {
                                         "/api/v1/employer-posts/search/keyword","/api/v1/employee-posts/search/keyword","/api/v1/employee-posts/search/test","/api/v1/employer-posts/search/test",
                                         "/api/v1/community/boards","/api/v1/community/posts/search/*","/api/v1/community/posts/*").permitAll()
                                 .requestMatchers(HttpMethod.POST,"/api/v1/test","/api/v1/redis/test","/api/v1/auth/login","/api/v1/mail",
-                                        "/api/v1/mail/check","/api/v1/members").permitAll()
+                                        "/api/v1/mail/check","/api/v1/members","/api/v1/mail/temp/password").permitAll()
                                 .requestMatchers("/ws-stomp").permitAll()
                                 .anyRequest().authenticated())
 

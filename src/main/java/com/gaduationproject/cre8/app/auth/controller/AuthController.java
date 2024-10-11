@@ -51,6 +51,7 @@ public class AuthController {
                         .loginId(tokenResponseWithUserBasicInfoDto.getLoginId())
                         .memberId(tokenResponseWithUserBasicInfoDto.getMemberId())
                         .memberAccessUrl(tokenResponseWithUserBasicInfoDto.getMemberAccessUrl())
+                        .isTMPPassword(tokenResponseWithUserBasicInfoDto.isTMPPassword())
                         .build()));
     }
 

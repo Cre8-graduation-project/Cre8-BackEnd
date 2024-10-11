@@ -1,5 +1,6 @@
 package com.gaduationproject.cre8.app.member.controller;
 
+import com.gaduationproject.cre8.app.member.dto.LoginIdRequestDto;
 import com.gaduationproject.cre8.app.response.BaseResponse;
 import com.gaduationproject.cre8.app.member.dto.EmailCheckAuthNumRequestDto;
 import com.gaduationproject.cre8.app.member.dto.EmailCheckAuthNumResponseDto;
@@ -12,6 +13,7 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -24,6 +26,7 @@ import org.springframework.web.bind.annotation.RestController;
 public class MailController {
 
     private final MemberMailSendService mailService;
+
 
     @PostMapping
     @Operation(summary = "이메일에 인증번호 전송",description = "사용자의 이메일을 받으면 중복 이메일을 체크하고 이메일을 전송합니다")
@@ -47,6 +50,19 @@ public class MailController {
 
         return ResponseEntity.ok(BaseResponse.createSuccess(mailService.checkAuthNum(
                 emailCheckAuthNumRequestDto)));
+    }
+
+    @PostMapping("/temp/password")
+    @Operation(summary = "새로운 임시 비밀번호를 이메일에 전송",description = "새로운 임시 비밀번호를 이메일에 전송")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200",description = "새로운 임시 비밀번호 가입 당시 이메일로 성공적 전송"),
+            @ApiResponse(responseCode = "400",description = "로그인 아이디를 찾을 수 없는 경우")
+    })
+    public ResponseEntity<Void> sendTMPPassword(@RequestBody @Valid final LoginIdRequestDto loginIdRequestDto){
+
+        mailService.sendTMPPassword(loginIdRequestDto);
+
+        return ResponseEntity.ok().build();
     }
 
 }
