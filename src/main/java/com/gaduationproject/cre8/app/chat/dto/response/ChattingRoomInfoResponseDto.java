@@ -14,15 +14,13 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor(access = AccessLevel.PROTECTED)
 public class ChattingRoomInfoResponseDto {
 
-    private String opponentNickName;
-    private String opponentAccessUrl;
+
     private List<MessageResponseDto> messageResponseDtoList;
     private boolean hasNextPage;
 
 
-    public static ChattingRoomInfoResponseDto of(final Member opponent,
-            final List<MessageResponseDto> messageResponseDtoList,boolean hasNextPage) {
+    public static ChattingRoomInfoResponseDto of(final List<MessageResponseDto> messageResponseDtoList,boolean hasNextPage) {
 
-        return new ChattingRoomInfoResponseDto(opponent.getNickName(),opponent.getAccessUrl(),messageResponseDtoList,hasNextPage);
+        return new ChattingRoomInfoResponseDto(messageResponseDtoList,hasNextPage);
     }
 }
