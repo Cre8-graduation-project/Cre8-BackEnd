@@ -49,6 +49,7 @@ public class ChattingService {
 
         int readCount = chattingRoomConnectService.isAllConnected(chattingRoom.getId())?0:1;
 
+
         LocalDateTime messageCreatedTime = LocalDateTime.now();
         messagingService.sendMessage("/sub/chat/room/"+roomId,MessageResponseDto.ofPayLoad(sender.getId(),chatDto,messageCreatedTime,readCount,roomId));
 //        rabbitTemplate.convertAndSend("chat.exchange","room."+roomId,MessageResponseDto.ofPayLoad(
@@ -77,7 +78,7 @@ public class ChattingService {
         mongoTemplate.updateMulti(query, update, ChattingMessage.class);
     }
 
-    public void updateMessage(Long chattingRoomId, String loginId) {
+    public void sendEnterMessage(Long chattingRoomId, String loginId) {
 
         messagingService.sendMessage("/sub/chat/room/"+chattingRoomId,MessageResponseDto.ofEnter("접속하였습니다"+loginId,chattingRoomId));
     }

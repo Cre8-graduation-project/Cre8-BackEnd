@@ -33,7 +33,7 @@ public class WebSocketEventListener {
 
         StompHeaderAccessor headerAccessor = StompHeaderAccessor.wrap(event.getMessage());
 
-        chattingRoomConnectService.disconnectChattingRoom((Long)headerAccessor.getSessionAttributes().get(SUB),headerAccessor.getUser().getName());
+        chattingRoomConnectService.disconnectChattingRoom(headerAccessor.getSessionId());
         log.info("disconnect 끊김");
     }
 
@@ -45,8 +45,8 @@ public class WebSocketEventListener {
         final Long chattingRoomId = Long.valueOf(headerAccessor.getSubscriptionId());
         final String loginId = headerAccessor.getUser().getName();
 
-        chattingRoomConnectService.connectChattingRoom(chattingRoomId,loginId);
-        chattingService.updateMessage(chattingRoomId,loginId);
+        chattingRoomConnectService.connectChattingRoom(chattingRoomId,loginId,headerAccessor.getSessionId());
+        chattingService.sendEnterMessage(chattingRoomId,loginId);
         chattingService.updateCountAllZero(chattingRoomId,loginId);
 
         headerAccessor.getSessionAttributes().put(SUB,chattingRoomId);
@@ -61,9 +61,8 @@ public class WebSocketEventListener {
         StompHeaderAccessor headerAccessor = StompHeaderAccessor.wrap(event.getMessage());
 
         final Long chattingRoomId = Long.valueOf(headerAccessor.getSubscriptionId());
-        final String loginId = headerAccessor.getUser().getName();
 
-        chattingRoomConnectService.disconnectChattingRoom(chattingRoomId,loginId);
+        chattingRoomConnectService.disconnectChattingRoom(headerAccessor.getSessionId());
         log.info("채팅방 퇴장: chattingRoomId: {}",chattingRoomId);
 
     }
