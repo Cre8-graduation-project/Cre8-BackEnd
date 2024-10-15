@@ -3,6 +3,7 @@ package com.gaduationproject.cre8.app.chat.service;
 import com.gaduationproject.cre8.app.chat.dto.request.ChatDto;
 import com.gaduationproject.cre8.app.chat.dto.response.MessageResponseDto;
 import com.gaduationproject.cre8.app.notify.service.NotifyService;
+import com.gaduationproject.cre8.externalApi.kafka.KafkaSender;
 import com.gaduationproject.cre8.externalApi.mongodb.domain.ChattingMessage;
 import com.gaduationproject.cre8.domain.chat.entity.ChattingRoom;
 import com.gaduationproject.cre8.externalApi.mongodb.domain.NotificationType;
@@ -17,7 +18,6 @@ import com.gaduationproject.cre8.domain.member.repository.MemberRepository;
 import com.gaduationproject.cre8.externalApi.redis.service.ChattingRoomConnectService;
 import java.time.LocalDateTime;
 import lombok.RequiredArgsConstructor;
-import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.messaging.simp.SimpMessageHeaderAccessor;
 import org.springframework.stereotype.Service;
 import org.springframework.data.mongodb.core.query.Update;
@@ -36,8 +36,7 @@ public class ChattingService {
     private final ChattingMessageRepository chattingMessageRepository;
     private final ChattingRoomConnectService chattingRoomConnectService;
     private final MongoTemplate mongoTemplate;
-    private final RabbitTemplate rabbitTemplate;
-    private final NotifyService notifyService;
+    private final KafkaSender kafkaSender;
 
 
     public void sendMessage(final Long roomId,final ChatDto chatDto,final SimpMessageHeaderAccessor simpMessageHeaderAccessor){
@@ -51,9 +50,12 @@ public class ChattingService {
 
 
         LocalDateTime messageCreatedTime = LocalDateTime.now();
-        messagingService.sendMessage("/sub/chat/room/"+roomId,MessageResponseDto.ofPayLoad(sender.getId(),chatDto,messageCreatedTime,readCount,roomId));
-//        rabbitTemplate.convertAndSend("chat.exchange","room."+roomId,MessageResponseDto.ofPayLoad(
-//                null, chatDto,messageCreatedTime,0,roomId));
+
+//        messagingService.sendMessage("/sub/chat/room/"+roomId,
+//                MessageResponseDto.ofPayLoad(sender.getId(),chatDto,messageCreatedTime,readCount,roomId));
+
+        kafkaSender.send("chattest",MessageResponseDto.ofPayLoad(sender.getId(),chatDto,messageCreatedTime,readCount,roomId));
+
 
          chattingMessageRepository.save(ChattingMessage.builder()
                  .chattingRoomId(roomId)
