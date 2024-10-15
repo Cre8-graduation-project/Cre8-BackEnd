@@ -65,9 +65,8 @@ dependencies {
 	//h2
 	implementation 'com.h2database:h2'
 
-	//rabbit
-	implementation 'org.springframework.boot:spring-boot-starter-amqp'
-	implementation 'org.springframework.boot:spring-boot-starter-reactor-netty:3.0.0'
+	//kafka
+	implementation 'org.springframework.kafka:spring-kafka'
 
 
 }

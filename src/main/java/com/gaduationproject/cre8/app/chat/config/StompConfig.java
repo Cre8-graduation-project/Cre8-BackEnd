@@ -25,15 +25,6 @@ public class StompConfig implements WebSocketMessageBrokerConfigurer {
     private final StompErrorHandler stompErrorHandler;
     private final StompPreHandler stompPreHandler;
 
-    @Value("${rabbit.host}")
-    private String rabbitHost;
-
-    @Value("${rabbit.id}")
-    private String rabbitId;
-
-    @Value("${rabbit.pw}")
-    private String rabbitPw;
-
     @Override
     public void registerStompEndpoints(StompEndpointRegistry registry) {
         // stomp 접속 주소 url => /ws-stomp
@@ -58,20 +49,7 @@ public class StompConfig implements WebSocketMessageBrokerConfigurer {
                 .setHeartbeatValue(new long[]{20000,20000});
 
         registry.setApplicationDestinationPrefixes("/pub");
-//
-//                registry.setPathMatcher(new AntPathMatcher("."))
-//                .setApplicationDestinationPrefixes("/pub")
-//                .enableStompBrokerRelay("/queue", "/topic", "/exchange", "/amq/queue")
-//                .setTaskScheduler(te)
-//                .setSystemHeartbeatReceiveInterval(20000)
-//                .setSystemHeartbeatSendInterval(20000)
-//                .setRelayHost(rabbitHost)
-//                .setVirtualHost("/")
-//                .setRelayPort(61613)
-//                .setSystemLogin(rabbitId)
-//                .setSystemPasscode(rabbitPw)
-//                .setClientLogin(rabbitId)
-//                .setClientPasscode(rabbitPw);
+
 
     }
 
