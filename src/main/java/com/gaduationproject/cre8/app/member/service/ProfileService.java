@@ -157,9 +157,9 @@ public class ProfileService {
 
 
     //유저 닉네임을 통해 pk 를 얻어 오기
-    public Long findPkFromNickName(final String loginId){
+    public Long findPkFromLoginId(final String loginId){
 
-        Member member = memberRepository.findMemberByNickName(loginId).orElseThrow(()->new NotFoundException(ErrorCode.CANT_FIND_MEMBER));
+        Member member = memberRepository.findMemberByLoginId(loginId).orElseThrow(()->new NotFoundException(ErrorCode.CANT_FIND_MEMBER));
 
         return member.getId();
     }

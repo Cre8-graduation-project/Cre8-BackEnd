@@ -64,7 +64,7 @@ public class ProfileController {
     })
     public ResponseEntity<BaseResponse<Long>> getPKFromLoginId(@RequestParam("loginId")final String loginId){
 
-        return ResponseEntity.ok(BaseResponse.createSuccess(profileService.findPkFromNickName(loginId)));
+        return ResponseEntity.ok(BaseResponse.createSuccess(profileService.findPkFromLoginId(loginId)));
     }
 
 
