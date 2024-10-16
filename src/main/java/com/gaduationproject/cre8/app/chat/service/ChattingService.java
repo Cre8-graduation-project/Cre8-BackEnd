@@ -83,7 +83,10 @@ public class ChattingService {
     public void sendEnterMessage(Long chattingRoomId, String loginId) {
 
         messagingService.sendMessage("/sub/chat/room/"+chattingRoomId,MessageResponseDto.ofEnter("접속하였습니다"+loginId,chattingRoomId));
+
+     //   kafkaSender.send("chattest",MessageResponseDto.ofEnter("접속하였습니다"+loginId,chattingRoomId));
     }
+
 
 
     private Member getCurrentLoginMember(final SimpMessageHeaderAccessor simpMessageHeaderAccessor){
