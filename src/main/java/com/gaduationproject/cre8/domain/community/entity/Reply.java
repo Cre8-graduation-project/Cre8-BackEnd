@@ -69,7 +69,7 @@ public class Reply extends BaseEntity implements NotifyInfo {
 
     @Override
     public Long getPostId(){
-        return id;
+        return communityPost.getId();
     }
 
     @Override
