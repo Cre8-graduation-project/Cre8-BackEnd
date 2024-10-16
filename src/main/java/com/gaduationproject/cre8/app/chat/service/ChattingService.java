@@ -51,10 +51,10 @@ public class ChattingService {
 
         LocalDateTime messageCreatedTime = LocalDateTime.now();
 
-//        messagingService.sendMessage("/sub/chat/room/"+roomId,
-//                MessageResponseDto.ofPayLoad(sender.getId(),chatDto,messageCreatedTime,readCount,roomId));
+        messagingService.sendMessage("/sub/chat/room/"+roomId,
+                MessageResponseDto.ofPayLoad(sender.getId(),chatDto,messageCreatedTime,readCount,roomId));
 
-        kafkaSender.send("chattest",MessageResponseDto.ofPayLoad(sender.getId(),chatDto,messageCreatedTime,readCount,roomId));
+      //  kafkaSender.send("chattest",MessageResponseDto.ofPayLoad(sender.getId(),chatDto,messageCreatedTime,readCount,roomId));
 
 
          chattingMessageRepository.save(ChattingMessage.builder()
