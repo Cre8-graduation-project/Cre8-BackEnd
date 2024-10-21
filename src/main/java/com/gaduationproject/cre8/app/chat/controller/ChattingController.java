@@ -92,13 +92,13 @@ public class ChattingController {
         return ResponseEntity.ok().build();
     }
 
-    @SubscribeMapping("/chat/room/{roomId}")
-    public MessageResponseDto afterSubscribe(@DestinationVariable("roomId") final Long roomId, final SimpMessageHeaderAccessor simpMessageHeaderAccessor){
-
-        return chattingService.sendEnterMessageAfterSubscribe(roomId,simpMessageHeaderAccessor.getUser().getName(),
-                                                               simpMessageHeaderAccessor);
-
-    }
+//    @SubscribeMapping("/chat/room/{roomId}")
+//    public MessageResponseDto afterSubscribe(@DestinationVariable("roomId") final Long roomId, final SimpMessageHeaderAccessor simpMessageHeaderAccessor){
+//
+//        return chattingService.sendEnterMessageAfterSubscribe(roomId,simpMessageHeaderAccessor.getUser().getName(),
+//                                                               simpMessageHeaderAccessor);
+//
+//    }
 
 //    @MessageMapping("message.{roomId}")
 //    public ResponseEntity<Void> sendMessage2(@DestinationVariable("roomId")final Long roomId, @Payload  @Valid final ChatDto chatDto,
