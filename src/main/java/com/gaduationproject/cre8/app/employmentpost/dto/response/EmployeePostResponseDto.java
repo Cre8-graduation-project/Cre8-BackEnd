@@ -30,6 +30,7 @@ public class EmployeePostResponseDto {
     private Long writerId;
     private String writerNickName;
     private String writerAccessUrl;
+    private String writerLoginId;
     private boolean isBookMarked;
 
 
@@ -58,6 +59,7 @@ public class EmployeePostResponseDto {
                 writer.getId(),
                 writer.getNickName(),
                 writer.getAccessUrl(),
+                writer.getLoginId(),
                 isBookMarked);
 
     }
