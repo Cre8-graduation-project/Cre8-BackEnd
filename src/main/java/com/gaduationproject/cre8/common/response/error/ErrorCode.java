@@ -32,6 +32,7 @@ public enum ErrorCode {
     CANT_MAKE_RE_RE_REPLY("대대댓글은 만들 수 없습니다"),
     CANT_ACCESS_COMMUNITY_POST("자신의 게시글만 수정,삭제 할 수 있습니다"),
     CANT_ACCESS_REPLY("자신의 댓글만 수정,삭제 할 수 있습니다"),
+    CANT_REQUEST_TMP_PW("사용자의 정보를 정확히 입력해주세요"),
 
 
 
