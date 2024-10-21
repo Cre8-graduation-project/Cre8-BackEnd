@@ -1,18 +1,26 @@
 package com.gaduationproject.cre8.app.chat.handler;
 
 import com.gaduationproject.cre8.app.auth.jwt.TokenProvider;
+import com.gaduationproject.cre8.app.chat.event.SessionSubscribedEvent;
 import com.gaduationproject.cre8.domain.chat.entity.ChattingRoom;
 import com.gaduationproject.cre8.domain.chat.repository.ChattingRoomRepository;
 import com.gaduationproject.cre8.common.response.error.ErrorCode;
 import com.gaduationproject.cre8.common.response.error.exception.BadRequestException;
 import com.gaduationproject.cre8.common.response.error.exception.NotFoundException;
 import lombok.RequiredArgsConstructor;
+import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.lang.Nullable;
 import org.springframework.messaging.Message;
 import org.springframework.messaging.MessageChannel;
+import org.springframework.messaging.MessageHandler;
+import org.springframework.messaging.simp.SimpMessageHeaderAccessor;
+import org.springframework.messaging.simp.SimpMessageType;
+import org.springframework.messaging.simp.broker.AbstractBrokerMessageHandler;
 import org.springframework.messaging.simp.stomp.StompCommand;
 import org.springframework.messaging.simp.stomp.StompHeaderAccessor;
 import org.springframework.messaging.support.ChannelInterceptor;
+import org.springframework.messaging.support.ExecutorChannelInterceptor;
 import org.springframework.messaging.support.MessageHeaderAccessor;
 import org.springframework.security.core.Authentication;
 import org.springframework.transaction.annotation.Transactional;
@@ -20,7 +28,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 @Configuration
 @RequiredArgsConstructor
-public class StompPreHandler implements ChannelInterceptor {
+public class StompPreHandler implements ExecutorChannelInterceptor {
 
     private final TokenProvider tokenProvider;
     private final ChattingRoomRepository chattingRoomRepository;
@@ -28,6 +36,8 @@ public class StompPreHandler implements ChannelInterceptor {
     private static final String CHAT_SUB_ERROR_PREFIX="/user/queue/error";
 
     private static final String CHAT_SUB_PREFIX_RABBIT = "/exchange/chat.exchange/room";
+
+    private final ApplicationEventPublisher applicationEventPublisher;
 
     @Override
     @Transactional
@@ -76,8 +86,27 @@ public class StompPreHandler implements ChannelInterceptor {
 
         }
 
+
         return message;
     }
+
+    @Override
+    public void afterMessageHandled(Message<?> message, MessageChannel channel, MessageHandler handler, Exception ex) {
+        SimpMessageHeaderAccessor accessor = SimpMessageHeaderAccessor.wrap(message);
+        if (accessor.getMessageType() == SimpMessageType.SUBSCRIBE && handler instanceof AbstractBrokerMessageHandler) {
+            /*
+             * Publish a new session subscribed event AFTER the client
+             * has been subscribed to the broker. Before spring was
+             * publishing the event after receiving the message but not
+             * necessarily after the subscription occurred. There was a
+             * race condition because the subscription was being done on
+             * a separate thread.
+             */
+            applicationEventPublisher.publishEvent(new SessionSubscribedEvent(message));
+        }
+    }
+
+
 
 
 
