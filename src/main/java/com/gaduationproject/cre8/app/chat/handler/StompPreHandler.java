@@ -92,16 +92,11 @@ public class StompPreHandler implements ExecutorChannelInterceptor {
 
     @Override
     public void afterMessageHandled(Message<?> message, MessageChannel channel, MessageHandler handler, Exception ex) {
+
         SimpMessageHeaderAccessor accessor = SimpMessageHeaderAccessor.wrap(message);
+
         if (accessor.getMessageType() == SimpMessageType.SUBSCRIBE && handler instanceof AbstractBrokerMessageHandler) {
-            /*
-             * Publish a new session subscribed event AFTER the client
-             * has been subscribed to the broker. Before spring was
-             * publishing the event after receiving the message but not
-             * necessarily after the subscription occurred. There was a
-             * race condition because the subscription was being done on
-             * a separate thread.
-             */
+
             applicationEventPublisher.publishEvent(new SessionSubscribedEvent(message));
         }
     }
