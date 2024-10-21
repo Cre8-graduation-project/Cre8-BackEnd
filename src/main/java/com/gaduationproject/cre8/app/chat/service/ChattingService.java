@@ -18,6 +18,7 @@ import com.gaduationproject.cre8.domain.member.repository.MemberRepository;
 import com.gaduationproject.cre8.externalApi.redis.service.ChattingRoomConnectService;
 import java.time.LocalDateTime;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.messaging.simp.SimpMessageHeaderAccessor;
 import org.springframework.stereotype.Service;
 import org.springframework.data.mongodb.core.query.Update;
@@ -27,6 +28,7 @@ import org.springframework.data.mongodb.core.query.Query;
 
 @Service
 @RequiredArgsConstructor
+@Slf4j
 public class ChattingService {
 
     private final MemberRepository memberRepository;
@@ -37,6 +39,8 @@ public class ChattingService {
     private final ChattingRoomConnectService chattingRoomConnectService;
     private final MongoTemplate mongoTemplate;
     private final KafkaSender kafkaSender;
+    private static final String SUB = "SUB";
+
 
 
     public void sendMessage(final Long roomId,final ChatDto chatDto,final SimpMessageHeaderAccessor simpMessageHeaderAccessor){
@@ -78,6 +82,22 @@ public class ChattingService {
                 .and("senderId").ne(findMember.getId()));
 
         mongoTemplate.updateMulti(query, update, ChattingMessage.class);
+    }
+
+    public MessageResponseDto sendEnterMessageAfterSubscribe(final Long chattingRoomId,
+                                                             final String loginId,
+                                                             final SimpMessageHeaderAccessor headerAccessor){
+
+        chattingRoomConnectService.connectChattingRoom(chattingRoomId,loginId,headerAccessor.getSessionId());
+        updateCountAllZero(chattingRoomId,loginId);
+
+        headerAccessor.getSessionAttributes().put(SUB,chattingRoomId);
+
+
+        log.info("채팅방 입장: chattingRoomId: {}",chattingRoomId);
+
+        return MessageResponseDto.ofEnter("접속하였습니다"+loginId,chattingRoomId);
+
     }
 
     public void sendEnterMessage(Long chattingRoomId, String loginId) {

@@ -23,6 +23,7 @@ import org.springframework.messaging.handler.annotation.DestinationVariable;
 import org.springframework.messaging.handler.annotation.MessageMapping;
 import org.springframework.messaging.handler.annotation.Payload;
 import org.springframework.messaging.simp.SimpMessageHeaderAccessor;
+import org.springframework.messaging.simp.annotation.SubscribeMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -89,6 +90,14 @@ public class ChattingController {
         chattingService.sendMessage(roomId,chatDto,simpMessageHeaderAccessor);
 
         return ResponseEntity.ok().build();
+    }
+
+    @SubscribeMapping("/chat/room/{roomId}")
+    public MessageResponseDto afterSubscribe(@DestinationVariable("roomId") final Long roomId, final SimpMessageHeaderAccessor simpMessageHeaderAccessor){
+
+        return chattingService.sendEnterMessageAfterSubscribe(roomId,simpMessageHeaderAccessor.getUser().getName(),
+                                                               simpMessageHeaderAccessor);
+
     }
 
 //    @MessageMapping("message.{roomId}")
