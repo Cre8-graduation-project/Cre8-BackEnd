@@ -70,6 +70,8 @@ public class MemberMailSendService {
         Member member = memberRepository.findMemberByLoginId(loginIdRequestDto.getLoginId())
                 .orElseThrow(()-> new NotFoundException(ErrorCode.CANT_FIND_MEMBER));
 
+        checkValidateUser(loginIdRequestDto,member);
+
         String tmpPassword = generateRandomString(7);
 
         mailService.sendMail(member.getEmail(),mailTitle,mailContentsTMPPasswordBefore
@@ -79,6 +81,18 @@ public class MemberMailSendService {
         member.changePassword(passwordEncoder.encode(tmpPassword));
         member.changeStatusToTMPPassword();
 
+    }
+
+    private void checkValidateUser(final LoginIdRequestDto loginIdRequestDto, final Member member) {
+
+        if(member.getEmail().equals(loginIdRequestDto.getEmail()) &&
+           member.getLoginId().equals(loginIdRequestDto.getLoginId()) &&
+           member.getName().equals(loginIdRequestDto.getName())){
+
+            return;
+        }
+
+        throw new BadRequestException(ErrorCode.CANT_REQUEST_TMP_PW);
     }
 
     //임의의 6자리 양수를 반환합니다.
