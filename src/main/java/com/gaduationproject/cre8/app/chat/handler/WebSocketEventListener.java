@@ -1,5 +1,6 @@
 package com.gaduationproject.cre8.app.chat.handler;
 
+import com.gaduationproject.cre8.app.chat.event.SessionSubscribedEvent;
 import com.gaduationproject.cre8.app.chat.service.ChattingService;
 import com.gaduationproject.cre8.app.chat.service.MessagingService;
 import com.gaduationproject.cre8.externalApi.redis.service.ChattingRoomConnectService;
@@ -37,8 +38,38 @@ public class WebSocketEventListener {
         log.info("disconnect 끊김");
     }
 
+//    @EventListener
+//    public void handleWebSocketSubscribeListener(SessionSubscribeEvent event){
+//
+//        StompHeaderAccessor headerAccessor = StompHeaderAccessor.wrap(event.getMessage());
+//
+//        final Long chattingRoomId = Long.valueOf(headerAccessor.getSubscriptionId());
+//        final String loginId = headerAccessor.getUser().getName();
+//
+//        chattingRoomConnectService.connectChattingRoom(chattingRoomId,loginId,headerAccessor.getSessionId());
+//        chattingService.sendEnterMessage(chattingRoomId,loginId);
+//        chattingService.updateCountAllZero(chattingRoomId,loginId);
+//
+//        headerAccessor.getSessionAttributes().put(SUB,chattingRoomId);
+//
+//
+//        log.info("채팅방 입장: chattingRoomId: {}",chattingRoomId);
+//    }
+
     @EventListener
-    public void handleWebSocketSubscribeListener(SessionSubscribeEvent event){
+    public void handleWebSocketUnsubscribeListener(SessionUnsubscribeEvent event) {
+
+        StompHeaderAccessor headerAccessor = StompHeaderAccessor.wrap(event.getMessage());
+
+        final Long chattingRoomId = Long.valueOf(headerAccessor.getSubscriptionId());
+
+        chattingRoomConnectService.disconnectChattingRoom(headerAccessor.getSessionId());
+        log.info("채팅방 퇴장: chattingRoomId: {}",chattingRoomId);
+
+    }
+
+    @EventListener
+    public void handleWebSocketAfterSubscribe(SessionSubscribedEvent event){
 
         StompHeaderAccessor headerAccessor = StompHeaderAccessor.wrap(event.getMessage());
 
@@ -53,17 +84,7 @@ public class WebSocketEventListener {
 
 
         log.info("채팅방 입장: chattingRoomId: {}",chattingRoomId);
-    }
 
-    @EventListener
-    public void handleWebSocketUnsubscribeListener(SessionUnsubscribeEvent event) {
-
-        StompHeaderAccessor headerAccessor = StompHeaderAccessor.wrap(event.getMessage());
-
-        final Long chattingRoomId = Long.valueOf(headerAccessor.getSubscriptionId());
-
-        chattingRoomConnectService.disconnectChattingRoom(headerAccessor.getSessionId());
-        log.info("채팅방 퇴장: chattingRoomId: {}",chattingRoomId);
 
     }
 
