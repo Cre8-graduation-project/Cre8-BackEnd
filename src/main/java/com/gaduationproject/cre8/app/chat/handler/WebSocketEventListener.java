@@ -59,9 +59,9 @@ public class WebSocketEventListener {
         final Long chattingRoomId = Long.valueOf(headerAccessor.getSubscriptionId());
         final String loginId = headerAccessor.getUser().getName();
 
+        chattingService.updateCountAllZero(chattingRoomId,loginId);
         chattingRoomConnectService.connectChattingRoom(chattingRoomId,loginId,headerAccessor.getSessionId());
         chattingService.sendEnterMessage(chattingRoomId,loginId);
-        chattingService.updateCountAllZero(chattingRoomId,loginId);
 
         headerAccessor.getSessionAttributes().put(SUB,chattingRoomId);
 
