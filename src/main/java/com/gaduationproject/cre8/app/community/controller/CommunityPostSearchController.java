@@ -21,6 +21,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
@@ -49,6 +50,27 @@ public class CommunityPostSearchController {
 
         return ResponseEntity.ok(BaseResponse
                 .createSuccess(communityPostSearchService.searchCommunityPostByCommunityBoardId(communityBoardId,pageable)));
+    }
+
+    @GetMapping("/test/{communityBoardId}")
+    @Operation(summary = "커뮤니티 게시글 리스트2",description = "커뮤니티 게시글을 커뮤니티 게시판  최신순으로 조회할 수 있습니다.2 ")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200",description = "커뮤니티 게시글 리스트 조회 성공2")
+    })
+    @Parameters({
+            @Parameter(name = "page", description = "페이지 번호(0부터 시작)", in = ParameterIn.QUERY),
+            @Parameter(name = "direction", description = "내림차순과 오름차순(desc,asc)", in = ParameterIn.QUERY),
+            @Parameter(name = "sort", description = "정렬기준(createdAt)", in = ParameterIn.QUERY),
+            @Parameter(name = "size", description = "페이지당 아이템 갯수", in = ParameterIn.QUERY)
+    }
+    )
+    public ResponseEntity<BaseResponse<CommunityPostSearchWithSliceResponseDto>> communityPostSearchResponse2(
+            @PathVariable("communityBoardId") final Long communityBoardId,
+            @RequestParam(value = "lastPostId",required = false) final Long lastPostId,
+            @PageableDefault(size = 10,sort = "createdAt",direction = Direction.DESC,page = 0) final Pageable pageable) {
+
+        return ResponseEntity.ok(BaseResponse
+                .createSuccess(communityPostSearchService.searchCommunityPostByCommunityBoardIdAndLastPostId(communityBoardId,lastPostId,pageable)));
     }
 
     @GetMapping("/like/my-Post")
