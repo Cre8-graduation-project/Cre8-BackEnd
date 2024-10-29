@@ -61,7 +61,10 @@ public class WebSocketEventListener {
 
         chattingService.updateCountAllZero(chattingRoomId,loginId);
         chattingRoomConnectService.connectChattingRoom(chattingRoomId,loginId,headerAccessor.getSessionId());
-        chattingService.sendEnterMessage(chattingRoomId,loginId);
+
+        if(chattingRoomConnectService.isAllConnected(chattingRoomId)){
+            chattingService.sendEnterMessage(chattingRoomId,loginId);
+        }
 
         headerAccessor.getSessionAttributes().put(SUB,chattingRoomId);
 
