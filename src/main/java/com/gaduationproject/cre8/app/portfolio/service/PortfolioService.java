@@ -2,6 +2,7 @@ package com.gaduationproject.cre8.app.portfolio.service;
 
 import com.gaduationproject.cre8.app.event.s3.S3UploadImageListCommitEvent;
 import com.gaduationproject.cre8.app.event.s3.S3UploadImageListRollbackEvent;
+import com.gaduationproject.cre8.app.portfolio.dto.event.ImageDeleteEventDto;
 import com.gaduationproject.cre8.common.response.error.ErrorCode;
 import com.gaduationproject.cre8.common.response.error.exception.BadRequestException;
 import com.gaduationproject.cre8.common.response.error.exception.NotFoundException;
@@ -197,14 +198,15 @@ public class PortfolioService {
     private void updatePortfolioImage(final List<MultipartFile> multipartFileList,final Portfolio portfolio,final List<Long> deletePortfolioImageId){
 
 
-        List<String> deleteAccessUrlList = new ArrayList<>();
+        List<ImageDeleteEventDto> imageDeleteEventDtos = new ArrayList<>();
         List<String> newAccessUrlList = new ArrayList<>();
 
 
         if(deletePortfolioImageId!=null){
 
             deletePortfolioImageId.forEach(portfolioImageId->{
-                deleteAccessUrlList.add(portfolioImageRepository.findById(portfolioImageId).orElseThrow(()->new NotFoundException(ErrorCode.CANT_FIND_PORTFOLIO_IMAGE_ID)).getAccessUrl());
+                imageDeleteEventDtos.add(
+                        new ImageDeleteEventDto(portfolioImageId, portfolioImageRepository.findById(portfolioImageId).orElseThrow(()->new NotFoundException(ErrorCode.CANT_FIND_PORTFOLIO_IMAGE_ID)).getAccessUrl()));
                 portfolioImageRepository.deleteById(portfolioImageId);
             });
 
@@ -231,19 +233,19 @@ public class PortfolioService {
 
 
         eventPublisher.publishEvent(S3UploadImageListRollbackEvent.builder().newAccessImageUrlList(newAccessUrlList).build());
-        eventPublisher.publishEvent(S3UploadImageListCommitEvent.builder().deleteAccessImageUrlList(deleteAccessUrlList).build());
+        eventPublisher.publishEvent(S3UploadImageListCommitEvent.builder().imageDeleteEventDtos(imageDeleteEventDtos).build());
 
     }
 
     private void deletePortfolioImage(final Portfolio portfolio){
 
-        List<String> deleteAccessUrl = new ArrayList<>();
+        List<ImageDeleteEventDto> imageDeleteEventDtos = new ArrayList<>();
 
         portfolioImageRepository.findByPortfolio(portfolio).forEach(portfolioImage -> {
-            deleteAccessUrl.add(portfolioImage.getAccessUrl());
+            imageDeleteEventDtos.add(new ImageDeleteEventDto(portfolioImage.getId(),portfolioImage.getAccessUrl()));
         });
 
-        eventPublisher.publishEvent(S3UploadImageListCommitEvent.builder().deleteAccessImageUrlList(deleteAccessUrl).build());
+        eventPublisher.publishEvent(S3UploadImageListCommitEvent.builder().imageDeleteEventDtos(imageDeleteEventDtos).build());
 
         portfolio.getPortfolioImageList().clear();
 

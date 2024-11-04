@@ -6,7 +6,9 @@ import com.gaduationproject.cre8.app.event.s3.S3UploadImageListCommitEvent;
 import com.gaduationproject.cre8.app.event.s3.S3UploadImageListRollbackEvent;
 import com.gaduationproject.cre8.externalApi.s3.S3ImageService;
 import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.mongodb.core.MongoTemplate;
+import org.springframework.data.mongodb.core.query.Criteria;
+import org.springframework.data.mongodb.core.query.Query;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.event.TransactionPhase;
 import org.springframework.transaction.event.TransactionalEventListener;
@@ -17,6 +19,7 @@ import org.springframework.transaction.event.TransactionalEventListener;
 public class S3UploadEventListener {
 
     private final S3ImageService s3ImageService;
+    private final MongoTemplate mongoTemplate;
 
     //단건으로 이미지 저장하는 로직 중 예외 시 새롭게 저장 된 이미지 롤백
     @TransactionalEventListener(phase = TransactionPhase.AFTER_ROLLBACK)
@@ -47,8 +50,11 @@ public class S3UploadEventListener {
     @TransactionalEventListener(phase = TransactionPhase.AFTER_COMMIT)
     public void transactionalEventListenerAfterCommit(final S3UploadImageListCommitEvent s3UploadImageListCommitEvent) {
 
-        s3UploadImageListCommitEvent.getDeleteAccessImageUrlList().forEach(accessUrl->{
-            s3ImageService.deleteImage(accessUrl);
+        s3UploadImageListCommitEvent.getImageDeleteEventDtos().forEach(imageDeleteEventDto->{
+            s3ImageService.deleteImage(imageDeleteEventDto.deleteAccessUrl());
+            Query query = new Query();
+            query.addCriteria(Criteria.where("portfolio_image_id").is(imageDeleteEventDto.deletePortfolioImageId()));
+            mongoTemplate.remove(query,"vector");
         });
     }
 
