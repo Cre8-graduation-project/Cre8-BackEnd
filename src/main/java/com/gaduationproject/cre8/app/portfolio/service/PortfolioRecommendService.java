@@ -4,12 +4,18 @@ import com.gaduationproject.cre8.app.portfolio.dto.request.PortfolioAIRequestDto
 import com.gaduationproject.cre8.app.portfolio.dto.request.PortfolioRecommendRequestDto;
 import com.gaduationproject.cre8.app.portfolio.dto.response.PortfolioRecommendResponseDto;
 import com.gaduationproject.cre8.app.portfolio.dto.response.PortfolioResponseDto;
+import com.gaduationproject.cre8.common.response.error.ErrorCode;
+import com.gaduationproject.cre8.common.response.error.exception.BadRequestException;
 import java.util.List;
 import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
 import org.springframework.core.ParameterizedTypeReference;
+import org.springframework.core.io.Resource;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.multipart.MultipartFile;
+import org.springframework.web.reactive.function.BodyInserters;
+import org.springframework.web.reactive.function.BodyInserters.MultipartInserter;
 import org.springframework.web.reactive.function.client.WebClient;
 
 @Service
@@ -19,11 +25,17 @@ public class PortfolioRecommendService {
 
     private final WebClient webClient;
 
+    private static final String QUERY_IMAGE_URL = "query_image_url";
+    private static final String QUERY_IMAGE_FILE = "query_image_file";
+
+    private static final String ML_RECOMMEND_API="/find_similar_image";
+
     public List<PortfolioRecommendResponseDto> showRecommendPortfolio(final PortfolioRecommendRequestDto portfolioRecommendRequestDto){
 
+
         List<PortfolioAIRequestDto> portfolioAIRequestDtoList = webClient.post()
-                .uri("/find_similar_image")
-                .bodyValue(portfolioRecommendRequestDto)
+                .uri(ML_RECOMMEND_API)
+                .body(getBody(portfolioRecommendRequestDto))
                 .retrieve()
                 .bodyToMono(new ParameterizedTypeReference<List<PortfolioAIRequestDto>>() {})
                 .block();
@@ -36,6 +48,28 @@ public class PortfolioRecommendService {
                         .build())
                 .toList();
 
+    }
+
+    private MultipartInserter getBody(final PortfolioRecommendRequestDto portfolioRecommendRequestDto) {
+
+        if (!multiPartFileBlank(portfolioRecommendRequestDto.getImageFile())) {
+
+            return BodyInserters.fromMultipartData(QUERY_IMAGE_FILE, portfolioRecommendRequestDto.getImageFile().getResource());
+        }
+
+        if(imageUrlBlank(portfolioRecommendRequestDto.getImageUrl())){
+            throw new BadRequestException(ErrorCode.CANT_ALL_BLANK_FILE_URL);
+        }
+
+        return BodyInserters.fromMultipartData(QUERY_IMAGE_URL, portfolioRecommendRequestDto.getImageUrl());
+    }
+
+    private boolean multiPartFileBlank(final MultipartFile multipartFile){
+        return multipartFile==null || multipartFile.isEmpty();
+    }
+
+    private boolean imageUrlBlank(final String imageUrl){
+        return imageUrl==null || imageUrl.isBlank();
     }
 
 }
