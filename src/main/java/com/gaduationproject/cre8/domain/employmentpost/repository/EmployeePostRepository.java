@@ -45,4 +45,6 @@ public interface EmployeePostRepository extends JpaRepository<EmployeePost,Long>
     List<EmployeePost> findByBasicPostContent_Member(final Member member);
     void deleteByBasicPostContent_Member(final Member member);
 
+    Optional<EmployeePost> findTop1ByBasicPostContent_Member_IdOrderByIdDesc(final Long memberId);
+
 }
