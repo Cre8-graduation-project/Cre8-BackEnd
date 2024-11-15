@@ -7,12 +7,12 @@ import lombok.Builder;
 import lombok.Getter;
 
 @Getter
-public class S3UploadImageListCommitEvent {
+public class UploadImageListCommitDeleteEvent {
 
     private List<ImageDeleteEventDto> imageDeleteEventDtos = new ArrayList<>();
 
     @Builder
-    public S3UploadImageListCommitEvent(List<ImageDeleteEventDto> imageDeleteEventDtos){
+    public UploadImageListCommitDeleteEvent(List<ImageDeleteEventDto> imageDeleteEventDtos){
         this.imageDeleteEventDtos = imageDeleteEventDtos;
     }
 

@@ -1,8 +1,10 @@
 package com.gaduationproject.cre8.app.portfolio.service;
 
-import com.gaduationproject.cre8.app.event.s3.S3UploadImageListCommitEvent;
+import com.gaduationproject.cre8.app.event.s3.UploadImageListCommitDeleteEvent;
 import com.gaduationproject.cre8.app.event.s3.S3UploadImageListRollbackEvent;
+import com.gaduationproject.cre8.app.event.s3.UploadImageListCommitSaveEvent;
 import com.gaduationproject.cre8.app.portfolio.dto.event.ImageDeleteEventDto;
+import com.gaduationproject.cre8.app.portfolio.dto.event.ImageSaveEventDto;
 import com.gaduationproject.cre8.common.response.error.ErrorCode;
 import com.gaduationproject.cre8.common.response.error.exception.BadRequestException;
 import com.gaduationproject.cre8.common.response.error.exception.NotFoundException;
@@ -200,6 +202,7 @@ public class PortfolioService {
 
         List<ImageDeleteEventDto> imageDeleteEventDtos = new ArrayList<>();
         List<String> newAccessUrlList = new ArrayList<>();
+        List<ImageSaveEventDto> imageSaveEventDtos = new ArrayList<>();
 
 
         if(deletePortfolioImageId!=null){
@@ -227,13 +230,16 @@ public class PortfolioService {
                         .build();
 
                 portfolio.getPortfolioImageList().add(portfolioImage);
+                imageSaveEventDtos.add(new ImageSaveEventDto(portfolioImage.getId()));
 
             });
+
         }
 
 
         eventPublisher.publishEvent(S3UploadImageListRollbackEvent.builder().newAccessImageUrlList(newAccessUrlList).build());
-        eventPublisher.publishEvent(S3UploadImageListCommitEvent.builder().imageDeleteEventDtos(imageDeleteEventDtos).build());
+        eventPublisher.publishEvent(UploadImageListCommitDeleteEvent.builder().imageDeleteEventDtos(imageDeleteEventDtos).build());
+        eventPublisher.publishEvent(UploadImageListCommitSaveEvent.builder().imageSaveEventDtos(imageSaveEventDtos).build());
 
     }
 
@@ -245,7 +251,7 @@ public class PortfolioService {
             imageDeleteEventDtos.add(new ImageDeleteEventDto(portfolioImage.getId(),portfolioImage.getAccessUrl()));
         });
 
-        eventPublisher.publishEvent(S3UploadImageListCommitEvent.builder().imageDeleteEventDtos(imageDeleteEventDtos).build());
+        eventPublisher.publishEvent(UploadImageListCommitDeleteEvent.builder().imageDeleteEventDtos(imageDeleteEventDtos).build());
 
         portfolio.getPortfolioImageList().clear();
 
