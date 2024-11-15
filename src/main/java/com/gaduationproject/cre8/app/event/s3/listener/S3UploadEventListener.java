@@ -34,7 +34,7 @@ public class S3UploadEventListener {
 
     //여러 이미지 저장하는 로직 중 예외 시 새롭게 저장 된 이미지들 롤백
     @TransactionalEventListener(phase = TransactionPhase.AFTER_ROLLBACK)
-    @Async
+    @Async("threadPoolTaskExecutor")
     public void transactionalEventListenerAfterRollback(final S3UploadImageListRollbackEvent s3UploadImageListRollbackEvent) {
 
         s3UploadImageListRollbackEvent.getNewAccessImageUrlList().forEach(accessUrl->{
@@ -53,7 +53,7 @@ public class S3UploadEventListener {
 
     //여러 건으로 이미지 저장하는 로직 중 commit 시 그제서야 이미지들 삭제
     @TransactionalEventListener(phase = TransactionPhase.AFTER_COMMIT)
-    @Async
+    @Async("threadPoolTaskExecutor")
     public void transactionalDeleteEventListenerAfterCommit(final UploadImageListCommitDeleteEvent uploadImageListCommitDeleteEvent) {
 
         uploadImageListCommitDeleteEvent.getImageDeleteEventDtos().forEach(imageDeleteEventDto->{
@@ -63,7 +63,7 @@ public class S3UploadEventListener {
     }
 
     @TransactionalEventListener(phase = TransactionPhase.AFTER_COMMIT)
-    @Async
+    @Async("threadPoolTaskExecutor")
     public void transactionalSaveEventListenerAfterCommit(final UploadImageListCommitSaveEvent uploadImageListCommitSaveEvent){
 
         uploadImageListCommitSaveEvent.getImageSaveEventDtos().forEach(imageSaveEventDto -> {

@@ -229,7 +229,7 @@ public class PortfolioService {
                         .accessUrl(accessUrl)
                         .build();
 
-                portfolio.getPortfolioImageList().add(portfolioImage);
+                portfolioImageRepository.save(portfolioImage);
                 imageSaveEventDtos.add(new ImageSaveEventDto(portfolioImage.getId()));
 
             });
