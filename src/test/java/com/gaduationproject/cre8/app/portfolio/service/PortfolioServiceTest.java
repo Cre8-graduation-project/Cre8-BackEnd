@@ -2,7 +2,7 @@ package com.gaduationproject.cre8.app.portfolio.service;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-import com.gaduationproject.cre8.app.event.s3.S3UploadImageListCommitEvent;
+import com.gaduationproject.cre8.app.event.s3.UploadImageListCommitDeleteEvent;
 import com.gaduationproject.cre8.app.event.s3.S3UploadImageListRollbackEvent;
 import com.gaduationproject.cre8.app.portfolio.dto.request.PortfolioEditRequestDto;
 import com.gaduationproject.cre8.app.portfolio.dto.response.PortfolioResponseDto;
@@ -145,7 +145,7 @@ class PortfolioServiceTest {
         doNothing().when(applicationEventPublisher).publishEvent(any(
                 S3UploadImageListRollbackEvent.class));
         doNothing().when(applicationEventPublisher).publishEvent(any(
-                S3UploadImageListCommitEvent.class));
+                UploadImageListCommitDeleteEvent.class));
 
 
 
@@ -179,7 +179,8 @@ class PortfolioServiceTest {
         ReflectionTestUtils.setField(portfolio,"id",1L);
         given(portfolioRepository.findById(eq(1L))).willReturn(Optional.of(portfolio));
         given(portfolioImageRepository.findByPortfolio(portfolio)).willReturn(List.of());
-        doNothing().when(applicationEventPublisher).publishEvent(any(S3UploadImageListCommitEvent.class));
+        doNothing().when(applicationEventPublisher).publishEvent(any(
+                UploadImageListCommitDeleteEvent.class));
 
 
 
