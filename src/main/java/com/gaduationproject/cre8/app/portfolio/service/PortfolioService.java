@@ -8,6 +8,8 @@ import com.gaduationproject.cre8.app.portfolio.dto.event.ImageSaveEventDto;
 import com.gaduationproject.cre8.common.response.error.ErrorCode;
 import com.gaduationproject.cre8.common.response.error.exception.BadRequestException;
 import com.gaduationproject.cre8.common.response.error.exception.NotFoundException;
+import com.gaduationproject.cre8.domain.employmentpost.entity.EmployeePost;
+import com.gaduationproject.cre8.domain.employmentpost.repository.EmployeePostRepository;
 import com.gaduationproject.cre8.externalApi.s3.S3ImageService;
 import com.gaduationproject.cre8.domain.member.entity.Member;
 import com.gaduationproject.cre8.domain.member.repository.MemberRepository;
@@ -26,6 +28,7 @@ import com.gaduationproject.cre8.domain.workfieldtag.repository.WorkFieldChildTa
 import com.gaduationproject.cre8.domain.workfieldtag.repository.WorkFieldTagRepository;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.ApplicationEventPublisher;
@@ -47,6 +50,7 @@ public class PortfolioService {
     private final S3ImageService s3ImageService;
     private final static String portFolioImage = "portfolio-images/";
     private final ApplicationEventPublisher eventPublisher;
+    private final EmployeePostRepository employeePostRepository;
 
 
 
@@ -120,8 +124,12 @@ public class PortfolioService {
             tagList.add(portfolioWorkFieldChildTag.getWorkFieldChildTag().getName());
         });
 
+        Optional<EmployeePost> recentEmployeePostOptional = employeePostRepository.findTop1ByBasicPostContent_Member_IdOrderByIdDesc(
+                portfolio.getMember().getId());
 
-        return PortfolioResponseDto.from(tagList,portfolio);
+        Long recentEmployeePostId = recentEmployeePostOptional.map(EmployeePost::getId).orElse(null);
+
+        return PortfolioResponseDto.from(tagList,portfolio,recentEmployeePostId);
 
     }
 
