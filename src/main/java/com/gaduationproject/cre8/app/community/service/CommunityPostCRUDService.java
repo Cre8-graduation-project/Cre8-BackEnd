@@ -6,8 +6,6 @@ import com.gaduationproject.cre8.app.community.dto.response.CommunityPostRespons
 import com.gaduationproject.cre8.app.community.dto.response.ReplyListResponseDto;
 import com.gaduationproject.cre8.app.community.dto.response.ReplyResponseDto;
 import com.gaduationproject.cre8.app.event.s3.S3UploadImageCommitEvent;
-import com.gaduationproject.cre8.app.event.s3.S3UploadImageListCommitEvent;
-import com.gaduationproject.cre8.app.event.s3.S3UploadImageListRollbackEvent;
 import com.gaduationproject.cre8.app.event.s3.S3UploadImageRollbackEvent;
 import com.gaduationproject.cre8.common.response.error.ErrorCode;
 import com.gaduationproject.cre8.common.response.error.exception.BadRequestException;

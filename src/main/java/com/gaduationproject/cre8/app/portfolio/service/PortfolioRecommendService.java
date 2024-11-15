@@ -30,6 +30,8 @@ public class PortfolioRecommendService {
 
     private static final String ML_RECOMMEND_API="/find_similar_image";
 
+    private static final String SAVE_VECTOR = "/portfolio/vector";
+
     public List<PortfolioRecommendResponseDto> showRecommendPortfolio(final PortfolioRecommendRequestDto portfolioRecommendRequestDto){
 
 
@@ -48,6 +50,18 @@ public class PortfolioRecommendService {
                         .build())
                 .toList();
 
+    }
+
+    public void savePortfolioWithVector(final Long portfolioImageId){
+
+        webClient.post()
+                .uri(uriBuilder -> uriBuilder
+                        .path(SAVE_VECTOR)
+                        .queryParam("portfolioImageId", portfolioImageId)
+                        .build())
+                .retrieve()
+                .bodyToMono(Void.class)
+                .block();
     }
 
     private MultipartInserter getBody(final PortfolioRecommendRequestDto portfolioRecommendRequestDto) {
