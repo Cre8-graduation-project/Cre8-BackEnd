@@ -58,6 +58,10 @@ public class SecurityConfig {
                                 .requestMatchers(HttpMethod.POST,"/api/v1/test","/api/v1/redis/test","/api/v1/auth/login","/api/v1/mail",
                                         "/api/v1/mail/check","/api/v1/members","/api/v1/mail/temp/password").permitAll()
                                 .requestMatchers("/ws-stomp").permitAll()
+                                .requestMatchers(HttpMethod.POST,"/api/v1/community/boards","/api/v1/tags","/api/v1/tags/category","/api/v1/tags/categories",
+                                        "/api/v1/tags/child","/api/v1/tags/childs").hasAuthority(Authority.MANAGER.toString())
+                                .requestMatchers(HttpMethod.DELETE,"/api/v1/community/boards/*","/api/v1/tags/*","/api/v1/tags/category/*","/api/v1/tags/child/*")
+                                .hasAuthority(Authority.MANAGER.toString())
                                 .anyRequest().authenticated())
 
 
