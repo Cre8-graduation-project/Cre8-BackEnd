@@ -37,26 +37,6 @@ public class CommunityPostSearchService {
     private final LikeCommunityPostRepository likeCommunityPostRepository;
 
 
-    public CommunityPostSearchWithSliceResponseDto searchCommunityPostByCommunityBoardId(final Long communityBoardId,
-                                                                                         final Pageable pageable){
-
-        Slice<CommunityPostSearchDBResponseDto> communityPosts =
-                communityPostRepository.findCommunityPostKeyWordSearchDBByCommunityBoardId(communityBoardId,pageable);
-
-
-        List<CommunityPostSearchResponseDto> communityPostSearchResponseDtoList =
-                communityPosts.stream().map(communityPostSearchDBResponseDto -> {
-                    return  CommunityPostSearchResponseDto.of(communityPostSearchDBResponseDto.getCommunityPostId(),
-                            communityPostSearchDBResponseDto.getTitle(),
-                            replyRepository.totalReplyCount(communityPostSearchDBResponseDto.getCommunityPostId()),
-                            communityPostSearchDBResponseDto.getWriterNickName(),
-                            communityPostSearchDBResponseDto.getCreatedAt());
-                }).collect(Collectors.toList());
-
-        return CommunityPostSearchWithSliceResponseDto.of(communityPostSearchResponseDtoList,communityPosts.hasNext());
-
-    }
-
     public CommunityPostSearchWithSliceResponseDto searchCommunityPostByCommunityBoardIdAndLastPostId(final Long communityBoardId,
             final Long lastPostId, final Pageable pageable){
 
@@ -95,6 +75,23 @@ public class CommunityPostSearchService {
                     communityPost.getCreatedAt());
         }).collect(Collectors.toList()), likeCommunityPostSlice.hasNext());
 
+    }
+
+    public CommunityPostSearchWithSliceResponseDto searchMyCommunityPost(final String loginId, final Pageable pageable){
+
+        Member member = getLoginMember(loginId);
+
+        Slice<CommunityPostSearchDBResponseDto> myCommunityPost = communityPostRepository.findMyCommunityPost(
+                member.getId(), pageable);
+
+        return CommunityPostSearchWithSliceResponseDto.of(myCommunityPost.getContent().stream().map(communityPostSearchDBResponseDto -> {
+
+            return CommunityPostSearchResponseDto.of(communityPostSearchDBResponseDto.getCommunityPostId(),
+                    communityPostSearchDBResponseDto.getTitle(),
+                    replyRepository.totalReplyCount(communityPostSearchDBResponseDto.getCommunityPostId()),
+                    communityPostSearchDBResponseDto.getWriterNickName(),
+                    communityPostSearchDBResponseDto.getCreatedAt());
+        }).toList(),myCommunityPost.hasNext());
     }
 
     private Member getLoginMember(final String loginId){

@@ -27,4 +27,10 @@ public interface CommunityPostRepository extends JpaRepository<CommunityPost,Lon
     List<CommunityPost> findByWriter(final Member member);
 
 
+    @Query("select new com.gaduationproject.cre8.domain.community.dto.CommunityPostSearchDBResponseDto(cp.id,cp.title,m.nickName,cp.createdAt)"
+            + "from CommunityPost cp join cp.writer m where cp.writer.id=:memberId")
+    Slice<CommunityPostSearchDBResponseDto> findMyCommunityPost(@Param("memberId") final Long memberId,
+            final Pageable pageable);
+
+
 }

@@ -1,4 +1,4 @@
-package com.gaduationproject.cre8.app.community.dto.response;
+package com.gaduationproject.cre8.adminapp.communityBoard.dto;
 
 import com.gaduationproject.cre8.domain.community.entity.CommunityBoard;
 import lombok.AccessLevel;
