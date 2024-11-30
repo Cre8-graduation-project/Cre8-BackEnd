@@ -93,4 +93,24 @@ public class CommunityPostSearchController {
         return ResponseEntity.ok(BaseResponse.createSuccess(communityPostSearchService.searchMyLikeCommunityPost(loginId,pageable)));
     }
 
+    @GetMapping("/my-Post")
+    @Operation(summary = "내가 작성한 커뮤니티 게시글  조회",description = "내가 작성한 커뮤니티 게시글을 조회합니다")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200",description = "내가 작성한 커뮤니티 게시글 성공적 조회"),
+    })
+    @Parameters({
+            @Parameter(name = "page", description = "페이지 번호(0부터 시작)", in = ParameterIn.QUERY),
+            @Parameter(name = "direction", description = "내림차순과 오름차순(desc,asc)", in = ParameterIn.QUERY),
+            @Parameter(name = "sort", description = "정렬기준(createdAt)", in = ParameterIn.QUERY),
+            @Parameter(name = "size", description = "페이지당 아이템 갯수", in = ParameterIn.QUERY)
+    })
+    public ResponseEntity<BaseResponse<CommunityPostSearchWithSliceResponseDto>> showMyCommunityPost
+            (@CurrentMemberLoginId final String loginId,
+                    @PageableDefault(size = 10,sort = "createdAt",direction = Direction.DESC,page = 0) final Pageable pageable
+            ){
+
+
+        return ResponseEntity.ok(BaseResponse.createSuccess(communityPostSearchService.searchMyCommunityPost(loginId,pageable)));
+    }
+
 }

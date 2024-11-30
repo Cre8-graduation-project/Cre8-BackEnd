@@ -97,6 +97,23 @@ public class CommunityPostSearchService {
 
     }
 
+    public CommunityPostSearchWithSliceResponseDto searchMyCommunityPost(final String loginId, final Pageable pageable){
+
+        Member member = getLoginMember(loginId);
+
+        Slice<CommunityPostSearchDBResponseDto> myCommunityPost = communityPostRepository.findMyCommunityPost(
+                member.getId(), pageable);
+
+        return CommunityPostSearchWithSliceResponseDto.of(myCommunityPost.getContent().stream().map(communityPostSearchDBResponseDto -> {
+
+            return CommunityPostSearchResponseDto.of(communityPostSearchDBResponseDto.getCommunityPostId(),
+                    communityPostSearchDBResponseDto.getTitle(),
+                    replyRepository.totalReplyCount(communityPostSearchDBResponseDto.getCommunityPostId()),
+                    communityPostSearchDBResponseDto.getWriterNickName(),
+                    communityPostSearchDBResponseDto.getCreatedAt());
+        }).toList(),myCommunityPost.hasNext());
+    }
+
     private Member getLoginMember(final String loginId){
 
         return memberRepository.findMemberByLoginId(loginId).orElseThrow(()->new NotFoundException(
