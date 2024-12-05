@@ -21,7 +21,7 @@ public class EmployeePostWorkFieldChildTag {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "employee_post_work_field_child_tag")
+    @Column(name = "employee_post_work_field_child_tag_id")
     private Long id;
 
     @ManyToOne(fetch = FetchType.LAZY)

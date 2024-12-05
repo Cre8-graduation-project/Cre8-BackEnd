@@ -28,11 +28,11 @@ public class Reply extends BaseEntity implements NotifyInfo {
     private Long id;
 
 
-    @Column(length = 200)
+    @Column(length = 200,nullable = false)
     private String contents;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "member_id")
+    @JoinColumn(name = "member_id",nullable = false)
     private Member writer;
 
     @ManyToOne(fetch = FetchType.LAZY)

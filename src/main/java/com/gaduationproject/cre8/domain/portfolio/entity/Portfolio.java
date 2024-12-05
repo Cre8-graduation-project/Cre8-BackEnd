@@ -26,6 +26,7 @@ public class Portfolio {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "portfolio_id")
     private Long id;
 
     @ManyToOne(fetch = FetchType.LAZY)
@@ -41,7 +42,7 @@ public class Portfolio {
     List<PortfolioImage> portfolioImageList = new ArrayList<>();
 
 
-    @Column(length = 1000)
+    @Column(columnDefinition = "TEXT")
     private String description;
 
     @Builder

@@ -21,8 +21,6 @@ public class CommunityPostCustomRepositoryImpl implements CommunityPostCustomRep
     @Override
     public Slice<CommunityPostSearchDBResponseDto> showCommunityPostWithNoOffSet(final Long lastCommunityPostId,final Long communityBoardId,final Pageable pageable){
 
-        System.out.println("hi");
-
         List<CommunityPostSearchDBResponseDto> results = queryFactory.select(
                         Projections.constructor(CommunityPostSearchDBResponseDto.class,
                                 communityPost.id, communityPost.title,communityPost.writer.nickName,communityPost.createdAt))
@@ -33,8 +31,6 @@ public class CommunityPostCustomRepositoryImpl implements CommunityPostCustomRep
                 .orderBy(communityPost.id.desc())
                 .limit(pageable.getPageSize()+1)
                 .fetch();
-
-        System.out.println("여기영");
 
 
         return checkLastPage(pageable,results);

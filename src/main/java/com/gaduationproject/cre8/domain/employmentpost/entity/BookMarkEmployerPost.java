@@ -26,12 +26,12 @@ public class BookMarkEmployerPost extends BaseEntity {
     private Long id;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "employer_post_id",updatable = false)
+    @JoinColumn(name = "employer_post_id",updatable = false,nullable = false)
     private EmployerPost employerPost;
 
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "member_id",updatable = false)
+    @JoinColumn(name = "member_id",updatable = false,nullable = false)
     private Member member;
 
     @Builder

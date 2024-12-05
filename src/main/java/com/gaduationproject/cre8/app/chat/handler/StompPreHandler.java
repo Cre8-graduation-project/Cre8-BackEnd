@@ -64,8 +64,7 @@ public class StompPreHandler implements ExecutorChannelInterceptor {
 
         if (StompCommand.SUBSCRIBE.equals(accessor.getCommand())) {
             String destination = accessor.getDestination();
-            // destination을 사용하여 구독 경로를 확인하거나 로깅
-            System.out.println("Subscribing to destination: " + destination);
+
 
             if(!destination.equals(CHAT_SUB_ERROR_PREFIX)&& !destination.startsWith(CHAT_SUB_PREFIX)){
                 throw new BadRequestException(ErrorCode.SUB_URL_NOT_MATCH);
