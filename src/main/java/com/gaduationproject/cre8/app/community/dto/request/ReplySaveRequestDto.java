@@ -21,7 +21,7 @@ public class ReplySaveRequestDto {
     private Long parentReplyId;
 
     @NotEmpty(message = "내용을 입력해 주세요")
-    @Size(max = 500, message = "200 글자 이내만 가능합니다.")
+    @Size(min=5,max = 200, message = "200 글자 이내만 가능합니다.")
     @Schema(description = "게시물에 대한 댓글 내용을 입력합니다",example = "나는 진짜 능력이 있어요")
     private String contents;
 
