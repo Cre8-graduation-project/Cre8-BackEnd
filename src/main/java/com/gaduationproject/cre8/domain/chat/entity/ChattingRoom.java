@@ -25,11 +25,11 @@ public class ChattingRoom {
     private Long id;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "first_sender_id")
+    @JoinColumn(name = "first_sender_id",nullable = false)
     private Member sender;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "first_receiver_id")
+    @JoinColumn(name = "first_receiver_id",nullable = false)
     private Member receiver;
 
 

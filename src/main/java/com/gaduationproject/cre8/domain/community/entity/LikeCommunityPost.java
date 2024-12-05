@@ -27,11 +27,11 @@ public class LikeCommunityPost extends BaseEntity {
 
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "community_post_id")
+    @JoinColumn(name = "community_post_id",nullable = false)
     private CommunityPost communityPost;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "member_id")
+    @JoinColumn(name = "member_id",nullable = false)
     private Member liker;
 
     @Builder

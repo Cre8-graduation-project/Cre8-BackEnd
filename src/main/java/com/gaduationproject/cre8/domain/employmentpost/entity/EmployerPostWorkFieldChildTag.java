@@ -21,15 +21,15 @@ public class EmployerPostWorkFieldChildTag {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "employer_post_work_field_child_tag")
+    @Column(name = "employer_post_work_field_child_tag_id")
     private Long id;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "employer_post_id")
+    @JoinColumn(name = "employer_post_id",nullable = false)
     private EmployerPost employerPost;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "work_field_child_tag_id")
+    @JoinColumn(name = "work_field_child_tag_id",nullable = false)
     private WorkFieldChildTag workFieldChildTag;
 
     @Builder

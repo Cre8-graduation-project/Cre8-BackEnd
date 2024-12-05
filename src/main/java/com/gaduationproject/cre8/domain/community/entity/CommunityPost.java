@@ -27,10 +27,10 @@ public class CommunityPost extends BaseEntity {
     @Column(name = "community_post_id")
     private Long id;
 
-    @Column(length = 50,nullable = false)
+    @Column(nullable = false)
     private String title;
 
-    @Column(length = 500,nullable = false)
+    @Column(length = 2000,nullable = false)
     private String contents;
 
     private String accessUrl;
@@ -40,7 +40,7 @@ public class CommunityPost extends BaseEntity {
     private Member writer;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "community_board_id")
+    @JoinColumn(name = "community_board_id",nullable = false)
     private CommunityBoard communityBoard;
 
     @Builder
