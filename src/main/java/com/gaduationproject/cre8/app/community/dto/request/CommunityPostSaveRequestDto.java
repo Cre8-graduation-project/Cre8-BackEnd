@@ -24,12 +24,12 @@ public class CommunityPostSaveRequestDto {
     private Long communityBoardId;
 
     @NotEmpty(message = "제목을 입력해 주세요")
-    @Size(max = 50, message = "50 글자 이내만 가능합니다.")
+    @Size(min =5,max = 50, message = "5이상 50 글자 이내만 입력 가능합니다.")
     @Schema(description = "커뮤니티 게시글의 제목을 입력합니다",example = "이것은 게시글 제목 1,2,3,4,5,6")
     private String title;
 
     @NotEmpty(message = "내용을 입력해 주세요")
-    @Size(max = 500, message = "500 글자 이내만 가능합니다.")
+    @Size(min = 10,max = 2000, message = "10글자 이상 2000 글자 이내만 입력 가능합니다.")
     @Schema(description = "구직자 게시물에 대한 내용을 입력합니다",example = "나는 진짜 능력이 있어요")
     private String contents;
 

@@ -4,6 +4,7 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.Positive;
 import jakarta.validation.constraints.PositiveOrZero;
+import jakarta.validation.constraints.Size;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
@@ -19,6 +20,7 @@ public class SaveEmployerPostRequestDto {
 
     @NotEmpty(message = "제목을 입력해 주세요")
     @Schema(description = "구인자 게시물에 대한 제목을 입력합니다",example = "월급 받으실 분 구합니다")
+    @Size(min=5,max = 50, message = "50 글자 이내만 가능합니다.")
     private String title;
 
     @Schema(description = "작업 분야 상위 태그를 입력합니다",example = "2")
@@ -54,6 +56,7 @@ public class SaveEmployerPostRequestDto {
 
     @NotEmpty(message = "내용을 입력해주세요")
     @Schema(description = "구인자 게시글 내용 입력",example = "0")
+    @Size(min=10,max = 2000, message = "2000 글자 이내만 가능합니다.")
     private String contents;
 
     @NotEmpty(message = "연락처를 입력해주세요(이메일,핸드폰)")

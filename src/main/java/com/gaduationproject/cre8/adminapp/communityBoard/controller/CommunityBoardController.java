@@ -1,8 +1,8 @@
 package com.gaduationproject.cre8.adminapp.communityBoard.controller;
 
 import com.gaduationproject.cre8.app.auth.interfaces.CurrentMemberLoginId;
-import com.gaduationproject.cre8.app.community.dto.request.CommunityBoardSaveRequestDto;
-import com.gaduationproject.cre8.adminapp.communityBoard.dto.CommunityBoardResponseDto;
+import com.gaduationproject.cre8.adminapp.communityBoard.dto.request.CommunityBoardSaveRequestDto;
+import com.gaduationproject.cre8.app.community.dto.response.CommunityBoardResponseDto;
 import com.gaduationproject.cre8.adminapp.communityBoard.service.CommunityBoardService;
 import com.gaduationproject.cre8.app.response.BaseResponse;
 import io.swagger.v3.oas.annotations.Operation;

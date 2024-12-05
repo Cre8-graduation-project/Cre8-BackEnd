@@ -1,7 +1,7 @@
 package com.gaduationproject.cre8.adminapp.communityBoard.service;
 
-import com.gaduationproject.cre8.app.community.dto.request.CommunityBoardSaveRequestDto;
-import com.gaduationproject.cre8.adminapp.communityBoard.dto.CommunityBoardResponseDto;
+import com.gaduationproject.cre8.adminapp.communityBoard.dto.request.CommunityBoardSaveRequestDto;
+import com.gaduationproject.cre8.app.community.dto.response.CommunityBoardResponseDto;
 import com.gaduationproject.cre8.common.response.error.ErrorCode;
 import com.gaduationproject.cre8.common.response.error.exception.NotFoundException;
 import com.gaduationproject.cre8.domain.community.entity.CommunityBoard;
