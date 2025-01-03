@@ -1,0 +1,22 @@
+package com.cre8.member.repository;
+
+
+import com.cre8.member.entity.Member;
+import java.util.Optional;
+import org.springframework.data.jpa.repository.JpaRepository;
+
+public interface MemberRepository extends JpaRepository<Member,Long> {
+    Boolean existsByEmail(String email);
+    Boolean existsByNickName(String nickName);
+
+    Boolean existsByLoginId(String loginId);
+
+    Optional<Member> findMemberByLoginId(String loginId);
+
+    Optional<Member> findMemberByNickName(String nickName);
+
+
+
+
+
+}

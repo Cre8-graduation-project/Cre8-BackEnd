@@ -1,0 +1,44 @@
+package com.cre8.mongodb.domain;
+
+import com.fasterxml.jackson.databind.ser.Serializers.Base;
+
+import java.time.LocalDateTime;
+import lombok.AccessLevel;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+
+import org.springframework.data.annotation.Id;
+import org.springframework.data.mongodb.core.mapping.Document;
+
+@Document(collection = "chatting") //  몽고 DB 컬렉션 이름
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
+@Getter
+public class ChattingMessage {
+
+    @Id
+    private String id;
+
+    private Long chattingRoomId;
+
+    private Long senderId;
+
+    private String contents;
+
+    private LocalDateTime createdAt;
+
+    private int readCount;
+
+
+    @Builder
+    public ChattingMessage(final Long chattingRoomId, final Long senderId,final String contents,final LocalDateTime createdAt,final int readCount) {
+
+        this.chattingRoomId = chattingRoomId;
+        this.senderId = senderId;
+        this.contents = contents;
+        this.createdAt = createdAt;
+        this.readCount = readCount;
+    }
+
+}

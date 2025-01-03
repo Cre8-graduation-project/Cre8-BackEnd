@@ -1,0 +1,46 @@
+jar.enabled = false
+bootJar.enabled = true
+
+dependencies {
+
+    implementation project(path: ':module-common')
+    implementation project(path: ':module-domain')
+    testImplementation project(path: ':module-domain')
+    implementation project(path: ':module-external')
+    testImplementation platform('org.junit:junit-bom:5.9.1')
+    testImplementation 'org.junit.jupiter:junit-jupiter'
+    implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
+    implementation 'org.springframework.boot:spring-boot-starter-validation'
+    implementation 'org.springdoc:springdoc-openapi-starter-webmvc-ui:2.0.2'
+    implementation group: 'com.google.code.gson', name: 'gson', version: '2.6.2'
+
+    // Spring Context Support
+    implementation 'org.springframework:spring-context-support:5.3.9'
+
+    //security
+    implementation "org.springframework.boot:spring-boot-starter-security"
+    testImplementation 'org.springframework.security:spring-security-test'
+    implementation group: 'io.jsonwebtoken', name: 'jjwt-api', version: '0.11.2'
+    runtimeOnly group: 'io.jsonwebtoken', name: 'jjwt-impl', version: '0.11.2'
+    runtimeOnly group: 'io.jsonwebtoken', name: 'jjwt-jackson', version: '0.11.2'
+
+
+
+
+    //chat
+    implementation 'org.springframework.boot:spring-boot-starter-websocket'
+
+    //mongoDB
+    implementation 'org.springframework.boot:spring-boot-starter-data-mongodb'
+
+
+
+
+
+    //webclient
+    implementation 'org.springframework.boot:spring-boot-starter-webflux'
+
+    //
+    implementation 'com.fasterxml.jackson.core:jackson-core:2.17.0'
+    implementation 'org.opensearch.client:spring-data-opensearch:1.4.0'
+}
