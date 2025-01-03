@@ -1,0 +1,190 @@
+package com.cre8.employmentpost.service;
+
+
+import com.cre8.employmentpost.dto.EmployerPostKeyWordSearchDBResponseDto;
+import com.cre8.employmentpost.dto.EmployerSearchDBResponseDto;
+import com.cre8.employmentpost.dto.response.EmployerPostSearchResponseDto;
+import com.cre8.employmentpost.dto.response.EmployerPostSearchWithCountResponseDto;
+import com.cre8.employmentpost.dto.response.EmployerPostSearchWithSliceResponseDto;
+import com.cre8.employmentpost.entity.EmployerPost;
+import com.cre8.employmentpost.repository.BookMarkEmployerPostRepository;
+import com.cre8.employmentpost.repository.EmployerPostRepository;
+import com.cre8.employmentpost.repository.EmployerPostWorkFieldChildTagRepository;
+import com.cre8.employmentpost.search.EmployerPostSearch;
+import com.cre8.member.entity.Member;
+import com.cre8.member.repository.MemberRepository;
+import com.cre8.response.error.ErrorCode;
+import com.cre8.response.error.exception.NotFoundException;
+import com.cre8.workfieldtag.entity.WorkFieldTag;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.stream.Collectors;
+import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Slice;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+
+@Service
+@Transactional(readOnly = true)
+@RequiredArgsConstructor
+public class EmployerPostSearchService {
+
+    private final EmployerPostRepository employerPostRepository;
+    private final MemberRepository memberRepository;
+    private final BookMarkEmployerPostRepository bookMarkEmployerPostRepository;
+    private final EmployerPostWorkFieldChildTagRepository employerPostWorkFieldChildTagRepository;
+
+
+
+
+    public EmployerPostSearchWithCountResponseDto searchEmployerPost(final EmployerPostSearch employerPostSearch,
+            final Pageable pageable){
+
+        Page<EmployerPost> employerPostSearchResponseDtoPage =
+                employerPostRepository.showEmployerPostListWithPage(employerPostSearch,pageable);
+
+        return EmployerPostSearchWithCountResponseDto.of(employerPostSearchResponseDtoPage.getTotalElements(),
+                employerPostSearchResponseDtoPage.getContent().stream().map(employerPost -> {
+                    List<String> tagNameList = getTagList(employerPost);
+
+                    return EmployerPostSearchResponseDto.of(employerPost,tagNameList);
+
+                }).collect(
+                        Collectors.toList()),employerPostSearchResponseDtoPage.getTotalPages());
+    }
+
+    public EmployerPostSearchWithCountResponseDto searchEmployerPostWithDto(final EmployerPostSearch employerPostSearch,
+            final Pageable pageable){
+
+        Page<EmployerSearchDBResponseDto> employerPostSearchResponseDtoPage =
+                employerPostRepository.showEmployerPostDtoListWithPage(employerPostSearch,pageable);
+
+        return EmployerPostSearchWithCountResponseDto.of(employerPostSearchResponseDtoPage.getTotalElements(),
+                employerPostSearchResponseDtoPage.getContent().stream().map(
+                        employerSearchDBResponseDto -> {
+                            List<String> tagNameList = getTagListWithFetchTag(employerSearchDBResponseDto);
+
+                            return EmployerPostSearchResponseDto.ofFaster(employerSearchDBResponseDto,tagNameList);
+
+                        }).collect(
+                        Collectors.toList()),employerPostSearchResponseDtoPage.getTotalPages());
+    }
+
+
+
+    public EmployerPostSearchWithCountResponseDto searchEmployerPostByKeyWord(final String keyword,
+            final Pageable pageable) {
+
+//        Slice<EmployerPost> employerPostSlice =
+//                employerPostRepository.findEmployerPostWithFetchMemberAndWorkFieldTagAndChildTagListWithSlice(
+//                        keyword, pageable);
+//
+//        return EmployerPostSearchWithSliceResponseDto.of(
+//                employerPostSlice.stream().map(employerPost -> {
+//                    List<String> tagNameList = getTagList(employerPost);
+//
+//                    return EmployerPostSearchResponseDto.of(employerPost, tagNameList);
+//                }).collect(Collectors.toList()), employerPostSlice.hasNext());
+
+        Page<Long> employerPostIdList =
+                employerPostRepository.findEmployerPostIdWithPage(keyword,pageable);
+
+        List<EmployerPostKeyWordSearchDBResponseDto> employerPostList =
+                employerPostRepository.findEmployerPostKeyWordSearchDB(employerPostIdList.getContent(),pageable.getSort());
+
+        return EmployerPostSearchWithCountResponseDto.of(employerPostIdList.getTotalElements(),
+                employerPostList.stream().map(employerPostKeyWordSearchDBResponseDto -> {
+
+                            return EmployerPostSearchResponseDto.ofSearch(employerPostKeyWordSearchDBResponseDto,
+                                    getTagListByEmployerPostWorkField(
+                                            employerPostKeyWordSearchDBResponseDto));
+                        }
+                ).collect(Collectors.toList()),employerPostIdList.getTotalPages());
+    }
+
+
+    public EmployerPostSearchWithSliceResponseDto searchMyEmployerPost(final String loginId,final Pageable pageable){
+
+        Member member = getLoginMember(loginId);
+
+        Slice<EmployerPost> employerPostSlice =
+                employerPostRepository.findEmployerPostByMemberId(member.getId(),pageable);
+
+        return EmployerPostSearchWithSliceResponseDto.of(employerPostSlice.getContent().stream().map(employerPost -> {
+
+            List<String> tagNameList = getTagList(employerPost);
+
+            return EmployerPostSearchResponseDto.of(employerPost,tagNameList);
+        }).collect(Collectors.toList()), employerPostSlice.hasNext());
+    }
+
+    public EmployerPostSearchWithSliceResponseDto searchMyBookMarkEmployerPost(final String loginId,final Pageable pageable){
+
+        Member member = getLoginMember(loginId);
+
+        Slice<EmployerPost> bookMarkEmployerPostSlice =
+                bookMarkEmployerPostRepository.showMyBookMarkEmployerPost(member.getId(),pageable).map(bookMarkEmployerPost -> bookMarkEmployerPost.getEmployerPost());
+
+        return EmployerPostSearchWithSliceResponseDto.of(bookMarkEmployerPostSlice.getContent().stream().map(employerPost -> {
+
+            List<String> tagNameList = getTagList(employerPost);
+
+            return EmployerPostSearchResponseDto.of(employerPost,tagNameList);
+        }).collect(Collectors.toList()), bookMarkEmployerPostSlice.hasNext());
+    }
+
+
+    private Member getLoginMember(final String loginId){
+
+        return memberRepository.findMemberByLoginId(loginId).orElseThrow(()->new NotFoundException(
+                ErrorCode.CANT_FIND_MEMBER));
+    }
+
+    private  List<String> getTagList(final EmployerPost employerPost) {
+        List<String> tagNameList = new ArrayList<>();
+
+        if(employerPost.getBasicPostContent().getWorkFieldTag()!=null){
+            tagNameList.add(employerPost.getBasicPostContent().getWorkFieldTag().getName());
+        }
+
+        employerPost.getEmployerPostWorkFieldChildTagList().forEach(employerPostWorkFieldChildTag -> {
+            tagNameList.add(employerPostWorkFieldChildTag.getWorkFieldChildTag().getName());
+        });
+        return tagNameList;
+    }
+
+    private List<String> getTagListWithFetchTag(final EmployerSearchDBResponseDto employerSearchDBResponseDto){
+
+        List<String> tagNameList = new ArrayList<>();
+
+        employerSearchDBResponseDto.getWorkFieldTag().map(WorkFieldTag::getName).ifPresent(tagNameList::add);
+
+        employerSearchDBResponseDto.getEmployerPostWorkFieldChildTagSearchDBResponseDtoList().forEach(employerPostWorkFieldChildTagSearchResponseDto -> {
+            employerPostWorkFieldChildTagSearchResponseDto.getChildTagName().ifPresent(tagNameList::add);
+        });
+
+
+        return tagNameList;
+
+    }
+
+    private List<String> getTagListByEmployerPostWorkField(final
+    EmployerPostKeyWordSearchDBResponseDto employerPostKeyWordSearchDBResponseDto){
+
+        List<String> tagNameList = new ArrayList<>();
+
+        if(employerPostKeyWordSearchDBResponseDto.getWorkFieldTag()!=null){
+            tagNameList.add(employerPostKeyWordSearchDBResponseDto.getWorkFieldTag().getName());
+        }
+
+        employerPostWorkFieldChildTagRepository.findByEmployerPost_Id(employerPostKeyWordSearchDBResponseDto.getEmployerPostId())
+                .forEach(employerPostWorkFieldChildTag -> tagNameList.add(employerPostWorkFieldChildTag.getWorkFieldChildTag().getName()));
+
+        return tagNameList;
+
+    }
+
+
+}

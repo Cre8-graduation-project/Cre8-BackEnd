@@ -26,6 +26,7 @@ jobs:
 
       - uses: actions/checkout@v3
 
+      - run: cd module-api
       - run: mkdir ./src/main/resources
       - run: touch ./src/main/resources/application.yml
       - run: echo "${{ secrets.DEV_APPLICATION }}" > ./src/main/resources/application.yml
@@ -35,7 +36,7 @@ jobs:
       - name: Grant execute permission for gradlew
         run: chmod +x gradlew
       - name: Execute Gradle build
-        run: ./gradlew clean build -x test
+        run: ./gradlew :module-api:build
 
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v2
@@ -49,8 +50,10 @@ jobs:
           NAME: ${{ secrets.DOCKER_USERNAME }}
           APP: ${{ secrets.DEV_BACKEND_APP_NAME }}
         run: |
+          cd module-api
           docker build -t $NAME/$APP -f ./Dockerfile . 
           docker push $NAME/$APP
+
       - name: EC2 Docker Run
         uses: appleboy/ssh-action@master
         env:
