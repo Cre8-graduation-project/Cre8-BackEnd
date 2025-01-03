@@ -1,5 +1,6 @@
 package com.gaduationproject.cre8.app.community.service;
 
+import com.gaduationproject.cre8.app.community.dto.internal.ReplyNotifyInfo;
 import com.gaduationproject.cre8.app.community.dto.request.ReplyEditRequestDto;
 import com.gaduationproject.cre8.app.community.dto.request.ReplySaveRequestDto;
 import com.gaduationproject.cre8.app.notify.annotation.SendNotify;
@@ -28,13 +29,15 @@ public class ReplyService {
 
     @Transactional
     @SendNotify
-    public Reply saveReply(final ReplySaveRequestDto replySaveRequestDto,final String loginId){
+    public ReplyNotifyInfo saveReply(final ReplySaveRequestDto replySaveRequestDto,final String loginId){
 
         checkChildReply(replySaveRequestDto.getParentReplyId());
 
         Reply reply = getReply(replySaveRequestDto, loginId);
 
-        return replyRepository.save(reply);
+        replyRepository.save(reply);
+
+        return ReplyNotifyInfo.from(reply);
     }
 
 
