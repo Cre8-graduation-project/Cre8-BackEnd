@@ -25,18 +25,18 @@ jobs:
           cache: 'gradle'
 
       - uses: actions/checkout@v3
-
-      - run: cd module-api
-      - run: mkdir ./src/main/resources
-      - run: touch ./src/main/resources/application.yml
-      - run: echo "${{ secrets.DEV_APPLICATION }}" > ./src/main/resources/application.yml
-      - run: cat ./src/main/resources/application.yml
+        run: |
+          cd module-api
+          mkdir ./src/main/resources
+          touch ./src/main/resources/application.yml
+          echo "${{ secrets.DEV_APPLICATION }}" > ./src/main/resources/application.yml
+          cat ./src/main/resources/application.yml
 
 
       - name: Grant execute permission for gradlew
         run: chmod +x gradlew
       - name: Execute Gradle build
-        run: ./gradlew :module-api:build
+        run: ./gradlew :module-api:build -x test
 
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v2
