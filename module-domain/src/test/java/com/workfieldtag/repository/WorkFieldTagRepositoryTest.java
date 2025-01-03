@@ -2,8 +2,10 @@ package com.workfieldtag.repository;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-import com.gaduationproject.cre8.domain.config.QueryDSLConfig;
-import com.gaduationproject.cre8.domain.workfieldtag.entity.WorkFieldTag;
+
+import com.cre8.config.QueryDSLConfig;
+import com.cre8.workfieldtag.entity.WorkFieldTag;
+import com.cre8.workfieldtag.repository.WorkFieldTagRepository;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
