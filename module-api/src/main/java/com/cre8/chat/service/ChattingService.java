@@ -53,7 +53,7 @@ public class ChattingService {
 
     public void sendMessage(final Long roomId, final ChatDto chatDto, final SimpMessageHeaderAccessor simpMessageHeaderAccessor) {
 
-        ChattingRoom chattingRoom = chattingRoomRepository.findById(1L).orElseThrow(()->new NotFoundException(
+        ChattingRoom chattingRoom = chattingRoomRepository.findById(roomId).orElseThrow(()->new NotFoundException(
                 ErrorCode.CANT_FIND_CHATTING_ROOM));
         Member sender = getCurrentLoginMember(simpMessageHeaderAccessor);
 
