@@ -3,16 +3,21 @@ package com.cre8.chat.dto.response;
 
 import com.cre8.chat.dto.request.ChatDto;
 import com.cre8.mongodb.domain.ChattingMessage;
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
+import com.fasterxml.jackson.databind.annotation.JsonPOJOBuilder;
 import java.io.Serializable;
 import java.time.LocalDateTime;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 @Getter
+@Builder
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @AllArgsConstructor(access = AccessLevel.PROTECTED)
+@JsonDeserialize(builder = MessageResponseDto.MessageResponseDtoBuilder.class)
 public class MessageResponseDto implements Serializable {
 
     private Long senderId;
@@ -46,5 +51,8 @@ public class MessageResponseDto implements Serializable {
         return new MessageResponseDto(null,contents,null,MessageType.ENTER,null,chattingRoomId);
     }
 
+    @JsonPOJOBuilder(withPrefix = "")
+    public static class MessageResponseDtoBuilder {
+    }
 
 }

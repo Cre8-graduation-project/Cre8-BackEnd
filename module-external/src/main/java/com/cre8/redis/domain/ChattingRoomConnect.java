@@ -16,21 +16,17 @@ import org.springframework.data.redis.core.index.Indexed;
 @AllArgsConstructor
 @NoArgsConstructor
 @ToString
-@EqualsAndHashCode(exclude = {"sessionId","id"})
+@EqualsAndHashCode(exclude = {"sessionId"})
 @RedisHash(value = "ChattingRoomConnect")
 public class ChattingRoomConnect {
 
     @Id
-    private String id;
+    private String sessionId;
 
     @Indexed
     private Long chattingRoomId;
 
-    @Indexed
     private String loginId;
-
-    @Indexed
-    private String sessionId;
 
     @Builder
     public ChattingRoomConnect(Long chattingRoomId, String loginId, String sessionId) {
